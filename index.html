@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#0a0d14"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>💸 A Pagar&amp;Receber</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a0d14;--card:#13172a;--card2:#1e2337;
+  --border:#252a40;--border2:#2d3350;
+  --indigo:#6366f1;--indigo2:#818cf8;--indigo-bg:rgba(99,102,241,0.12);
+  --red:#ef4444;--red2:#f87171;--red-bg:rgba(239,68,68,0.12);
+  --green:#22c55e;--green2:#4ade80;--green-bg:rgba(34,197,94,0.12);
+  --yellow:#eab308;--orange:#f97316;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --radius:12px;--radius2:8px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;overflow:hidden}
+body{display:flex;flex-direction:column;align-items:center}
+#app{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden}
+
+/* HEADER */
+#header{background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;z-index:50;position:sticky;top:0}
+.header-title{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px}
+.app-name{font-size:16px;font-weight:700;letter-spacing:-.3px}
+.app-name span{color:var(--indigo)}
+.header-actions{display:flex;gap:6px}
+.icon-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 9px;font-size:15px;cursor:pointer;line-height:1}
+.icon-btn:active{opacity:.7}
+.profile-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.profile-chip:active{opacity:.7}
+
+/* SEARCH BAR */
+#search-bar{display:none;padding:0 14px 8px}
+#search-bar.visible{display:block}
+#search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:8px 12px;color:var(--text);font-size:14px;outline:none}
+#search-input:focus{border-color:var(--indigo)}
+
+/* DASHBOARD */
+.dashboard{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:8px 14px}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:8px 10px;text-align:center}
+.dash-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.dash-value{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-pagar .dash-value{color:var(--red2)}
+.dash-receber .dash-value{color:var(--indigo2)}
+.dash-saldo-pos .dash-value{color:var(--green2)}
+.dash-saldo-neg .dash-value{color:var(--red2)}
+
+/* PROGRESS */
+.progress-wrap{padding:0 14px 8px}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:12px}
+.progress-title{color:var(--text2);font-weight:600}
+.progress-pct{color:var(--indigo2);font-weight:700}
+.progress-bar-bg{background:var(--card2);border-radius:99px;height:7px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--indigo),var(--green));transition:width .4s}
+.progress-sub{display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--text3)}
+
+/* MONTH NAV */
+.month-nav{display:flex;align-items:center;justify-content:space-between;padding:6px 14px 8px}
+.month-nav-btn{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:5px 14px;font-size:16px;cursor:pointer}
+.month-nav-btn:active{opacity:.7}
+.month-label{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+/* SCROLLABLE CONTENT */
+#content{flex:1;overflow-y:auto;padding-bottom:100px}
+#content::-webkit-scrollbar{display:none}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 10px}
+.cal-header-day{text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px 0;text-transform:uppercase}
+.cal-cell{height:52px;border-radius:var(--radius2);border:1.5px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .15s;user-select:none}
+.cal-cell.empty{cursor:default}
+.cal-cell.today{border-color:var(--orange)!important}
+.cal-cell.selected{border-color:var(--indigo)!important;background:var(--indigo-bg)!important}
+.cal-cell.has-pagar{background:rgba(239,68,68,.08);border-color:var(--red)}
+.cal-cell.has-receber{background:rgba(99,102,241,.08);border-color:var(--indigo)}
+.cal-cell.all-paid{background:rgba(34,197,94,.08);border-color:var(--green)}
+.cal-cell.due-soon{border-color:var(--yellow)!important}
+.cal-day-num{font-size:13px;font-weight:600;line-height:1}
+.cal-dots{display:flex;gap:2px;margin-top:2px;flex-wrap:wrap;justify-content:center;max-width:28px}
+.cal-dot{width:5px;height:5px;border-radius:50%}
+.cal-dot-red{background:var(--red)}
+.cal-dot-indigo{background:var(--indigo)}
+.cal-dot-green{background:var(--green)}
+
+/* LEGEND */
+.cal-legend{display:flex;gap:10px;flex-wrap:wrap;padding:8px 14px;justify-content:center}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+
+/* UPCOMING */
+.section{padding:10px 14px 4px}
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin-bottom:8px}
+.upcoming-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:9px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.upcoming-date{font-size:11px;font-weight:700;color:var(--text3);min-width:32px}
+.upcoming-info{flex:1;min-width:0}
+.upcoming-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.upcoming-sub{font-size:11px;color:var(--text3)}
+.upcoming-right{text-align:right}
+.upcoming-val{font-size:13px;font-weight:700}
+.badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;letter-spacing:.4px}
+.badge-pagar{background:var(--red-bg);color:var(--red2)}
+.badge-receber{background:var(--indigo-bg);color:var(--indigo2)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:12px}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.stat-val{font-size:18px;font-weight:800}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* FAVORITES */
+.favs-scroll{display:flex;gap:8px;overflow-x:auto;padding:0 14px 2px;scrollbar-width:none}
+.favs-scroll::-webkit-scrollbar{display:none}
+.fav-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:7px 12px;white-space:nowrap;font-size:12px;cursor:pointer;flex-shrink:0}
+.fav-chip:active{opacity:.7;border-color:var(--indigo)}
+.fav-manage-btn{background:transparent;border:1px solid var(--border2);border-radius:20px;padding:7px 12px;color:var(--text3);font-size:12px;cursor:pointer;flex-shrink:0}
+
+/* DAY PANEL */
+#day-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin:10px 14px 0;overflow:hidden}
+.day-panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)}
+.day-panel-title{font-size:13px;font-weight:700}
+.add-day-btn{background:var(--indigo);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.add-day-btn:active{opacity:.7}
+.day-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
+.day-item:last-child{border-bottom:none}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.avatar-pagar{background:var(--red-bg);color:var(--red2)}
+.avatar-receber{background:var(--indigo-bg);color:var(--indigo2)}
+.day-item-info{flex:1;min-width:0}
+.day-item-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day-item-sub{font-size:11px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day-item-right{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.day-item-val{font-size:14px;font-weight:700}
+.val-pagar{color:var(--red2)}
+.val-receber{color:var(--indigo2)}
+.val-paid{color:var(--green2)}
+.toggle-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:2px;line-height:1}
+.toggle-btn:active{opacity:.6}
+.empty-day{padding:20px;text-align:center;color:var(--text3);font-size:13px}
+
+/* BOTTOM PROFILE BAR */
+#profile-bar{position:absolute;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;z-index:60;flex-shrink:0}
+#profile-bar::-webkit-scrollbar{display:none}
+.profile-tab{display:flex;flex-direction:column;align-items:center;padding:8px 14px 10px;cursor:pointer;min-width:70px;position:relative;flex-shrink:0}
+.profile-tab.active .ptab-name{color:var(--indigo2)}
+.profile-tab-bar{height:2.5px;background:var(--indigo);border-radius:2px;width:80%;position:absolute;bottom:0;display:none}
+.profile-tab.active .profile-tab-bar{display:block}
+.ptab-emoji{font-size:18px;line-height:1}
+.ptab-name{font-size:10px;font-weight:600;color:var(--text3);margin-top:2px;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ptab-badge{position:absolute;top:6px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--red);border:1.5px solid var(--card)}
+.new-profile-btn{display:flex;flex-direction:column;align-items:center;padding:8px 14px 10px;cursor:pointer;min-width:60px;flex-shrink:0;color:var(--text3)}
+.new-profile-btn .ptab-emoji{font-size:16px;color:var(--indigo2)}
+.new-profile-btn .ptab-name{font-size:10px;font-weight:600;margin-top:2px}
+
+/* FAB */
+#fab{position:absolute;bottom:70px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--indigo);color:#fff;font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:65;box-shadow:0 4px 20px rgba(99,102,241,.5);transition:transform .15s}
+#fab:active{transform:scale(.92)}
+
+/* MODALS */
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:80;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.visible{opacity:1;pointer-events:all}
+.modal-sheet{background:var(--card);border-radius:20px 20px 0 0;max-height:90%;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,0,.15,1)}
+.modal-sheet::-webkit-scrollbar{display:none}
+.modal-overlay.visible .modal-sheet{transform:translateY(0)}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:10px auto 0}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px}
+.modal-title{font-size:16px;font-weight:700}
+.modal-close{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:7px;padding:5px 10px;font-size:13px;cursor:pointer}
+.modal-body{padding:0 18px 24px}
+
+/* FORM */
+.form-row{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:block}
+.type-btns,.mode-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.type-btn,.mode-btn{padding:10px;border-radius:var(--radius2);border:1.5px solid var(--border);background:var(--card2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.type-btn.active-pagar,.type-btn.active-pagar:hover{background:var(--red-bg);border-color:var(--red);color:var(--red2)}
+.type-btn.active-receber,.type-btn.active-receber:hover{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
+.mode-btn.active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
+.form-input{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--radius2);padding:10px 12px;color:var(--text);font-size:14px;outline:none;font-family:inherit}
+.form-input:focus{border-color:var(--indigo)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--card2);border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;transition:all .15s}
+.chip.active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
+.chip:active{opacity:.7}
+.parcela-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.parcela-chip{background:var(--card2);border:1.5px solid var(--border);border-radius:20px;padding:6px 10px;font-size:12px;cursor:pointer;transition:all .15s}
+.parcela-chip.active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
+.parcela-input{width:56px;background:var(--card2);border:1.5px solid var(--border);border-radius:20px;padding:6px 8px;color:var(--text);font-size:12px;text-align:center;outline:none}
+.parcela-input:focus{border-color:var(--indigo)}
+.preview-box{border-radius:var(--radius2);padding:10px 12px;font-size:12px;margin-top:4px;line-height:1.6}
+.preview-div{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);color:var(--indigo2)}
+.preview-fix{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);color:#fde047}
+.form-actions{display:flex;gap:8px;margin-top:6px}
+.btn-cancel{flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:11px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-save{flex:2;background:var(--indigo);border:none;color:#fff;border-radius:var(--radius2);padding:11px;font-size:14px;font-weight:700;cursor:pointer}
+.btn-fav{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:11px 12px;font-size:14px;cursor:pointer}
+.btn-danger{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:var(--red2);border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
+.btn-primary{background:var(--indigo);border:none;color:#fff;border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
+.btn-secondary{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
+
+/* DETAIL MODAL ITEMS */
+.detail-item{background:var(--card2);border-radius:var(--radius2);padding:12px;margin-bottom:10px;border:1px solid var(--border)}
+.detail-item-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.detail-item-name{font-size:14px;font-weight:700}
+.detail-item-val{font-size:16px;font-weight:800}
+.detail-item-sub{font-size:11px;color:var(--text3);margin-bottom:8px}
+.detail-item-actions{display:flex;gap:8px;flex-wrap:wrap}
+.detail-toggle-btn{flex:1;border:none;border-radius:var(--radius2);padding:8px 10px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-mark-paid{background:var(--green-bg);color:var(--green2)}
+.btn-mark-pending{background:rgba(148,163,184,.1);color:var(--text2)}
+.detail-edit-btn,.detail-del-btn{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:8px 12px;font-size:12px;cursor:pointer;color:var(--text2)}
+.detail-del-btn{color:var(--red2);border-color:rgba(239,68,68,.3)}
+.detail-footer{background:var(--card2);border-radius:var(--radius2);padding:10px 12px;margin-top:4px;display:flex;justify-content:space-around;font-size:12px}
+.detail-footer-item{text-align:center}
+.detail-footer-label{color:var(--text3);margin-bottom:2px}
+.detail-footer-val{font-weight:700}
+
+/* PROFILES MODAL */
+.profile-list-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.profile-list-item:last-child{border-bottom:none}
+.profile-emoji-btn{font-size:24px;cursor:pointer;padding:4px;border-radius:8px;background:var(--card2);border:1px solid var(--border)}
+.profile-item-info{flex:1}
+.profile-item-name{font-size:14px;font-weight:600}
+.profile-item-sub{font-size:11px;color:var(--text3)}
+.profile-item-actions{display:flex;gap:6px}
+.small-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer}
+.small-btn-active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
+.emoji-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}
+.emoji-option{font-size:24px;text-align:center;cursor:pointer;padding:6px;border-radius:8px;border:1.5px solid var(--border);background:var(--card2)}
+.emoji-option.selected{border-color:var(--indigo);background:var(--indigo-bg)}
+
+/* SETTINGS */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:14px;font-weight:500}
+.setting-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.toggle-switch{width:42px;height:24px;background:var(--border2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle-switch.on{background:var(--indigo)}
+.toggle-knob{width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s}
+.toggle-switch.on .toggle-knob{left:21px}
+
+/* TOAST */
+#toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#22c55e;color:#fff;padding:9px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;max-width:90%}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* SEARCH RESULTS */
+#search-results{padding:0 14px}
+.search-result-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.sr-left{}
+.sr-name{font-size:13px;font-weight:600}
+.sr-sub{font-size:11px;color:var(--text3)}
+.sr-right{text-align:right}
+.sr-val{font-size:14px;font-weight:700}
+.sr-date{font-size:11px;color:var(--text3)}
+
+/* SECTION HIDDEN */
+.section-hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- HEADER -->
+  <div id="header">
+    <div class="header-title">
+      <div class="app-name">💸 A Pagar<span>&amp;Receber</span></div>
+      <div class="header-actions">
+        <div class="profile-chip" id="active-profile-chip" onclick="openModal('profiles-modal')">
+          <span id="active-profile-emoji">👤</span>
+          <span id="active-profile-name">PRINCIPAL</span>
+        </div>
+        <button class="icon-btn" onclick="toggleSearch()">🔍</button>
+        <button class="icon-btn" onclick="openModal('settings-modal')">⚙️</button>
+      </div>
+    </div>
+    <div id="search-bar">
+      <input type="text" id="search-input" class="form-input" placeholder="Buscar nome, observação..." oninput="doSearch(this.value)"/>
+    </div>
+    <div class="dashboard">
+      <div class="dash-card dash-pagar">
+        <div class="dash-label">A Pagar</div>
+        <div class="dash-value" id="d-pagar">R$ 0</div>
+      </div>
+      <div class="dash-card dash-receber">
+        <div class="dash-label">A Receber</div>
+        <div class="dash-value" id="d-receber">R$ 0</div>
+      </div>
+      <div class="dash-card" id="d-saldo-card">
+        <div class="dash-label">Saldo</div>
+        <div class="dash-value" id="d-saldo">R$ 0</div>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-title">Contas Quitadas</span>
+        <span class="progress-pct" id="prog-pct">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
+      <div class="progress-sub">
+        <span id="prog-paid">Pago: R$ 0,00</span>
+        <span id="prog-total">Total: R$ 0,00</span>
+      </div>
+    </div>
+    <div class="month-nav">
+      <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
+      <span class="month-label" id="month-label"></span>
+      <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
+    </div>
+  </div>
+
+  <!-- SCROLLABLE CONTENT -->
+  <div id="content">
+    <!-- Search results -->
+    <div id="search-results" style="display:none"></div>
+
+    <!-- Calendar -->
+    <div id="calendar-section">
+      <div class="cal-grid" id="cal-header"></div>
+      <div class="cal-grid" id="cal-body" style="margin-top:2px"></div>
+      <div class="cal-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>A Pagar</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--indigo)"></div>A Receber</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Quitado</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Vence em 3 dias</div>
+      </div>
+    </div>
+
+    <!-- Upcoming -->
+    <div class="section" id="upcoming-section" style="display:none">
+      <div class="section-title">📅 Próximos Vencimentos</div>
+      <div id="upcoming-list"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="section" id="stats-section" style="display:none">
+      <div class="section-title">📊 Estatísticas</div>
+      <div class="stats-grid" id="stats-grid"></div>
+    </div>
+
+    <!-- Favorites -->
+    <div class="section" id="favs-section">
+      <div class="section-title">⭐ Favoritos</div>
+      <div class="favs-scroll" id="favs-list">
+        <button class="fav-manage-btn" onclick="openModal('favs-modal')">⭐ Gerenciar</button>
+      </div>
+    </div>
+
+    <!-- Day panel -->
+    <div id="day-panel" style="display:none">
+      <div class="day-panel-header">
+        <span class="day-panel-title" id="day-panel-title">Dia X</span>
+        <button class="add-day-btn" onclick="openAddForDay()">+ Adicionar</button>
+      </div>
+      <div id="day-panel-items"></div>
+    </div>
+  </div>
+
+  <!-- FAB -->
+  <button id="fab" onclick="openAddModal()">＋</button>
+
+  <!-- PROFILE BAR -->
+  <div id="profile-bar"></div>
+
+  <!-- TOAST -->
+  <div id="toast"></div>
+
+  <!-- ADD/EDIT MODAL -->
+  <div class="modal-overlay" id="add-modal" onclick="handleOverlayClick(event,'add-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title" id="add-modal-title">Novo Lançamento</span>
+        <button class="modal-close" onclick="closeModal('add-modal')">Fechar</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <span class="form-label">Tipo</span>
+          <div class="type-btns">
+            <button class="type-btn active-pagar" id="btn-pagar" onclick="setType('pagar')">💸 A PAGAR</button>
+            <button class="type-btn" id="btn-receber" onclick="setType('receber')">💰 A RECEBER</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Nome</label>
+          <input type="text" id="f-name" class="form-input" placeholder="Ex: ALUGUEL" oninput="this.value=this.value.toUpperCase()"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Valor Total (R$)</label>
+          <input type="number" id="f-value" class="form-input" placeholder="0,00" step="0.01" min="0" oninput="updatePreview()"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Data de Vencimento</label>
+          <input type="date" id="f-date" class="form-input"/>
+        </div>
+        <div class="form-row">
+          <span class="form-label">Categoria</span>
+          <div class="chips" id="cat-chips">
+            <div class="chip" data-cat="CASA" onclick="selectCat(this)">🏠 CASA</div>
+            <div class="chip" data-cat="VEICULO" onclick="selectCat(this)">🚗 VEICULO</div>
+            <div class="chip" data-cat="CARTAO" onclick="selectCat(this)">💳 CARTAO</div>
+            <div class="chip" data-cat="ALIMENTACAO" onclick="selectCat(this)">🍔 ALIMENTACAO</div>
+            <div class="chip" data-cat="LAZER" onclick="selectCat(this)">🎮 LAZER</div>
+            <div class="chip" data-cat="SAUDE" onclick="selectCat(this)">🏥 SAUDE</div>
+            <div class="chip" data-cat="TRABALHO" onclick="selectCat(this)">💼 TRABALHO</div>
+            <div class="chip active" data-cat="OUTROS" onclick="selectCat(this)">📦 OUTROS</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <span class="form-label">Modo de Parcelas</span>
+          <div class="mode-btns">
+            <button class="mode-btn active" id="btn-div" onclick="setMode('div')">➗ DIVIDIDO</button>
+            <button class="mode-btn" id="btn-fix" onclick="setMode('fix')">🔒 FIXO</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <span class="form-label">Número de Parcelas</span>
+          <div class="parcela-row">
+            <div class="parcela-chip active" data-p="1" onclick="selectParcela(this)">1x</div>
+            <div class="parcela-chip" data-p="2" onclick="selectParcela(this)">2x</div>
+            <div class="parcela-chip" data-p="3" onclick="selectParcela(this)">3x</div>
+            <div class="parcela-chip" data-p="4" onclick="selectParcela(this)">4x</div>
+            <div class="parcela-chip" data-p="5" onclick="selectParcela(this)">5x</div>
+            <div class="parcela-chip" data-p="6" onclick="selectParcela(this)">6x</div>
+            <div class="parcela-chip" data-p="10" onclick="selectParcela(this)">10x</div>
+            <div class="parcela-chip" data-p="12" onclick="selectParcela(this)">12x</div>
+            <input type="number" id="parcela-custom" class="parcela-input" placeholder="…" min="1" max="360" oninput="setParcelaCustom(this.value)"/>
+          </div>
+          <div id="form-preview" class="preview-box preview-div" style="margin-top:8px">—</div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Observação (opcional)</label>
+          <input type="text" id="f-obs" class="form-input" placeholder="Ex: FATURA JULHO" oninput="this.value=this.value.toUpperCase()"/>
+        </div>
+        <div class="form-actions">
+          <button class="btn-fav" onclick="saveAsFavorite()" title="Salvar como favorito">⭐</button>
+          <button class="btn-cancel" onclick="closeModal('add-modal')">Cancelar</button>
+          <button class="btn-save" onclick="saveEntry()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL MODAL -->
+  <div class="modal-overlay" id="detail-modal" onclick="handleOverlayClick(event,'detail-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title" id="detail-modal-title">Detalhes do Dia</span>
+        <button class="modal-close" onclick="closeModal('detail-modal')">Fechar</button>
+      </div>
+      <div class="modal-body" id="detail-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- FAVORITES MODAL -->
+  <div class="modal-overlay" id="favs-modal" onclick="handleOverlayClick(event,'favs-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title">⭐ Favoritos</span>
+        <button class="modal-close" onclick="closeModal('favs-modal')">Fechar</button>
+      </div>
+      <div class="modal-body" id="favs-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- PROFILES MODAL -->
+  <div class="modal-overlay" id="profiles-modal" onclick="handleOverlayClick(event,'profiles-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title">👤 Perfis</span>
+        <button class="modal-close" onclick="closeModal('profiles-modal')">Fechar</button>
+      </div>
+      <div class="modal-body" id="profiles-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="modal-overlay" id="settings-modal" onclick="handleOverlayClick(event,'settings-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title">⚙️ Configurações</span>
+        <button class="modal-close" onclick="closeModal('settings-modal')">Fechar</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Mostrar Estatísticas</div>
+            <div class="setting-sub">Exibir painel de estatísticas mensais</div>
+          </div>
+          <div class="toggle-switch" id="stats-toggle" onclick="toggleStats()">
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+        <button class="btn-secondary" onclick="exportData()">📤 Exportar Dados (JSON)</button>
+        <div style="margin-top:8px;position:relative">
+          <button class="btn-secondary" onclick="document.getElementById('import-file').click()">📥 Importar Dados (JSON)</button>
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"/>
+        </div>
+        <button class="btn-danger" onclick="clearData()">🗑️ Limpar Dados do Perfil Atual</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== STATE ====================
+const EMOJIS = ['👤','😊','🦁','🐺','🦊','🐻','🐼','🐨','🦋','🌟','🔥','💎','🚀','🎯','🎸'];
+const CAT_EMOJIS = {CASA:'🏠',VEICULO:'🚗',CARTAO:'💳',ALIMENTACAO:'🍔',LAZER:'🎮',SAUDE:'🏥',TRABALHO:'💼',OUTROS:'📦'};
+const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+let state = {
+  profiles: [{id:'main',name:'PRINCIPAL',emoji:'👤'}],
+  activeProfileId: 'main',
+};
+let data = { entries: [], favorites: [], showStats: false };
+let curYear = new Date().getFullYear();
+let curMonth = new Date().getMonth();
+let selectedDay = null;
+let editingId = null;
+let formType = 'pagar';
+let formMode = 'div';
+let formParcelas = 1;
+let lastTapDay = null;
+let lastTapTime = 0;
+
+// ==================== STORAGE ====================
+function loadState() {
+  try {
+    const s = localStorage.getItem('fintracker_profiles');
+    if (s) state = JSON.parse(s);
+    // migrate v1
+    const old = localStorage.getItem('fintracker_data');
+    if (old && !localStorage.getItem('fintracker_migrated')) {
+      const od = JSON.parse(old);
+      localStorage.setItem('fintracker_profile_main', JSON.stringify(od));
+      localStorage.setItem('fintracker_migrated','1');
+    }
+  } catch(e){}
+}
+function saveState() {
+  localStorage.setItem('fintracker_profiles', JSON.stringify(state));
+}
+function loadProfileData(id) {
+  try {
+    const d = localStorage.getItem('fintracker_profile_'+id);
+    return d ? JSON.parse(d) : { entries:[], favorites:[], showStats:false };
+  } catch(e){ return { entries:[], favorites:[], showStats:false }; }
+}
+function saveProfileData(id, d) {
+  localStorage.setItem('fintracker_profile_'+id, JSON.stringify(d));
+}
+
+// ==================== PROFILES ====================
+function switchProfile(id) {
+  saveProfileData(state.activeProfileId, data);
+  state.activeProfileId = id;
+  saveState();
+  data = loadProfileData(id);
+  selectedDay = null;
+  renderAll();
+  showToast('Perfil alterado!');
+}
+function getActiveProfile() {
+  return state.profiles.find(p=>p.id===state.activeProfileId) || state.profiles[0];
+}
+
+// ==================== ENTRIES ====================
+function getOccurrences(entry) {
+  // returns all occurrences as {year, month, day, parcela, total, entryId, paid}
+  const occs = [];
+  const base = new Date(entry.date+'T00:00:00');
+  for (let i=0;i<entry.parcelas;i++) {
+    const d = new Date(base.getFullYear(), base.getMonth()+i, base.getDate());
+    const key = `${entry.id}_${i}`;
+    occs.push({
+      key, entryId:entry.id, parcela:i+1, total:entry.parcelas,
+      year:d.getFullYear(), month:d.getMonth(), day:d.getDate(),
+      paid: !!(entry.paid && entry.paid[i]),
+      value: entry.mode==='div' ? entry.value/entry.parcelas : entry.value
+    });
+  }
+  return occs;
+}
+function getMonthOccs(year, month) {
+  const all = [];
+  for (const e of data.entries) {
+    for (const o of getOccurrences(e)) {
+      if (o.year===year && o.month===month) all.push({...o, entry:e});
+    }
+  }
+  return all;
+}
+function getDayOccs(year, month, day) {
+  return getMonthOccs(year, month).filter(o=>o.day===day);
+}
+function togglePaid(entryId, parcelaIdx) {
+  const e = data.entries.find(x=>x.id===entryId);
+  if (!e) return;
+  if (!e.paid) e.paid = {};
+  e.paid[parcelaIdx] = !e.paid[parcelaIdx];
+  saveProfileData(state.activeProfileId, data);
+  renderAll();
+}
+function deleteEntry(entryId) {
+  data.entries = data.entries.filter(x=>x.id!==entryId);
+  saveProfileData(state.activeProfileId, data);
+  renderAll();
+  showToast('Lançamento excluído!');
+}
+
+// ==================== DASHBOARD ====================
+function calcDashboard() {
+  const occs = getMonthOccs(curYear, curMonth);
+  let toPay=0, toRec=0, paid=0, total=0;
+  for (const o of occs) {
+    total += o.value;
+    if (o.paid) paid += o.value;
+    else {
+      if (o.entry.type==='pagar') toPay += o.value;
+      else toRec += o.value;
+    }
+  }
+  return {toPay, toRec, saldo:toRec-toPay, paid, total, count:occs.length, paidCount:occs.filter(o=>o.paid).length};
+}
+function fmt(v) {
+  return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function fmtShort(v) {
+  if (Math.abs(v)>=1000) return 'R$ '+Math.round(v/100)/10+'k';
+  return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+}
+
+// ==================== RENDER ====================
+function renderAll() {
+  renderHeader();
+  renderCalendar();
+  renderUpcoming();
+  renderStats();
+  renderFavs();
+  renderDayPanel();
+  renderProfileBar();
+  renderProfileChip();
+  updateStatsToggle();
+}
+
+function renderHeader() {
+  const d = calcDashboard();
+  document.getElementById('d-pagar').textContent = fmtShort(d.toPay);
+  document.getElementById('d-receber').textContent = fmtShort(d.toRec);
+  document.getElementById('d-saldo').textContent = fmtShort(d.saldo);
+  const sc = document.getElementById('d-saldo-card');
+  sc.className = 'dash-card '+(d.saldo>=0?'dash-saldo-pos':'dash-saldo-neg');
+  document.getElementById('month-label').textContent = MONTHS_PT[curMonth]+' '+curYear;
+  const pct = d.total>0 ? Math.round(d.paid/d.total*100) : 0;
+  document.getElementById('prog-pct').textContent = pct+'%';
+  document.getElementById('prog-bar').style.width = pct+'%';
+  document.getElementById('prog-paid').textContent = 'Pago: '+fmt(d.paid);
+  document.getElementById('prog-total').textContent = 'Total: '+fmt(d.total);
+}
+
+function renderCalendar() {
+  const hdr = document.getElementById('cal-header');
+  hdr.innerHTML = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'].map(d=>`<div class="cal-header-day">${d}</div>`).join('');
+  
+  const body = document.getElementById('cal-body');
+  const today = new Date();
+  const firstDay = new Date(curYear, curMonth, 1).getDay();
+  const daysInMonth = new Date(curYear, curMonth+1, 0).getDate();
+  const occs = getMonthOccs(curYear, curMonth);
+  
+  // Group by day
+  const dayMap = {};
+  for (const o of occs) {
+    if (!dayMap[o.day]) dayMap[o.day] = [];
+    dayMap[o.day].push(o);
+  }
+  
+  let cells = '';
+  // empty cells
+  for (let i=0;i<firstDay;i++) cells += '<div class="cal-cell empty"></div>';
+  
+  for (let d=1;d<=daysInMonth;d++) {
+    const isToday = today.getFullYear()===curYear && today.getMonth()===curMonth && today.getDate()===d;
+    const isSel = selectedDay===d;
+    const dayOccs = dayMap[d] || [];
+    const hasPagar = dayOccs.some(o=>!o.paid && o.entry.type==='pagar');
+    const hasReceber = dayOccs.some(o=>!o.paid && o.entry.type==='receber');
+    const allPaid = dayOccs.length>0 && dayOccs.every(o=>o.paid);
+    const daysToToday = (new Date(curYear,curMonth,d) - today) / 86400000;
+    const dueSoon = !allPaid && dayOccs.length>0 && daysToToday>=0 && daysToToday<=3;
+    
+    let cls = 'cal-cell';
+    if (allPaid) cls += ' all-paid';
+    else if (hasPagar) cls += ' has-pagar';
+    else if (hasReceber) cls += ' has-receber';
+    if (dueSoon) cls += ' due-soon';
+    if (isToday) cls += ' today';
+    if (isSel) cls += ' selected';
+    
+    // dots
+    let dots = '';
+    if (hasPagar) dots += '<div class="cal-dot cal-dot-red"></div>';
+    if (hasReceber) dots += '<div class="cal-dot cal-dot-indigo"></div>';
+    if (allPaid) dots += '<div class="cal-dot cal-dot-green"></div>';
+    
+    cells += `<div class="${cls}" onclick="handleDayClick(${d})" data-day="${d}">
+      <div class="cal-day-num">${d}</div>
+      ${dots?`<div class="cal-dots">${dots}</div>`:''}
+    </div>`;
+  }
+  body.innerHTML = cells;
+}
+
+function handleDayClick(d) {
+  const now = Date.now();
+  if (lastTapDay===d && now-lastTapTime<500) {
+    // double tap — open detail modal
+    openDetailModal(d);
+    lastTapDay=null;
+  } else {
+    lastTapDay=d;
+    lastTapTime=now;
+    selectedDay = (selectedDay===d) ? null : d;
+    renderCalendar();
+    renderDayPanel();
+    if (selectedDay) {
+      document.getElementById('day-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+  }
+}
+
+function renderUpcoming() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const in7 = new Date(today.getTime()+7*86400000);
+  const results = [];
+  for (const e of data.entries) {
+    for (const o of getOccurrences(e)) {
+      if (o.paid) continue;
+      const od = new Date(o.year, o.month, o.day);
+      if (od>=today && od<=in7) results.push({...o, entry:e, dateObj:od});
+    }
+  }
+  results.sort((a,b)=>a.dateObj-b.dateObj);
+  const sec = document.getElementById('upcoming-section');
+  if (!results.length) { sec.style.display='none'; return; }
+  sec.style.display='';
+  const list = document.getElementById('upcoming-list');
+  list.innerHTML = results.slice(0,5).map(o=>{
+    const dd = String(o.day).padStart(2,'0');
+    const mm = String(o.month+1).padStart(2,'0');
+    const catEmoji = CAT_EMOJIS[o.entry.category]||'📦';
+    const parcelaStr = o.total>1 ? ` (${o.parcela}/${o.total})` : '';
+    return `<div class="upcoming-item">
+      <div class="upcoming-date">${dd}/${mm}</div>
+      <div class="upcoming-info">
+        <div class="upcoming-name">${catEmoji} ${o.entry.name}${parcelaStr}</div>
+        ${o.entry.obs?`<div class="upcoming-sub">${o.entry.obs}</div>`:''}
+      </div>
+      <div class="upcoming-right">
+        <div class="upcoming-val" style="color:${o.entry.type==='pagar'?'var(--red2)':'var(--indigo2)'}">${fmt(o.value)}</div>
+        <span class="badge badge-${o.entry.type}">${o.entry.type==='pagar'?'PAGAR':'RECEBER'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderStats() {
+  const sec = document.getElementById('stats-section');
+  if (!data.showStats) { sec.style.display='none'; return; }
+  sec.style.display='';
+  const d = calcDashboard();
+  const today = new Date();
+  const daysLeft = new Date(curYear, curMonth+1, 0).getDate() - today.getDate();
+  const paidPct = d.total>0 ? Math.round(d.paid/d.total*100) : 0;
+  const sg = document.getElementById('stats-grid');
+  sg.innerHTML = `
+    <div class="stat-card"><div class="stat-label">A Pagar</div><div class="stat-val" style="color:var(--red2)">${fmt(d.toPay)}</div><div class="stat-sub">${paidPct}% quitado</div></div>
+    <div class="stat-card"><div class="stat-label">A Receber</div><div class="stat-val" style="color:var(--indigo2)">${fmt(d.toRec)}</div><div class="stat-sub">Recebido: ${fmt(d.paid)}</div></div>
+    <div class="stat-card"><div class="stat-label">Fluxo</div><div class="stat-val" style="color:${d.saldo>=0?'var(--green2)':'var(--red2)'}">${fmt(d.saldo)}</div><div class="stat-sub">${d.saldo>=0?'Positivo':'Negativo'}</div></div>
+    <div class="stat-card"><div class="stat-label">Dias Restantes</div><div class="stat-val" style="color:var(--text)">${daysLeft}</div><div class="stat-sub">no mês</div></div>
+  `;
+}
+
+function renderFavs() {
+  const list = document.getElementById('favs-list');
+  const favBtns = (data.favorites||[]).map(f=>`<div class="fav-chip" onclick="useFavorite('${f.id}')">${CAT_EMOJIS[f.category]||'📦'} ${f.name}</div>`).join('');
+  list.innerHTML = favBtns + `<button class="fav-manage-btn" onclick="openModal('favs-modal')">⭐ Gerenciar</button>`;
+}
+
+function renderDayPanel() {
+  const panel = document.getElementById('day-panel');
+  if (!selectedDay) { panel.style.display='none'; return; }
+  panel.style.display='';
+  const dd = String(selectedDay).padStart(2,'0');
+  const mm = String(curMonth+1).padStart(2,'0');
+  document.getElementById('day-panel-title').textContent = `${dd}/${mm}/${curYear}`;
+  const occs = getDayOccs(curYear, curMonth, selectedDay);
+  const items = document.getElementById('day-panel-items');
+  if (!occs.length) { items.innerHTML='<div class="empty-day">Nenhum lançamento neste dia</div>'; return; }
+  items.innerHTML = occs.map(o=>{
+    const parcelaStr = o.total>1 ? ` • ${o.parcela}/${o.total}` : '';
+    const obsStr = o.entry.obs ? ` • ${o.entry.obs}` : '';
+    const valColor = o.paid?'val-paid':(o.entry.type==='pagar'?'val-pagar':'val-receber');
+    const badge = o.paid?(o.entry.type==='pagar'?'PAGO':'RECEBIDO'):'PENDENTE';
+    const badgeCls = o.paid?'badge' + (o.entry.type==='pagar'?' badge-pago':' badge-recebido'):'badge badge-pendente';
+    const initial = (o.entry.name||'?')[0];
+    return `<div class="day-item">
+      <div class="avatar avatar-${o.entry.type}">${initial}</div>
+      <div class="day-item-info">
+        <div class="day-item-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}</div>
+        <div class="day-item-sub">${parcelaStr}${obsStr}</div>
+      </div>
+      <div class="day-item-right">
+        <div class="day-item-val ${valColor}">${fmt(o.value)}</div>
+        <span class="badge ${o.paid?'':'badge-'+o.entry.type}" style="${o.paid?'background:var(--green-bg);color:var(--green2)':''}">${badge}</span>
+      </div>
+      <button class="toggle-btn" onclick="togglePaid('${o.entryId}',${o.parcela-1})" title="${o.paid?'Desfazer':'Marcar pago'}">${o.paid?'↩️':'✅'}</button>
+    </div>`;
+  }).join('');
+}
+
+function renderProfileBar() {
+  const bar = document.getElementById('profile-bar');
+  let html = state.profiles.map(p=>{
+    const isActive = p.id===state.activeProfileId;
+    const pData = isActive ? data : loadProfileData(p.id);
+    const hasPending = !isActive && (pData.entries||[]).some(e=>{
+      const today=new Date();
+      return getOccurrences(e).some(o=>!o.paid && new Date(o.year,o.month,o.day)<=today);
+    });
+    return `<div class="profile-tab ${isActive?'active':''}" onclick="switchProfile('${p.id}')">
+      <div class="ptab-emoji">${p.emoji}</div>
+      <div class="ptab-name">${p.name}</div>
+      ${hasPending?'<div class="ptab-badge"></div>':''}
+      <div class="profile-tab-bar"></div>
+    </div>`;
+  }).join('');
+  html += `<div class="new-profile-btn" onclick="openModal('profiles-modal')">
+    <div class="ptab-emoji">＋</div>
+    <div class="ptab-name">Novo</div>
+  </div>`;
+  bar.innerHTML = html;
+}
+
+function renderProfileChip() {
+  const p = getActiveProfile();
+  document.getElementById('active-profile-emoji').textContent = p.emoji;
+  document.getElementById('active-profile-name').textContent = p.name;
+}
+
+// ==================== MODALS ====================
+function openModal(id) {
+  document.getElementById(id).classList.add('visible');
+  if (id==='profiles-modal') renderProfilesModal();
+  if (id==='favs-modal') renderFavsModal();
+  if (id==='settings-modal') updateStatsToggle();
+  if (id==='detail-modal') {} // handled separately
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('visible');
+}
+function handleOverlayClick(e, id) {
+  if (e.target===document.getElementById(id)) closeModal(id);
+}
+
+function openAddModal(prefill) {
+  editingId = null;
+  document.getElementById('add-modal-title').textContent = 'Novo Lançamento';
+  resetForm();
+  if (prefill) applyPrefill(prefill);
+  if (selectedDay) {
+    const yyyy = String(curYear);
+    const mm = String(curMonth+1).padStart(2,'0');
+    const dd = String(selectedDay).padStart(2,'0');
+    document.getElementById('f-date').value = `${yyyy}-${mm}-${dd}`;
+  }
+  openModal('add-modal');
+}
+
+function openAddForDay() {
+  openAddModal();
+}
+
+function openEditModal(entryId) {
+  const e = data.entries.find(x=>x.id===entryId);
+  if (!e) return;
+  editingId = entryId;
+  document.getElementById('add-modal-title').textContent = 'Editar Lançamento';
+  resetForm();
+  setType(e.type);
+  document.getElementById('f-name').value = e.name;
+  document.getElementById('f-value').value = e.value;
+  document.getElementById('f-date').value = e.date;
+  document.getElementById('f-obs').value = e.obs||'';
+  // category
+  document.querySelectorAll('#cat-chips .chip').forEach(c=>{
+    c.classList.toggle('active', c.dataset.cat===e.category);
+  });
+  setMode(e.mode||'div');
+  formParcelas = e.parcelas||1;
+  document.querySelectorAll('.parcela-chip').forEach(c=>{
+    c.classList.toggle('active', parseInt(c.dataset.p)===formParcelas);
+  });
+  updatePreview();
+  openModal('add-modal');
+}
+
+function resetForm() {
+  formType='pagar'; formMode='div'; formParcelas=1;
+  document.getElementById('f-name').value='';
+  document.getElementById('f-value').value='';
+  document.getElementById('f-obs').value='';
+  const today = new Date();
+  document.getElementById('f-date').value = today.toISOString().slice(0,10);
+  setType('pagar');
+  setMode('div');
+  document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.toggle('active',c.dataset.p==='1'));
+  document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.toggle('active',c.dataset.cat==='OUTROS'));
+  document.getElementById('parcela-custom').value='';
+  updatePreview();
+}
+
+function applyPrefill(f) {
+  setType(f.type||'pagar');
+  document.getElementById('f-name').value = f.name||'';
+  document.getElementById('f-obs').value = f.obs||'';
+  document.querySelectorAll('#cat-chips .chip').forEach(c=>{
+    c.classList.toggle('active', c.dataset.cat===(f.category||'OUTROS'));
+  });
+}
+
+function setType(t) {
+  formType=t;
+  document.getElementById('btn-pagar').className = 'type-btn '+(t==='pagar'?'active-pagar':'');
+  document.getElementById('btn-receber').className = 'type-btn '+(t==='receber'?'active-receber':'');
+}
+function setMode(m) {
+  formMode=m;
+  document.getElementById('btn-div').classList.toggle('active',m==='div');
+  document.getElementById('btn-fix').classList.toggle('active',m==='fix');
+  updatePreview();
+}
+function selectCat(el) {
+  document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+function selectParcela(el) {
+  document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  formParcelas = parseInt(el.dataset.p);
+  document.getElementById('parcela-custom').value='';
+  updatePreview();
+}
+function setParcelaCustom(v) {
+  const n = parseInt(v);
+  if (n>0) {
+    formParcelas=n;
+    document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.remove('active'));
+    updatePreview();
+  }
+}
+function updatePreview() {
+  const val = parseFloat(document.getElementById('f-value').value)||0;
+  const p = formParcelas;
+  const box = document.getElementById('form-preview');
+  if (!val) { box.textContent='—'; return; }
+  if (formMode==='div') {
+    const each = val/p;
+    box.className='preview-box preview-div';
+    box.textContent = p===1 ? `${fmt(val)} — 1 parcela de ${fmt(each)}` : `${fmt(val)} ÷ ${p}x = ${fmt(each)}/mês`;
+  } else {
+    const total = val*p;
+    box.className='preview-box preview-fix';
+    box.textContent = p===1 ? `${fmt(val)} — valor fixo` : `${fmt(val)} × ${p}x = ${fmt(total)} total`;
+  }
+}
+
+function saveEntry() {
+  const name = document.getElementById('f-name').value.trim();
+  const value = parseFloat(document.getElementById('f-value').value);
+  const date = document.getElementById('f-date').value;
+  if (!name) { showToast('Informe o nome!'); return; }
+  if (!value || value<=0) { showToast('Informe o valor!'); return; }
+  if (!date) { showToast('Informe a data!'); return; }
+  const cat = document.querySelector('#cat-chips .chip.active')?.dataset.cat || 'OUTROS';
+  const obs = document.getElementById('f-obs').value.trim();
+  
+  if (editingId) {
+    const e = data.entries.find(x=>x.id===editingId);
+    if (e) {
+      e.name=name; e.value=value; e.date=date; e.category=cat;
+      e.obs=obs; e.type=formType; e.mode=formMode; e.parcelas=formParcelas;
+    }
+    showToast('Lançamento atualizado!');
+  } else {
+    const e = { id:uid(), name, value, date, category:cat, obs, type:formType, mode:formMode, parcelas:formParcelas, paid:{} };
+    data.entries.push(e);
+    showToast('Lançamento salvo!');
+  }
+  saveProfileData(state.activeProfileId, data);
+  closeModal('add-modal');
+  renderAll();
+}
+
+function saveAsFavorite() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { showToast('Informe o nome antes!'); return; }
+  const cat = document.querySelector('#cat-chips .chip.active')?.dataset.cat || 'OUTROS';
+  const obs = document.getElementById('f-obs').value.trim();
+  if (!data.favorites) data.favorites=[];
+  data.favorites.push({id:uid(), name, type:formType, category:cat, obs});
+  saveProfileData(state.activeProfileId, data);
+  showToast('Favorito salvo! ⭐');
+}
+
+// ==================== DETAIL MODAL ====================
+function openDetailModal(day) {
+  const occs = getDayOccs(curYear, curMonth, day);
+  const dd = String(day).padStart(2,'0');
+  const mm = String(curMonth+1).padStart(2,'0');
+  document.getElementById('detail-modal-title').textContent = `${dd}/${mm}/${curYear}`;
+  const body = document.getElementById('detail-modal-body');
+  
+  if (!occs.length) { body.innerHTML='<p style="color:var(--text3);text-align:center;padding:20px">Nenhum lançamento</p>'; openModal('detail-modal'); return; }
+  
+  let toPay=0, toRec=0;
+  for (const o of occs) {
+    if (!o.paid) {
+      if (o.entry.type==='pagar') toPay+=o.value;
+      else toRec+=o.value;
+    }
+  }
+  
+  const items = occs.map(o=>{
+    const parcelaStr = o.total>1 ? `Parcela ${o.parcela}/${o.total}` : 'À vista';
+    const totalEntry = o.entry.mode==='fix' ? o.value*o.entry.parcelas : o.entry.value;
+    const isPayed = o.paid;
+    const valColor = isPayed?'var(--green2)':(o.entry.type==='pagar'?'var(--red2)':'var(--indigo2)');
+    const isFirst = o.parcela===1;
+    return `<div class="detail-item">
+      <div class="detail-item-header">
+        <div>
+          <div class="detail-item-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}</div>
+          ${o.entry.obs?`<div style="font-size:11px;color:var(--text3);margin-top:2px">${o.entry.obs}</div>`:''}
+        </div>
+        <div class="detail-item-val" style="color:${valColor}">${fmt(o.value)}</div>
+      </div>
+      <div class="detail-item-sub">${parcelaStr} • Total: ${fmt(totalEntry)}</div>
+      <div class="detail-item-actions">
+        <button class="detail-toggle-btn ${isPayed?'btn-mark-pending':'btn-mark-paid'}" onclick="togglePaid('${o.entryId}',${o.parcela-1});renderDetailModal(${day})">
+          ${isPayed?'↩️ Marcar como PENDENTE':'✅ Marcar como PAGO'}
+        </button>
+        ${isFirst?`<button class="detail-edit-btn" onclick="closeModal('detail-modal');openEditModal('${o.entryId}')">✏️</button>`:''}
+        ${isFirst?`<button class="detail-del-btn" onclick="if(confirm('Excluir este lançamento e todas as parcelas?')){deleteEntry('${o.entryId}');closeModal('detail-modal');}">🗑️</button>`:'<span style="font-size:10px;color:var(--text3);align-self:center">Editar na parcela 1</span>'}
+      </div>
+    </div>`;
+  }).join('');
+  
+  body.innerHTML = items + `<div class="detail-footer">
+    <div class="detail-footer-item"><div class="detail-footer-label">A Pagar</div><div class="detail-footer-val" style="color:var(--red2)">${fmt(toPay)}</div></div>
+    <div class="detail-footer-item"><div class="detail-footer-label">A Receber</div><div class="detail-footer-val" style="color:var(--indigo2)">${fmt(toRec)}</div></div>
+  </div>`;
+  
+  openModal('detail-modal');
+}
+
+function renderDetailModal(day) {
+  openDetailModal(day);
+}
+
+// ==================== FAVORITES MODAL ====================
+function renderFavsModal() {
+  const body = document.getElementById('favs-modal-body');
+  const favs = data.favorites||[];
+  if (!favs.length) { body.innerHTML='<p style="color:var(--text3);text-align:center;padding:20px">Nenhum favorito salvo</p>'; return; }
+  body.innerHTML = favs.map(f=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:600">${CAT_EMOJIS[f.category]||'📦'} ${f.name}</div>
+      <div style="font-size:11px;color:var(--text3)">${f.type==='pagar'?'A Pagar':'A Receber'} • ${f.category}</div>
+    </div>
+    <button class="small-btn small-btn-active" onclick="useFavorite('${f.id}');closeModal('favs-modal')">Usar</button>
+    <button class="small-btn" onclick="deleteFav('${f.id}')" style="color:var(--red2)">✕</button>
+  </div>`).join('');
+}
+
+function useFavorite(id) {
+  const f = (data.favorites||[]).find(x=>x.id===id);
+  if (!f) return;
+  openAddModal(f);
+}
+
+function deleteFav(id) {
+  data.favorites = (data.favorites||[]).filter(x=>x.id!==id);
+  saveProfileData(state.activeProfileId, data);
+  renderFavsModal();
+  renderFavs();
+  showToast('Favorito removido!');
+}
+
+// ==================== PROFILES MODAL ====================
+function renderProfilesModal() {
+  const body = document.getElementById('profiles-modal-body');
+  let html = '<div id="profile-list">';
+  html += state.profiles.map(p=>{
+    const isActive = p.id===state.activeProfileId;
+    return `<div class="profile-list-item" id="pli-${p.id}">
+      <span class="profile-emoji-btn" onclick="cycleProfileEmoji('${p.id}')">${p.emoji}</span>
+      <div class="profile-item-info">
+        <div class="profile-item-name">${p.name}${isActive?' ✦':''}</div>
+        <div class="profile-item-sub">${isActive?'Perfil ativo':'Toque para acessar'}</div>
+      </div>
+      <div class="profile-item-actions">
+        ${!isActive?`<button class="small-btn small-btn-active" onclick="switchProfile('${p.id}');closeModal('profiles-modal')">Acessar</button>`:''}
+        <button class="small-btn" onclick="renameProfile('${p.id}')">✏️</button>
+        ${state.profiles.length>1?`<button class="small-btn" style="color:var(--red2)" onclick="deleteProfile('${p.id}')">🗑️</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  html += '</div>';
+  
+  // new profile section
+  html += `<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+    <div class="form-label" style="margin-bottom:8px">Criar Novo Perfil</div>
+    <div class="emoji-grid" id="new-emoji-grid">
+      ${EMOJIS.map((e,i)=>`<div class="emoji-option${i===0?' selected':''}" onclick="selectNewEmoji(this,'${e}')">${e}</div>`).join('')}
+    </div>
+    <input type="text" id="new-profile-name" class="form-input" placeholder="NOME DO PERFIL" style="margin-bottom:8px" oninput="this.value=this.value.toUpperCase()"/>
+    <button class="btn-primary" onclick="createProfile()">Criar Perfil</button>
+  </div>`;
+  
+  body.innerHTML = html;
+  window._newProfileEmoji = EMOJIS[0];
+}
+
+let _newProfileEmoji = '👤';
+function selectNewEmoji(el, emoji) {
+  document.querySelectorAll('.emoji-option').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  window._newProfileEmoji = emoji;
+}
+
+function cycleProfileEmoji(id) {
+  const p = state.profiles.find(x=>x.id===id);
+  if (!p) return;
+  const idx = EMOJIS.indexOf(p.emoji);
+  p.emoji = EMOJIS[(idx+1)%EMOJIS.length];
+  saveState();
+  renderProfilesModal();
+  renderProfileBar();
+  renderProfileChip();
+}
+
+function createProfile() {
+  const name = document.getElementById('new-profile-name').value.trim();
+  if (!name) { showToast('Informe o nome!'); return; }
+  const id = uid();
+  state.profiles.push({id, name, emoji:window._newProfileEmoji||'👤'});
+  saveState();
+  renderProfilesModal();
+  renderProfileBar();
+  showToast('Perfil criado!');
+}
+
+function renameProfile(id) {
+  const p = state.profiles.find(x=>x.id===id);
+  if (!p) return;
+  const n = prompt('Novo nome:', p.name);
+  if (n && n.trim()) {
+    p.name = n.trim().toUpperCase();
+    saveState();
+    renderProfilesModal();
+    renderProfileBar();
+    renderProfileChip();
+    showToast('Nome atualizado!');
+  }
+}
+
+function deleteProfile(id) {
+  if (!confirm('Excluir este perfil e todos seus dados?')) return;
+  state.profiles = state.profiles.filter(x=>x.id!==id);
+  if (state.activeProfileId===id) {
+    state.activeProfileId = state.profiles[0].id;
+    data = loadProfileData(state.activeProfileId);
+  }
+  localStorage.removeItem('fintracker_profile_'+id);
+  saveState();
+  renderProfilesModal();
+  renderAll();
+  showToast('Perfil excluído!');
+}
+
+// ==================== SETTINGS ====================
+function toggleStats() {
+  data.showStats = !data.showStats;
+  saveProfileData(state.activeProfileId, data);
+  updateStatsToggle();
+  renderStats();
+}
+function updateStatsToggle() {
+  const t = document.getElementById('stats-toggle');
+  t.classList.toggle('on', !!data.showStats);
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `apagar-receber-${getActiveProfile().name}-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('Dados exportados!');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      if (!confirm('Importar irá substituir todos os dados do perfil atual. Continuar?')) return;
+      data = JSON.parse(ev.target.result);
+      saveProfileData(state.activeProfileId, data);
+      renderAll();
+      showToast('Dados importados!');
+    } catch { showToast('Arquivo inválido!'); }
+  };
+  r.readAsText(file);
+  e.target.value='';
+}
+
+function clearData() {
+  if (!confirm('Limpar todos os dados do perfil atual?')) return;
+  if (!confirm('Tem certeza? Esta ação não pode ser desfeita.')) return;
+  data = { entries:[], favorites:[], showStats:data.showStats };
+  saveProfileData(state.activeProfileId, data);
+  selectedDay=null;
+  renderAll();
+  showToast('Dados apagados!');
+}
+
+// ==================== SEARCH ====================
+function toggleSearch() {
+  const bar = document.getElementById('search-bar');
+  const res = document.getElementById('search-results');
+  const cal = document.getElementById('calendar-section');
+  bar.classList.toggle('visible');
+  if (!bar.classList.contains('visible')) {
+    document.getElementById('search-input').value='';
+    res.style.display='none';
+    cal.style.display='';
+  } else {
+    document.getElementById('search-input').focus();
+  }
+}
+
+function doSearch(q) {
+  const res = document.getElementById('search-results');
+  const cal = document.getElementById('calendar-section');
+  if (!q.trim()) { res.style.display='none'; cal.style.display=''; return; }
+  cal.style.display='none';
+  const qUp = q.toUpperCase();
+  const matches = [];
+  for (const e of data.entries) {
+    if (e.name.includes(qUp) || (e.obs||'').toUpperCase().includes(qUp) || e.category.includes(qUp)) {
+      for (const o of getOccurrences(e)) {
+        matches.push({...o, entry:e});
+      }
+    }
+  }
+  if (!matches.length) { res.innerHTML='<p style="color:var(--text3);padding:12px">Nenhum resultado</p>'; res.style.display=''; return; }
+  res.style.display='';
+  res.innerHTML = `<div class="section-title" style="padding-top:10px">${matches.length} resultado(s)</div>` +
+    matches.slice(0,20).map(o=>{
+      const d = new Date(o.year,o.month,o.day);
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const parcelaStr = o.total>1?` (${o.parcela}/${o.total})`:'';
+      return `<div class="search-result-item">
+        <div class="sr-left">
+          <div class="sr-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}${parcelaStr}</div>
+          <div class="sr-sub">${o.entry.obs||''} ${o.paid?'✅ PAGO':''}</div>
+        </div>
+        <div class="sr-right">
+          <div class="sr-val" style="color:${o.paid?'var(--green2)':(o.entry.type==='pagar'?'var(--red2)':'var(--indigo2)')}">${fmt(o.value)}</div>
+          <div class="sr-date">${dd}/${mm}/${o.year}</div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+// ==================== MONTH NAV ====================
+function changeMonth(dir) {
+  curMonth += dir;
+  if (curMonth>11) { curMonth=0; curYear++; }
+  if (curMonth<0) { curMonth=11; curYear--; }
+  selectedDay=null;
+  renderAll();
+}
+
+// ==================== TOAST ====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+// ==================== UTIL ====================
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+// ==================== PWA ====================
+function setupPWA() {
+  const manifest = {
+    name:'A Pagar & Receber',short_name:'Financeiro',
+    start_url:'.',display:'standalone',
+    background_color:'#0a0d14',theme_color:'#6366f1',
+    orientation:'portrait',
+    icons:[128,192,512].map(s=>({
+      src:`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='${s}' height='${s}'><rect width='${s}' height='${s}' rx='${s*.2}' fill='%236366f1'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-size='${s*.5}'>💸</text></svg>`,
+      sizes:`${s}x${s}`,type:'image/svg+xml'
+    }))
+  };
+  const ml = document.createElement('link');
+  ml.rel='manifest';
+  ml.href='data:application/json,'+encodeURIComponent(JSON.stringify(manifest));
+  document.head.appendChild(ml);
+  
+  // SW
+  if ('serviceWorker' in navigator) {
+    const sw = `self.addEventListener('install',e=>e.waitUntil(caches.open('v1').then(c=>c.add('/'))));
+self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+    const blob = new Blob([sw],{type:'application/javascript'});
+    navigator.serviceWorker.register(URL.createObjectURL(blob));
+  }
+  
+  // Install banner
+  window.addEventListener('beforeinstallprompt', e=>{
+    e.preventDefault();
+    const banner = document.createElement('div');
+    banner.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--indigo);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;z-index:999;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,.6)';
+    banner.textContent='📲 Instalar como app';
+    banner.onclick=()=>{ e.prompt(); banner.remove(); };
+    document.body.appendChild(banner);
+    setTimeout(()=>banner.remove(), 8000);
+  });
+}
+
+// ==================== INIT ====================
+loadState();
+data = loadProfileData(state.activeProfileId);
+setupPWA();
+renderAll();
+</script>
+</body>
+</html>
