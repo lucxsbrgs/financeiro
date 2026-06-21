@@ -25,7 +25,7 @@ body{display:flex;flex-direction:column;align-items:center}
 #app{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden}
 
 /* HEADER */
-#header{background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;z-index:50;position:sticky;top:0}
+#header{background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;z-index:50}
 .header-title{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px}
 .app-name{font-size:16px;font-weight:700;letter-spacing:-.3px}
 .app-name span{color:var(--indigo)}
@@ -66,8 +66,8 @@ body{display:flex;flex-direction:column;align-items:center}
 .month-nav-btn:active{opacity:.7}
 .month-label{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 
-/* SCROLLABLE CONTENT */
-#content{flex:1;overflow-y:auto;padding-bottom:100px}
+/* SCROLLABLE */
+#content{flex:1;overflow-y:auto;padding-bottom:110px}
 #content::-webkit-scrollbar{display:none}
 
 /* CALENDAR */
@@ -106,6 +106,47 @@ body{display:flex;flex-direction:column;align-items:center}
 .badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;letter-spacing:.4px}
 .badge-pagar{background:var(--red-bg);color:var(--red2)}
 .badge-receber{background:var(--indigo-bg);color:var(--indigo2)}
+.badge-pago{background:var(--green-bg);color:var(--green2)}
+
+/* MONTH ENTRIES LIST */
+.month-list-wrap{padding:4px 14px 0}
+.month-list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.month-list-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text3)}
+.month-list-count{font-size:11px;color:var(--text3)}
+
+/* ENTRY CARD — lista do mês */
+.entry-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .2s}
+.entry-card.paid{border-color:rgba(34,197,94,.3)}
+.entry-card-main{display:flex;align-items:center;gap:10px;padding:11px 12px}
+.entry-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
+.entry-avatar-pagar{background:var(--red-bg);color:var(--red2)}
+.entry-avatar-receber{background:var(--indigo-bg);color:var(--indigo2)}
+.entry-avatar-paid{background:var(--green-bg);color:var(--green2)}
+.entry-info{flex:1;min-width:0}
+.entry-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entry-sub{font-size:11px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entry-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.entry-val{font-size:15px;font-weight:800}
+.entry-val-pagar{color:var(--red2)}
+.entry-val-receber{color:var(--indigo2)}
+.entry-val-paid{color:var(--green2)}
+
+/* ENTRY ACTIONS BAR */
+.entry-actions{display:flex;border-top:1px solid var(--border);overflow:hidden}
+.entry-action-btn{flex:1;padding:9px 4px;font-size:12px;font-weight:600;border:none;background:transparent;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:4px;transition:background .15s}
+.entry-action-btn:active{opacity:.7}
+.entry-action-btn + .entry-action-btn{border-left:1px solid var(--border)}
+.btn-pay-action{color:var(--green2)}
+.btn-pay-action.is-paid{color:var(--text3)}
+.btn-edit-action{color:var(--indigo2)}
+.btn-del-action{color:var(--red2)}
+
+/* DAY PANEL */
+#day-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin:10px 14px 0;overflow:hidden}
+.day-panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)}
+.day-panel-title{font-size:13px;font-weight:700}
+.add-day-btn{background:var(--indigo);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.empty-day{padding:20px;text-align:center;color:var(--text3);font-size:13px}
 
 /* STATS */
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px}
@@ -121,31 +162,8 @@ body{display:flex;flex-direction:column;align-items:center}
 .fav-chip:active{opacity:.7;border-color:var(--indigo)}
 .fav-manage-btn{background:transparent;border:1px solid var(--border2);border-radius:20px;padding:7px 12px;color:var(--text3);font-size:12px;cursor:pointer;flex-shrink:0}
 
-/* DAY PANEL */
-#day-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin:10px 14px 0;overflow:hidden}
-.day-panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)}
-.day-panel-title{font-size:13px;font-weight:700}
-.add-day-btn{background:var(--indigo);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
-.add-day-btn:active{opacity:.7}
-.day-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
-.day-item:last-child{border-bottom:none}
-.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
-.avatar-pagar{background:var(--red-bg);color:var(--red2)}
-.avatar-receber{background:var(--indigo-bg);color:var(--indigo2)}
-.day-item-info{flex:1;min-width:0}
-.day-item-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.day-item-sub{font-size:11px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.day-item-right{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
-.day-item-val{font-size:14px;font-weight:700}
-.val-pagar{color:var(--red2)}
-.val-receber{color:var(--indigo2)}
-.val-paid{color:var(--green2)}
-.toggle-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:2px;line-height:1}
-.toggle-btn:active{opacity:.6}
-.empty-day{padding:20px;text-align:center;color:var(--text3);font-size:13px}
-
-/* BOTTOM PROFILE BAR */
-#profile-bar{position:absolute;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;z-index:60;flex-shrink:0}
+/* BOTTOM BAR */
+#profile-bar{position:absolute;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;z-index:60}
 #profile-bar::-webkit-scrollbar{display:none}
 .profile-tab{display:flex;flex-direction:column;align-items:center;padding:8px 14px 10px;cursor:pointer;min-width:70px;position:relative;flex-shrink:0}
 .profile-tab.active .ptab-name{color:var(--indigo2)}
@@ -159,35 +177,34 @@ body{display:flex;flex-direction:column;align-items:center}
 .new-profile-btn .ptab-name{font-size:10px;font-weight:600;margin-top:2px}
 
 /* FAB */
-#fab{position:absolute;bottom:70px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--indigo);color:#fff;font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:65;box-shadow:0 4px 20px rgba(99,102,241,.5);transition:transform .15s}
+#fab{position:absolute;bottom:68px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--indigo);color:#fff;font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:65;box-shadow:0 4px 20px rgba(99,102,241,.5);transition:transform .15s}
 #fab:active{transform:scale(.92)}
 
 /* MODALS */
-.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:80;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:80;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-overlay.visible{opacity:1;pointer-events:all}
-.modal-sheet{background:var(--card);border-radius:20px 20px 0 0;max-height:90%;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,0,.15,1)}
+.modal-sheet{background:var(--card);border-radius:20px 20px 0 0;max-height:92%;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,0,.15,1)}
 .modal-sheet::-webkit-scrollbar{display:none}
 .modal-overlay.visible .modal-sheet{transform:translateY(0)}
 .modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:10px auto 0}
 .modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px}
 .modal-title{font-size:16px;font-weight:700}
 .modal-close{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:7px;padding:5px 10px;font-size:13px;cursor:pointer}
-.modal-body{padding:0 18px 24px}
+.modal-body{padding:0 18px 28px}
 
 /* FORM */
 .form-row{margin-bottom:14px}
 .form-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:block}
 .type-btns,.mode-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .type-btn,.mode-btn{padding:10px;border-radius:var(--radius2);border:1.5px solid var(--border);background:var(--card2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
-.type-btn.active-pagar,.type-btn.active-pagar:hover{background:var(--red-bg);border-color:var(--red);color:var(--red2)}
-.type-btn.active-receber,.type-btn.active-receber:hover{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
+.type-btn.active-pagar{background:var(--red-bg);border-color:var(--red);color:var(--red2)}
+.type-btn.active-receber{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
 .mode-btn.active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
 .form-input{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--radius2);padding:10px 12px;color:var(--text);font-size:14px;outline:none;font-family:inherit}
 .form-input:focus{border-color:var(--indigo)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{background:var(--card2);border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;transition:all .15s}
 .chip.active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
-.chip:active{opacity:.7}
 .parcela-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .parcela-chip{background:var(--card2);border:1.5px solid var(--border);border-radius:20px;padding:6px 10px;font-size:12px;cursor:pointer;transition:all .15s}
 .parcela-chip.active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
@@ -204,24 +221,16 @@ body{display:flex;flex-direction:column;align-items:center}
 .btn-primary{background:var(--indigo);border:none;color:#fff;border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
 .btn-secondary{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
 
-/* DETAIL MODAL ITEMS */
-.detail-item{background:var(--card2);border-radius:var(--radius2);padding:12px;margin-bottom:10px;border:1px solid var(--border)}
-.detail-item-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.detail-item-name{font-size:14px;font-weight:700}
-.detail-item-val{font-size:16px;font-weight:800}
-.detail-item-sub{font-size:11px;color:var(--text3);margin-bottom:8px}
-.detail-item-actions{display:flex;gap:8px;flex-wrap:wrap}
-.detail-toggle-btn{flex:1;border:none;border-radius:var(--radius2);padding:8px 10px;font-size:12px;font-weight:600;cursor:pointer}
-.btn-mark-paid{background:var(--green-bg);color:var(--green2)}
-.btn-mark-pending{background:rgba(148,163,184,.1);color:var(--text2)}
-.detail-edit-btn,.detail-del-btn{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:8px 12px;font-size:12px;cursor:pointer;color:var(--text2)}
-.detail-del-btn{color:var(--red2);border-color:rgba(239,68,68,.3)}
-.detail-footer{background:var(--card2);border-radius:var(--radius2);padding:10px 12px;margin-top:4px;display:flex;justify-content:space-around;font-size:12px}
-.detail-footer-item{text-align:center}
-.detail-footer-label{color:var(--text3);margin-bottom:2px}
-.detail-footer-val{font-weight:700}
+/* PAID STATUS TOGGLE in form */
+.paid-toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--radius2);padding:11px 14px}
+.paid-toggle-label{font-size:13px;font-weight:600}
+.paid-toggle-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.toggle-switch{width:46px;height:26px;background:var(--border2);border-radius:13px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle-switch.on{background:var(--green)}
+.toggle-knob{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.toggle-switch.on .toggle-knob{left:23px}
 
-/* PROFILES MODAL */
+/* PROFILES */
 .profile-list-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .profile-list-item:last-child{border-bottom:none}
 .profile-emoji-btn{font-size:24px;cursor:pointer;padding:4px;border-radius:8px;background:var(--card2);border:1px solid var(--border)}
@@ -240,27 +249,24 @@ body{display:flex;flex-direction:column;align-items:center}
 .setting-row:last-child{border-bottom:none}
 .setting-label{font-size:14px;font-weight:500}
 .setting-sub{font-size:11px;color:var(--text3);margin-top:2px}
-.toggle-switch{width:42px;height:24px;background:var(--border2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
-.toggle-switch.on{background:var(--indigo)}
-.toggle-knob{width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s}
-.toggle-switch.on .toggle-knob{left:21px}
-
-/* TOAST */
-#toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#22c55e;color:#fff;padding:9px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;max-width:90%}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* SEARCH RESULTS */
 #search-results{padding:0 14px}
-.search-result-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-.sr-left{}
+.sr-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
 .sr-name{font-size:13px;font-weight:600}
 .sr-sub{font-size:11px;color:var(--text3)}
-.sr-right{text-align:right}
-.sr-val{font-size:14px;font-weight:700}
-.sr-date{font-size:11px;color:var(--text3)}
+.sr-val{font-size:14px;font-weight:700;text-align:right}
+.sr-date{font-size:11px;color:var(--text3);text-align:right}
 
-/* SECTION HIDDEN */
-.section-hidden{display:none!important}
+/* TOAST */
+#toast{position:absolute;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:#22c55e;color:#fff;padding:9px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;max-width:90%}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* EMPTY STATE */
+.empty-month{padding:32px 20px;text-align:center}
+.empty-month-icon{font-size:40px;margin-bottom:10px}
+.empty-month-text{font-size:14px;color:var(--text3);margin-bottom:4px}
+.empty-month-sub{font-size:12px;color:var(--text3)}
 </style>
 </head>
 <body>
@@ -279,7 +285,7 @@ body{display:flex;flex-direction:column;align-items:center}
       </div>
     </div>
     <div id="search-bar">
-      <input type="text" id="search-input" class="form-input" placeholder="Buscar nome, observação..." oninput="doSearch(this.value)"/>
+      <input type="text" id="search-input" class="form-input" placeholder="Buscar nome, categoria..." oninput="doSearch(this.value)"/>
     </div>
     <div class="dashboard">
       <div class="dash-card dash-pagar">
@@ -313,50 +319,58 @@ body{display:flex;flex-direction:column;align-items:center}
     </div>
   </div>
 
-  <!-- SCROLLABLE CONTENT -->
+  <!-- CONTENT -->
   <div id="content">
-    <!-- Search results -->
     <div id="search-results" style="display:none"></div>
 
-    <!-- Calendar -->
-    <div id="calendar-section">
-      <div class="cal-grid" id="cal-header"></div>
-      <div class="cal-grid" id="cal-body" style="margin-top:2px"></div>
-      <div class="cal-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>A Pagar</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--indigo)"></div>A Receber</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Quitado</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Vence em 3 dias</div>
+    <div id="main-content">
+      <!-- Calendar -->
+      <div id="calendar-section">
+        <div class="cal-grid" id="cal-header"></div>
+        <div class="cal-grid" id="cal-body" style="margin-top:2px"></div>
+        <div class="cal-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>A Pagar</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--indigo)"></div>A Receber</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Quitado</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Vence em 3 dias</div>
+        </div>
       </div>
-    </div>
 
-    <!-- Upcoming -->
-    <div class="section" id="upcoming-section" style="display:none">
-      <div class="section-title">📅 Próximos Vencimentos</div>
-      <div id="upcoming-list"></div>
-    </div>
-
-    <!-- Stats -->
-    <div class="section" id="stats-section" style="display:none">
-      <div class="section-title">📊 Estatísticas</div>
-      <div class="stats-grid" id="stats-grid"></div>
-    </div>
-
-    <!-- Favorites -->
-    <div class="section" id="favs-section">
-      <div class="section-title">⭐ Favoritos</div>
-      <div class="favs-scroll" id="favs-list">
-        <button class="fav-manage-btn" onclick="openModal('favs-modal')">⭐ Gerenciar</button>
+      <!-- Upcoming -->
+      <div class="section" id="upcoming-section" style="display:none">
+        <div class="section-title">📅 Próximos Vencimentos (7 dias)</div>
+        <div id="upcoming-list"></div>
       </div>
-    </div>
 
-    <!-- Day panel -->
-    <div id="day-panel" style="display:none">
-      <div class="day-panel-header">
-        <span class="day-panel-title" id="day-panel-title">Dia X</span>
-        <button class="add-day-btn" onclick="openAddForDay()">+ Adicionar</button>
+      <!-- Stats -->
+      <div class="section" id="stats-section" style="display:none">
+        <div class="section-title">📊 Estatísticas</div>
+        <div class="stats-grid" id="stats-grid"></div>
       </div>
-      <div id="day-panel-items"></div>
+
+      <!-- Favorites -->
+      <div class="section" id="favs-section">
+        <div class="section-title">⭐ Favoritos</div>
+        <div class="favs-scroll" id="favs-list"></div>
+      </div>
+
+      <!-- Day panel -->
+      <div id="day-panel" style="display:none">
+        <div class="day-panel-header">
+          <span class="day-panel-title" id="day-panel-title">Dia</span>
+          <button class="add-day-btn" onclick="openAddForDay()">+ Adicionar</button>
+        </div>
+        <div id="day-panel-items"></div>
+      </div>
+
+      <!-- Month entries list -->
+      <div class="month-list-wrap" id="month-list-wrap">
+        <div class="month-list-header">
+          <span class="month-list-title" id="month-list-title">Lançamentos do Mês</span>
+          <span class="month-list-count" id="month-list-count"></span>
+        </div>
+        <div id="month-entries-list"></div>
+      </div>
     </div>
   </div>
 
@@ -369,7 +383,7 @@ body{display:flex;flex-direction:column;align-items:center}
   <!-- TOAST -->
   <div id="toast"></div>
 
-  <!-- ADD/EDIT MODAL -->
+  <!-- ===== ADD/EDIT MODAL ===== -->
   <div class="modal-overlay" id="add-modal" onclick="handleOverlayClick(event,'add-modal')">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
@@ -390,7 +404,7 @@ body{display:flex;flex-direction:column;align-items:center}
           <input type="text" id="f-name" class="form-input" placeholder="Ex: ALUGUEL" oninput="this.value=this.value.toUpperCase()"/>
         </div>
         <div class="form-row">
-          <label class="form-label">Valor Total (R$)</label>
+          <label class="form-label">Valor (R$)</label>
           <input type="number" id="f-value" class="form-input" placeholder="0,00" step="0.01" min="0" oninput="updatePreview()"/>
         </div>
         <div class="form-row">
@@ -436,24 +450,25 @@ body{display:flex;flex-direction:column;align-items:center}
           <label class="form-label">Observação (opcional)</label>
           <input type="text" id="f-obs" class="form-input" placeholder="Ex: FATURA JULHO" oninput="this.value=this.value.toUpperCase()"/>
         </div>
+        <!-- STATUS DE PAGAMENTO -->
+        <div class="form-row">
+          <span class="form-label">Status de Pagamento</span>
+          <div class="paid-toggle-row" onclick="toggleFormPaid()">
+            <div>
+              <div class="paid-toggle-label" id="paid-toggle-label">⏳ Pendente</div>
+              <div class="paid-toggle-sub">Toque para alterar</div>
+            </div>
+            <div class="toggle-switch" id="paid-toggle-sw">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+        </div>
         <div class="form-actions">
           <button class="btn-fav" onclick="saveAsFavorite()" title="Salvar como favorito">⭐</button>
           <button class="btn-cancel" onclick="closeModal('add-modal')">Cancelar</button>
           <button class="btn-save" onclick="saveEntry()">Salvar</button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- DETAIL MODAL -->
-  <div class="modal-overlay" id="detail-modal" onclick="handleOverlayClick(event,'detail-modal')">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-header">
-        <span class="modal-title" id="detail-modal-title">Detalhes do Dia</span>
-        <button class="modal-close" onclick="closeModal('detail-modal')">Fechar</button>
-      </div>
-      <div class="modal-body" id="detail-modal-body"></div>
     </div>
   </div>
 
@@ -511,16 +526,14 @@ body{display:flex;flex-direction:column;align-items:center}
 </div>
 
 <script>
-// ==================== STATE ====================
+// ===================== CONSTANTS =====================
 const EMOJIS = ['👤','😊','🦁','🐺','🦊','🐻','🐼','🐨','🦋','🌟','🔥','💎','🚀','🎯','🎸'];
 const CAT_EMOJIS = {CASA:'🏠',VEICULO:'🚗',CARTAO:'💳',ALIMENTACAO:'🍔',LAZER:'🎮',SAUDE:'🏥',TRABALHO:'💼',OUTROS:'📦'};
 const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-let state = {
-  profiles: [{id:'main',name:'PRINCIPAL',emoji:'👤'}],
-  activeProfileId: 'main',
-};
-let data = { entries: [], favorites: [], showStats: false };
+// ===================== STATE =====================
+let state = { profiles:[{id:'main',name:'PRINCIPAL',emoji:'👤'}], activeProfileId:'main' };
+let data = { entries:[], favorites:[], showStats:false };
 let curYear = new Date().getFullYear();
 let curMonth = new Date().getMonth();
 let selectedDay = null;
@@ -528,37 +541,32 @@ let editingId = null;
 let formType = 'pagar';
 let formMode = 'div';
 let formParcelas = 1;
+let formPaid = false;
 let lastTapDay = null;
 let lastTapTime = 0;
 
-// ==================== STORAGE ====================
+// ===================== STORAGE =====================
 function loadState() {
   try {
     const s = localStorage.getItem('fintracker_profiles');
     if (s) state = JSON.parse(s);
-    // migrate v1
     const old = localStorage.getItem('fintracker_data');
     if (old && !localStorage.getItem('fintracker_migrated')) {
-      const od = JSON.parse(old);
-      localStorage.setItem('fintracker_profile_main', JSON.stringify(od));
+      localStorage.setItem('fintracker_profile_main', old);
       localStorage.setItem('fintracker_migrated','1');
     }
   } catch(e){}
 }
-function saveState() {
-  localStorage.setItem('fintracker_profiles', JSON.stringify(state));
-}
+function saveState() { localStorage.setItem('fintracker_profiles', JSON.stringify(state)); }
 function loadProfileData(id) {
   try {
     const d = localStorage.getItem('fintracker_profile_'+id);
     return d ? JSON.parse(d) : { entries:[], favorites:[], showStats:false };
-  } catch(e){ return { entries:[], favorites:[], showStats:false }; }
+  } catch(e) { return { entries:[], favorites:[], showStats:false }; }
 }
-function saveProfileData(id, d) {
-  localStorage.setItem('fintracker_profile_'+id, JSON.stringify(d));
-}
+function saveProfileData(id, d) { localStorage.setItem('fintracker_profile_'+id, JSON.stringify(d)); }
 
-// ==================== PROFILES ====================
+// ===================== PROFILES =====================
 function switchProfile(id) {
   saveProfileData(state.activeProfileId, data);
   state.activeProfileId = id;
@@ -572,23 +580,27 @@ function getActiveProfile() {
   return state.profiles.find(p=>p.id===state.activeProfileId) || state.profiles[0];
 }
 
-// ==================== ENTRIES ====================
+// ===================== OCCURRENCES =====================
 function getOccurrences(entry) {
-  // returns all occurrences as {year, month, day, parcela, total, entryId, paid}
   const occs = [];
   const base = new Date(entry.date+'T00:00:00');
-  for (let i=0;i<entry.parcelas;i++) {
+  for (let i=0; i<entry.parcelas; i++) {
     const d = new Date(base.getFullYear(), base.getMonth()+i, base.getDate());
-    const key = `${entry.id}_${i}`;
     occs.push({
-      key, entryId:entry.id, parcela:i+1, total:entry.parcelas,
-      year:d.getFullYear(), month:d.getMonth(), day:d.getDate(),
+      key: entry.id+'_'+i,
+      entryId: entry.id,
+      parcela: i+1,
+      total: entry.parcelas,
+      year: d.getFullYear(),
+      month: d.getMonth(),
+      day: d.getDate(),
       paid: !!(entry.paid && entry.paid[i]),
       value: entry.mode==='div' ? entry.value/entry.parcelas : entry.value
     });
   }
   return occs;
 }
+
 function getMonthOccs(year, month) {
   const all = [];
   for (const e of data.entries) {
@@ -598,17 +610,23 @@ function getMonthOccs(year, month) {
   }
   return all;
 }
+
 function getDayOccs(year, month, day) {
   return getMonthOccs(year, month).filter(o=>o.day===day);
 }
+
+// ===================== TOGGLE PAID =====================
 function togglePaid(entryId, parcelaIdx) {
   const e = data.entries.find(x=>x.id===entryId);
   if (!e) return;
   if (!e.paid) e.paid = {};
   e.paid[parcelaIdx] = !e.paid[parcelaIdx];
   saveProfileData(state.activeProfileId, data);
+  const was = !e.paid[parcelaIdx];
+  showToast(e.paid[parcelaIdx] ? (e.type==='pagar'?'✅ Marcado como PAGO!':'✅ Marcado como RECEBIDO!') : '↩️ Voltou para PENDENTE');
   renderAll();
 }
+
 function deleteEntry(entryId) {
   data.entries = data.entries.filter(x=>x.id!==entryId);
   saveProfileData(state.activeProfileId, data);
@@ -616,7 +634,7 @@ function deleteEntry(entryId) {
   showToast('Lançamento excluído!');
 }
 
-// ==================== DASHBOARD ====================
+// ===================== CALC =====================
 function calcDashboard() {
   const occs = getMonthOccs(curYear, curMonth);
   let toPay=0, toRec=0, paid=0, total=0;
@@ -628,17 +646,18 @@ function calcDashboard() {
       else toRec += o.value;
     }
   }
-  return {toPay, toRec, saldo:toRec-toPay, paid, total, count:occs.length, paidCount:occs.filter(o=>o.paid).length};
+  return {toPay, toRec, saldo:toRec-toPay, paid, total};
 }
+
 function fmt(v) {
   return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 function fmtShort(v) {
-  if (Math.abs(v)>=1000) return 'R$ '+Math.round(v/100)/10+'k';
+  if (Math.abs(v)>=1000) return 'R$'+(v/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'k';
   return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
 }
 
-// ==================== RENDER ====================
+// ===================== RENDER ALL =====================
 function renderAll() {
   renderHeader();
   renderCalendar();
@@ -646,11 +665,13 @@ function renderAll() {
   renderStats();
   renderFavs();
   renderDayPanel();
+  renderMonthList();
   renderProfileBar();
   renderProfileChip();
   updateStatsToggle();
 }
 
+// ===================== HEADER =====================
 function renderHeader() {
   const d = calcDashboard();
   document.getElementById('d-pagar').textContent = fmtShort(d.toPay);
@@ -666,103 +687,92 @@ function renderHeader() {
   document.getElementById('prog-total').textContent = 'Total: '+fmt(d.total);
 }
 
+// ===================== CALENDAR =====================
 function renderCalendar() {
   const hdr = document.getElementById('cal-header');
   hdr.innerHTML = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'].map(d=>`<div class="cal-header-day">${d}</div>`).join('');
-  
   const body = document.getElementById('cal-body');
   const today = new Date();
   const firstDay = new Date(curYear, curMonth, 1).getDay();
   const daysInMonth = new Date(curYear, curMonth+1, 0).getDate();
   const occs = getMonthOccs(curYear, curMonth);
-  
-  // Group by day
   const dayMap = {};
   for (const o of occs) {
-    if (!dayMap[o.day]) dayMap[o.day] = [];
+    if (!dayMap[o.day]) dayMap[o.day]=[];
     dayMap[o.day].push(o);
   }
-  
   let cells = '';
-  // empty cells
-  for (let i=0;i<firstDay;i++) cells += '<div class="cal-cell empty"></div>';
-  
+  for (let i=0;i<firstDay;i++) cells+='<div class="cal-cell empty"></div>';
   for (let d=1;d<=daysInMonth;d++) {
     const isToday = today.getFullYear()===curYear && today.getMonth()===curMonth && today.getDate()===d;
     const isSel = selectedDay===d;
-    const dayOccs = dayMap[d] || [];
-    const hasPagar = dayOccs.some(o=>!o.paid && o.entry.type==='pagar');
-    const hasReceber = dayOccs.some(o=>!o.paid && o.entry.type==='receber');
+    const dayOccs = dayMap[d]||[];
+    const hasPagar = dayOccs.some(o=>!o.paid&&o.entry.type==='pagar');
+    const hasReceber = dayOccs.some(o=>!o.paid&&o.entry.type==='receber');
     const allPaid = dayOccs.length>0 && dayOccs.every(o=>o.paid);
-    const daysToToday = (new Date(curYear,curMonth,d) - today) / 86400000;
+    const daysToToday = (new Date(curYear,curMonth,d)-today)/86400000;
     const dueSoon = !allPaid && dayOccs.length>0 && daysToToday>=0 && daysToToday<=3;
-    
-    let cls = 'cal-cell';
-    if (allPaid) cls += ' all-paid';
-    else if (hasPagar) cls += ' has-pagar';
-    else if (hasReceber) cls += ' has-receber';
-    if (dueSoon) cls += ' due-soon';
-    if (isToday) cls += ' today';
-    if (isSel) cls += ' selected';
-    
-    // dots
-    let dots = '';
-    if (hasPagar) dots += '<div class="cal-dot cal-dot-red"></div>';
-    if (hasReceber) dots += '<div class="cal-dot cal-dot-indigo"></div>';
-    if (allPaid) dots += '<div class="cal-dot cal-dot-green"></div>';
-    
-    cells += `<div class="${cls}" onclick="handleDayClick(${d})" data-day="${d}">
+    let cls='cal-cell';
+    if (allPaid) cls+=' all-paid';
+    else if (hasPagar) cls+=' has-pagar';
+    else if (hasReceber) cls+=' has-receber';
+    if (dueSoon) cls+=' due-soon';
+    if (isToday) cls+=' today';
+    if (isSel) cls+=' selected';
+    let dots='';
+    if (hasPagar) dots+='<div class="cal-dot cal-dot-red"></div>';
+    if (hasReceber) dots+='<div class="cal-dot cal-dot-indigo"></div>';
+    if (allPaid) dots+='<div class="cal-dot cal-dot-green"></div>';
+    cells+=`<div class="${cls}" onclick="handleDayClick(${d})">
       <div class="cal-day-num">${d}</div>
       ${dots?`<div class="cal-dots">${dots}</div>`:''}
     </div>`;
   }
-  body.innerHTML = cells;
+  body.innerHTML=cells;
 }
 
 function handleDayClick(d) {
   const now = Date.now();
-  if (lastTapDay===d && now-lastTapTime<500) {
-    // double tap — open detail modal
-    openDetailModal(d);
+  if (lastTapDay===d && now-lastTapTime<450) {
+    selectedDay=d;
+    renderCalendar();
+    renderDayPanel();
     lastTapDay=null;
   } else {
-    lastTapDay=d;
-    lastTapTime=now;
-    selectedDay = (selectedDay===d) ? null : d;
+    lastTapDay=d; lastTapTime=now;
+    selectedDay=(selectedDay===d)?null:d;
     renderCalendar();
     renderDayPanel();
     if (selectedDay) {
-      document.getElementById('day-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+      setTimeout(()=>document.getElementById('day-panel').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
     }
   }
 }
 
+// ===================== UPCOMING =====================
 function renderUpcoming() {
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  const today = new Date(); today.setHours(0,0,0,0);
   const in7 = new Date(today.getTime()+7*86400000);
-  const results = [];
+  const results=[];
   for (const e of data.entries) {
     for (const o of getOccurrences(e)) {
       if (o.paid) continue;
-      const od = new Date(o.year, o.month, o.day);
-      if (od>=today && od<=in7) results.push({...o, entry:e, dateObj:od});
+      const od = new Date(o.year,o.month,o.day);
+      if (od>=today && od<=in7) results.push({...o,entry:e,dateObj:od});
     }
   }
   results.sort((a,b)=>a.dateObj-b.dateObj);
-  const sec = document.getElementById('upcoming-section');
-  if (!results.length) { sec.style.display='none'; return; }
+  const sec=document.getElementById('upcoming-section');
+  if (!results.length){sec.style.display='none';return;}
   sec.style.display='';
-  const list = document.getElementById('upcoming-list');
-  list.innerHTML = results.slice(0,5).map(o=>{
-    const dd = String(o.day).padStart(2,'0');
-    const mm = String(o.month+1).padStart(2,'0');
-    const catEmoji = CAT_EMOJIS[o.entry.category]||'📦';
-    const parcelaStr = o.total>1 ? ` (${o.parcela}/${o.total})` : '';
+  document.getElementById('upcoming-list').innerHTML=results.slice(0,5).map(o=>{
+    const dd=String(o.day).padStart(2,'0');
+    const mm=String(o.month+1).padStart(2,'0');
+    const ps=o.total>1?` (${o.parcela}/${o.total})`:'';
     return `<div class="upcoming-item">
       <div class="upcoming-date">${dd}/${mm}</div>
       <div class="upcoming-info">
-        <div class="upcoming-name">${catEmoji} ${o.entry.name}${parcelaStr}</div>
+        <div class="upcoming-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}${ps}</div>
         ${o.entry.obs?`<div class="upcoming-sub">${o.entry.obs}</div>`:''}
       </div>
       <div class="upcoming-right">
@@ -773,175 +783,219 @@ function renderUpcoming() {
   }).join('');
 }
 
+// ===================== STATS =====================
 function renderStats() {
-  const sec = document.getElementById('stats-section');
-  if (!data.showStats) { sec.style.display='none'; return; }
+  const sec=document.getElementById('stats-section');
+  if (!data.showStats){sec.style.display='none';return;}
   sec.style.display='';
-  const d = calcDashboard();
-  const today = new Date();
-  const daysLeft = new Date(curYear, curMonth+1, 0).getDate() - today.getDate();
-  const paidPct = d.total>0 ? Math.round(d.paid/d.total*100) : 0;
-  const sg = document.getElementById('stats-grid');
-  sg.innerHTML = `
-    <div class="stat-card"><div class="stat-label">A Pagar</div><div class="stat-val" style="color:var(--red2)">${fmt(d.toPay)}</div><div class="stat-sub">${paidPct}% quitado</div></div>
+  const d=calcDashboard();
+  const today=new Date();
+  const daysLeft=new Date(curYear,curMonth+1,0).getDate()-today.getDate();
+  const pct=d.total>0?Math.round(d.paid/d.total*100):0;
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat-card"><div class="stat-label">A Pagar</div><div class="stat-val" style="color:var(--red2)">${fmt(d.toPay)}</div><div class="stat-sub">${pct}% quitado</div></div>
     <div class="stat-card"><div class="stat-label">A Receber</div><div class="stat-val" style="color:var(--indigo2)">${fmt(d.toRec)}</div><div class="stat-sub">Recebido: ${fmt(d.paid)}</div></div>
     <div class="stat-card"><div class="stat-label">Fluxo</div><div class="stat-val" style="color:${d.saldo>=0?'var(--green2)':'var(--red2)'}">${fmt(d.saldo)}</div><div class="stat-sub">${d.saldo>=0?'Positivo':'Negativo'}</div></div>
-    <div class="stat-card"><div class="stat-label">Dias Restantes</div><div class="stat-val" style="color:var(--text)">${daysLeft}</div><div class="stat-sub">no mês</div></div>
-  `;
+    <div class="stat-card"><div class="stat-label">Dias Restantes</div><div class="stat-val">${daysLeft}</div><div class="stat-sub">no mês</div></div>`;
 }
 
+// ===================== FAVORITES =====================
 function renderFavs() {
-  const list = document.getElementById('favs-list');
-  const favBtns = (data.favorites||[]).map(f=>`<div class="fav-chip" onclick="useFavorite('${f.id}')">${CAT_EMOJIS[f.category]||'📦'} ${f.name}</div>`).join('');
-  list.innerHTML = favBtns + `<button class="fav-manage-btn" onclick="openModal('favs-modal')">⭐ Gerenciar</button>`;
+  const favs=data.favorites||[];
+  const chips=favs.map(f=>`<div class="fav-chip" onclick="useFavorite('${f.id}')">${CAT_EMOJIS[f.category]||'📦'} ${f.name}</div>`).join('');
+  document.getElementById('favs-list').innerHTML=chips+`<button class="fav-manage-btn" onclick="openModal('favs-modal')">⭐ Gerenciar</button>`;
 }
 
+// ===================== DAY PANEL =====================
 function renderDayPanel() {
-  const panel = document.getElementById('day-panel');
-  if (!selectedDay) { panel.style.display='none'; return; }
+  const panel=document.getElementById('day-panel');
+  if (!selectedDay){panel.style.display='none';return;}
   panel.style.display='';
-  const dd = String(selectedDay).padStart(2,'0');
-  const mm = String(curMonth+1).padStart(2,'0');
-  document.getElementById('day-panel-title').textContent = `${dd}/${mm}/${curYear}`;
-  const occs = getDayOccs(curYear, curMonth, selectedDay);
-  const items = document.getElementById('day-panel-items');
-  if (!occs.length) { items.innerHTML='<div class="empty-day">Nenhum lançamento neste dia</div>'; return; }
-  items.innerHTML = occs.map(o=>{
-    const parcelaStr = o.total>1 ? ` • ${o.parcela}/${o.total}` : '';
-    const obsStr = o.entry.obs ? ` • ${o.entry.obs}` : '';
-    const valColor = o.paid?'val-paid':(o.entry.type==='pagar'?'val-pagar':'val-receber');
-    const badge = o.paid?(o.entry.type==='pagar'?'PAGO':'RECEBIDO'):'PENDENTE';
-    const badgeCls = o.paid?'badge' + (o.entry.type==='pagar'?' badge-pago':' badge-recebido'):'badge badge-pendente';
-    const initial = (o.entry.name||'?')[0];
-    return `<div class="day-item">
-      <div class="avatar avatar-${o.entry.type}">${initial}</div>
-      <div class="day-item-info">
-        <div class="day-item-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}</div>
-        <div class="day-item-sub">${parcelaStr}${obsStr}</div>
-      </div>
-      <div class="day-item-right">
-        <div class="day-item-val ${valColor}">${fmt(o.value)}</div>
-        <span class="badge ${o.paid?'':'badge-'+o.entry.type}" style="${o.paid?'background:var(--green-bg);color:var(--green2)':''}">${badge}</span>
-      </div>
-      <button class="toggle-btn" onclick="togglePaid('${o.entryId}',${o.parcela-1})" title="${o.paid?'Desfazer':'Marcar pago'}">${o.paid?'↩️':'✅'}</button>
-    </div>`;
-  }).join('');
+  const dd=String(selectedDay).padStart(2,'0');
+  const mm=String(curMonth+1).padStart(2,'0');
+  document.getElementById('day-panel-title').textContent=`${dd}/${mm}/${curYear}`;
+  const occs=getDayOccs(curYear,curMonth,selectedDay);
+  const items=document.getElementById('day-panel-items');
+  if (!occs.length){items.innerHTML='<div class="empty-day">Nenhum lançamento neste dia</div>';return;}
+  items.innerHTML=occs.map(o=>buildEntryCard(o, true)).join('');
 }
 
+// ===================== MONTH LIST (NOVO) =====================
+function renderMonthList() {
+  const occs = getMonthOccs(curYear, curMonth);
+  const wrap = document.getElementById('month-list-wrap');
+  const listEl = document.getElementById('month-entries-list');
+  const title = document.getElementById('month-list-title');
+  const count = document.getElementById('month-list-count');
+
+  title.textContent = `Lançamentos de ${MONTHS_PT[curMonth]}`;
+
+  // Só mostra entradas que existem neste mês
+  if (!occs.length) {
+    count.textContent = '';
+    listEl.innerHTML = `<div class="empty-month">
+      <div class="empty-month-icon">📭</div>
+      <div class="empty-month-text">Nenhum lançamento em ${MONTHS_PT[curMonth]}</div>
+      <div class="empty-month-sub">Toque em ＋ para adicionar</div>
+    </div>`;
+    return;
+  }
+
+  // Ordenar por dia
+  occs.sort((a,b)=>a.day-b.day);
+  const pending = occs.filter(o=>!o.paid).length;
+  count.textContent = `${occs.length} • ${pending} pendente${pending!==1?'s':''}`;
+  listEl.innerHTML = occs.map(o=>buildEntryCard(o, false)).join('');
+}
+
+function buildEntryCard(o, compact) {
+  const isPaid = o.paid;
+  const paidLabel = isPaid ? (o.entry.type==='pagar'?'PAGO':'RECEBIDO') : 'PENDENTE';
+  const paidBadgeStyle = isPaid
+    ? 'background:var(--green-bg);color:var(--green2)'
+    : o.entry.type==='pagar'
+      ? 'background:var(--red-bg);color:var(--red2)'
+      : 'background:var(--indigo-bg);color:var(--indigo2)';
+  const valCls = isPaid ? 'entry-val-paid' : (o.entry.type==='pagar'?'entry-val-pagar':'entry-val-receber');
+  const avatarCls = isPaid ? 'entry-avatar-paid' : (o.entry.type==='pagar'?'entry-avatar-pagar':'entry-avatar-receber');
+  const dd=String(o.day).padStart(2,'0');
+  const mm=String(o.month+1).padStart(2,'0');
+  const parcelaStr = o.total>1?`Parcela ${o.parcela}/${o.total} • `:'';
+  const obsStr = o.entry.obs ? ` • ${o.entry.obs}` : '';
+  const payBtnLabel = isPaid
+    ? `<span>↩️</span><span>${o.entry.type==='pagar'?'Pago':'Recebido'}</span>`
+    : `<span>✅</span><span>${o.entry.type==='pagar'?'Pagar':'Receber'}</span>`;
+  return `<div class="entry-card${isPaid?' paid':''}" id="ec-${o.key}">
+    <div class="entry-card-main">
+      <div class="entry-avatar ${avatarCls}">${(o.entry.name||'?')[0]}</div>
+      <div class="entry-info">
+        <div class="entry-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}</div>
+        <div class="entry-sub">${parcelaStr}${dd}/${mm}${obsStr}</div>
+      </div>
+      <div class="entry-right">
+        <div class="entry-val ${valCls}">${fmt(o.value)}</div>
+        <span class="badge" style="${paidBadgeStyle}">${paidLabel}</span>
+      </div>
+    </div>
+    <div class="entry-actions">
+      <button class="entry-action-btn btn-pay-action${isPaid?' is-paid':''}" onclick="togglePaid('${o.entryId}',${o.parcela-1})">
+        ${payBtnLabel}
+      </button>
+      ${o.parcela===1?`<button class="entry-action-btn btn-edit-action" onclick="openEditModal('${o.entryId}')">✏️ Editar</button>`:''}
+      ${o.parcela===1?`<button class="entry-action-btn btn-del-action" onclick="confirmDelete('${o.entryId}')">🗑️ Excluir</button>`:''}
+    </div>
+  </div>`;
+}
+
+function confirmDelete(entryId) {
+  const e = data.entries.find(x=>x.id===entryId);
+  if (!e) return;
+  const total = e.parcelas>1 ? ` e todas as ${e.parcelas} parcelas` : '';
+  if (confirm(`Excluir "${e.name}"${total}?`)) deleteEntry(entryId);
+}
+
+// ===================== PROFILE BAR =====================
 function renderProfileBar() {
-  const bar = document.getElementById('profile-bar');
-  let html = state.profiles.map(p=>{
-    const isActive = p.id===state.activeProfileId;
-    const pData = isActive ? data : loadProfileData(p.id);
-    const hasPending = !isActive && (pData.entries||[]).some(e=>{
+  const bar=document.getElementById('profile-bar');
+  let html=state.profiles.map(p=>{
+    const isActive=p.id===state.activeProfileId;
+    const pData=isActive?data:loadProfileData(p.id);
+    const hasPending=!isActive&&(pData.entries||[]).some(e=>{
       const today=new Date();
-      return getOccurrences(e).some(o=>!o.paid && new Date(o.year,o.month,o.day)<=today);
+      return getOccurrences(e).some(o=>!o.paid&&new Date(o.year,o.month,o.day)<=today);
     });
-    return `<div class="profile-tab ${isActive?'active':''}" onclick="switchProfile('${p.id}')">
+    return `<div class="profile-tab${isActive?' active':''}" onclick="switchProfile('${p.id}')">
       <div class="ptab-emoji">${p.emoji}</div>
       <div class="ptab-name">${p.name}</div>
       ${hasPending?'<div class="ptab-badge"></div>':''}
       <div class="profile-tab-bar"></div>
     </div>`;
   }).join('');
-  html += `<div class="new-profile-btn" onclick="openModal('profiles-modal')">
-    <div class="ptab-emoji">＋</div>
-    <div class="ptab-name">Novo</div>
+  html+=`<div class="new-profile-btn" onclick="openModal('profiles-modal')">
+    <div class="ptab-emoji">＋</div><div class="ptab-name">Novo</div>
   </div>`;
-  bar.innerHTML = html;
+  bar.innerHTML=html;
 }
 
 function renderProfileChip() {
-  const p = getActiveProfile();
-  document.getElementById('active-profile-emoji').textContent = p.emoji;
-  document.getElementById('active-profile-name').textContent = p.name;
+  const p=getActiveProfile();
+  document.getElementById('active-profile-emoji').textContent=p.emoji;
+  document.getElementById('active-profile-name').textContent=p.name;
 }
 
-// ==================== MODALS ====================
+// ===================== MODALS =====================
 function openModal(id) {
   document.getElementById(id).classList.add('visible');
   if (id==='profiles-modal') renderProfilesModal();
   if (id==='favs-modal') renderFavsModal();
   if (id==='settings-modal') updateStatsToggle();
-  if (id==='detail-modal') {} // handled separately
 }
-function closeModal(id) {
-  document.getElementById(id).classList.remove('visible');
-}
-function handleOverlayClick(e, id) {
-  if (e.target===document.getElementById(id)) closeModal(id);
-}
+function closeModal(id) { document.getElementById(id).classList.remove('visible'); }
+function handleOverlayClick(e,id) { if (e.target===document.getElementById(id)) closeModal(id); }
 
+// ===================== ADD / EDIT =====================
 function openAddModal(prefill) {
-  editingId = null;
-  document.getElementById('add-modal-title').textContent = 'Novo Lançamento';
+  editingId=null;
+  document.getElementById('add-modal-title').textContent='Novo Lançamento';
   resetForm();
   if (prefill) applyPrefill(prefill);
   if (selectedDay) {
-    const yyyy = String(curYear);
-    const mm = String(curMonth+1).padStart(2,'0');
-    const dd = String(selectedDay).padStart(2,'0');
-    document.getElementById('f-date').value = `${yyyy}-${mm}-${dd}`;
+    const y=String(curYear),m=String(curMonth+1).padStart(2,'0'),d=String(selectedDay).padStart(2,'0');
+    document.getElementById('f-date').value=`${y}-${m}-${d}`;
   }
   openModal('add-modal');
 }
 
-function openAddForDay() {
-  openAddModal();
-}
+function openAddForDay() { openAddModal(); }
 
 function openEditModal(entryId) {
-  const e = data.entries.find(x=>x.id===entryId);
+  const e=data.entries.find(x=>x.id===entryId);
   if (!e) return;
-  editingId = entryId;
-  document.getElementById('add-modal-title').textContent = 'Editar Lançamento';
+  editingId=entryId;
+  document.getElementById('add-modal-title').textContent='✏️ Editar Lançamento';
   resetForm();
   setType(e.type);
-  document.getElementById('f-name').value = e.name;
-  document.getElementById('f-value').value = e.value;
-  document.getElementById('f-date').value = e.date;
-  document.getElementById('f-obs').value = e.obs||'';
-  // category
-  document.querySelectorAll('#cat-chips .chip').forEach(c=>{
-    c.classList.toggle('active', c.dataset.cat===e.category);
-  });
+  document.getElementById('f-name').value=e.name;
+  document.getElementById('f-value').value=e.value;
+  document.getElementById('f-date').value=e.date;
+  document.getElementById('f-obs').value=e.obs||'';
+  document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.toggle('active',c.dataset.cat===e.category));
   setMode(e.mode||'div');
-  formParcelas = e.parcelas||1;
-  document.querySelectorAll('.parcela-chip').forEach(c=>{
-    c.classList.toggle('active', parseInt(c.dataset.p)===formParcelas);
-  });
+  formParcelas=e.parcelas||1;
+  document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.toggle('active',parseInt(c.dataset.p)===formParcelas));
+  // Pega o status de pagamento da parcela 0 como referência
+  formPaid = !!(e.paid && e.paid[0]);
+  updatePaidToggle();
   updatePreview();
   openModal('add-modal');
 }
 
 function resetForm() {
-  formType='pagar'; formMode='div'; formParcelas=1;
+  formType='pagar'; formMode='div'; formParcelas=1; formPaid=false;
   document.getElementById('f-name').value='';
   document.getElementById('f-value').value='';
   document.getElementById('f-obs').value='';
-  const today = new Date();
-  document.getElementById('f-date').value = today.toISOString().slice(0,10);
+  document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
   setType('pagar');
   setMode('div');
   document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.toggle('active',c.dataset.p==='1'));
   document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.toggle('active',c.dataset.cat==='OUTROS'));
   document.getElementById('parcela-custom').value='';
+  updatePaidToggle();
   updatePreview();
 }
 
 function applyPrefill(f) {
   setType(f.type||'pagar');
-  document.getElementById('f-name').value = f.name||'';
-  document.getElementById('f-obs').value = f.obs||'';
-  document.querySelectorAll('#cat-chips .chip').forEach(c=>{
-    c.classList.toggle('active', c.dataset.cat===(f.category||'OUTROS'));
-  });
+  document.getElementById('f-name').value=f.name||'';
+  document.getElementById('f-obs').value=f.obs||'';
+  document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.toggle('active',c.dataset.cat===(f.category||'OUTROS')));
 }
 
 function setType(t) {
   formType=t;
-  document.getElementById('btn-pagar').className = 'type-btn '+(t==='pagar'?'active-pagar':'');
-  document.getElementById('btn-receber').className = 'type-btn '+(t==='receber'?'active-receber':'');
+  document.getElementById('btn-pagar').className='type-btn'+(t==='pagar'?' active-pagar':'');
+  document.getElementById('btn-receber').className='type-btn'+(t==='receber'?' active-receber':'');
 }
 function setMode(m) {
   formMode=m;
@@ -956,163 +1010,121 @@ function selectCat(el) {
 function selectParcela(el) {
   document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
-  formParcelas = parseInt(el.dataset.p);
+  formParcelas=parseInt(el.dataset.p);
   document.getElementById('parcela-custom').value='';
   updatePreview();
 }
 function setParcelaCustom(v) {
-  const n = parseInt(v);
+  const n=parseInt(v);
   if (n>0) {
     formParcelas=n;
     document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.remove('active'));
     updatePreview();
   }
 }
+function toggleFormPaid() {
+  formPaid=!formPaid;
+  updatePaidToggle();
+}
+function updatePaidToggle() {
+  const sw=document.getElementById('paid-toggle-sw');
+  const lbl=document.getElementById('paid-toggle-label');
+  sw.classList.toggle('on',formPaid);
+  lbl.textContent=formPaid?'✅ Pago / Recebido':'⏳ Pendente';
+}
 function updatePreview() {
-  const val = parseFloat(document.getElementById('f-value').value)||0;
-  const p = formParcelas;
-  const box = document.getElementById('form-preview');
-  if (!val) { box.textContent='—'; return; }
+  const val=parseFloat(document.getElementById('f-value').value)||0;
+  const box=document.getElementById('form-preview');
+  if (!val){box.textContent='—';return;}
   if (formMode==='div') {
-    const each = val/p;
+    const each=val/formParcelas;
     box.className='preview-box preview-div';
-    box.textContent = p===1 ? `${fmt(val)} — 1 parcela de ${fmt(each)}` : `${fmt(val)} ÷ ${p}x = ${fmt(each)}/mês`;
+    box.textContent=formParcelas===1?`${fmt(val)} — à vista`:`${fmt(val)} ÷ ${formParcelas}x = ${fmt(each)}/mês`;
   } else {
-    const total = val*p;
+    const total=val*formParcelas;
     box.className='preview-box preview-fix';
-    box.textContent = p===1 ? `${fmt(val)} — valor fixo` : `${fmt(val)} × ${p}x = ${fmt(total)} total`;
+    box.textContent=formParcelas===1?`${fmt(val)} — valor fixo`:`${fmt(val)} × ${formParcelas}x = ${fmt(total)} total`;
   }
 }
 
 function saveEntry() {
-  const name = document.getElementById('f-name').value.trim();
-  const value = parseFloat(document.getElementById('f-value').value);
-  const date = document.getElementById('f-date').value;
-  if (!name) { showToast('Informe o nome!'); return; }
-  if (!value || value<=0) { showToast('Informe o valor!'); return; }
-  if (!date) { showToast('Informe a data!'); return; }
-  const cat = document.querySelector('#cat-chips .chip.active')?.dataset.cat || 'OUTROS';
-  const obs = document.getElementById('f-obs').value.trim();
-  
+  const name=document.getElementById('f-name').value.trim();
+  const value=parseFloat(document.getElementById('f-value').value);
+  const date=document.getElementById('f-date').value;
+  if (!name){showToast('⚠️ Informe o nome!');return;}
+  if (!value||value<=0){showToast('⚠️ Informe o valor!');return;}
+  if (!date){showToast('⚠️ Informe a data!');return;}
+  const cat=document.querySelector('#cat-chips .chip.active')?.dataset.cat||'OUTROS';
+  const obs=document.getElementById('f-obs').value.trim();
+
   if (editingId) {
-    const e = data.entries.find(x=>x.id===editingId);
+    const e=data.entries.find(x=>x.id===editingId);
     if (e) {
       e.name=name; e.value=value; e.date=date; e.category=cat;
       e.obs=obs; e.type=formType; e.mode=formMode; e.parcelas=formParcelas;
+      // Atualiza status de pagamento da parcela 0
+      if (!e.paid) e.paid={};
+      e.paid[0]=formPaid;
     }
-    showToast('Lançamento atualizado!');
+    showToast('✅ Lançamento atualizado!');
   } else {
-    const e = { id:uid(), name, value, date, category:cat, obs, type:formType, mode:formMode, parcelas:formParcelas, paid:{} };
+    const paid={};
+    if (formPaid) {
+      for (let i=0;i<formParcelas;i++) paid[i]=true;
+    }
+    const e={id:uid(),name,value,date,category:cat,obs,type:formType,mode:formMode,parcelas:formParcelas,paid};
     data.entries.push(e);
-    showToast('Lançamento salvo!');
+    showToast('✅ Lançamento salvo!');
   }
-  saveProfileData(state.activeProfileId, data);
+  saveProfileData(state.activeProfileId,data);
   closeModal('add-modal');
   renderAll();
 }
 
 function saveAsFavorite() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { showToast('Informe o nome antes!'); return; }
-  const cat = document.querySelector('#cat-chips .chip.active')?.dataset.cat || 'OUTROS';
-  const obs = document.getElementById('f-obs').value.trim();
+  const name=document.getElementById('f-name').value.trim();
+  if (!name){showToast('⚠️ Informe o nome antes!');return;}
+  const cat=document.querySelector('#cat-chips .chip.active')?.dataset.cat||'OUTROS';
+  const obs=document.getElementById('f-obs').value.trim();
   if (!data.favorites) data.favorites=[];
-  data.favorites.push({id:uid(), name, type:formType, category:cat, obs});
-  saveProfileData(state.activeProfileId, data);
-  showToast('Favorito salvo! ⭐');
+  data.favorites.push({id:uid(),name,type:formType,category:cat,obs});
+  saveProfileData(state.activeProfileId,data);
+  showToast('⭐ Favorito salvo!');
 }
 
-// ==================== DETAIL MODAL ====================
-function openDetailModal(day) {
-  const occs = getDayOccs(curYear, curMonth, day);
-  const dd = String(day).padStart(2,'0');
-  const mm = String(curMonth+1).padStart(2,'0');
-  document.getElementById('detail-modal-title').textContent = `${dd}/${mm}/${curYear}`;
-  const body = document.getElementById('detail-modal-body');
-  
-  if (!occs.length) { body.innerHTML='<p style="color:var(--text3);text-align:center;padding:20px">Nenhum lançamento</p>'; openModal('detail-modal'); return; }
-  
-  let toPay=0, toRec=0;
-  for (const o of occs) {
-    if (!o.paid) {
-      if (o.entry.type==='pagar') toPay+=o.value;
-      else toRec+=o.value;
-    }
-  }
-  
-  const items = occs.map(o=>{
-    const parcelaStr = o.total>1 ? `Parcela ${o.parcela}/${o.total}` : 'À vista';
-    const totalEntry = o.entry.mode==='fix' ? o.value*o.entry.parcelas : o.entry.value;
-    const isPayed = o.paid;
-    const valColor = isPayed?'var(--green2)':(o.entry.type==='pagar'?'var(--red2)':'var(--indigo2)');
-    const isFirst = o.parcela===1;
-    return `<div class="detail-item">
-      <div class="detail-item-header">
-        <div>
-          <div class="detail-item-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}</div>
-          ${o.entry.obs?`<div style="font-size:11px;color:var(--text3);margin-top:2px">${o.entry.obs}</div>`:''}
-        </div>
-        <div class="detail-item-val" style="color:${valColor}">${fmt(o.value)}</div>
-      </div>
-      <div class="detail-item-sub">${parcelaStr} • Total: ${fmt(totalEntry)}</div>
-      <div class="detail-item-actions">
-        <button class="detail-toggle-btn ${isPayed?'btn-mark-pending':'btn-mark-paid'}" onclick="togglePaid('${o.entryId}',${o.parcela-1});renderDetailModal(${day})">
-          ${isPayed?'↩️ Marcar como PENDENTE':'✅ Marcar como PAGO'}
-        </button>
-        ${isFirst?`<button class="detail-edit-btn" onclick="closeModal('detail-modal');openEditModal('${o.entryId}')">✏️</button>`:''}
-        ${isFirst?`<button class="detail-del-btn" onclick="if(confirm('Excluir este lançamento e todas as parcelas?')){deleteEntry('${o.entryId}');closeModal('detail-modal');}">🗑️</button>`:'<span style="font-size:10px;color:var(--text3);align-self:center">Editar na parcela 1</span>'}
-      </div>
-    </div>`;
-  }).join('');
-  
-  body.innerHTML = items + `<div class="detail-footer">
-    <div class="detail-footer-item"><div class="detail-footer-label">A Pagar</div><div class="detail-footer-val" style="color:var(--red2)">${fmt(toPay)}</div></div>
-    <div class="detail-footer-item"><div class="detail-footer-label">A Receber</div><div class="detail-footer-val" style="color:var(--indigo2)">${fmt(toRec)}</div></div>
-  </div>`;
-  
-  openModal('detail-modal');
-}
-
-function renderDetailModal(day) {
-  openDetailModal(day);
-}
-
-// ==================== FAVORITES MODAL ====================
+// ===================== FAVORITES MODAL =====================
 function renderFavsModal() {
-  const body = document.getElementById('favs-modal-body');
-  const favs = data.favorites||[];
-  if (!favs.length) { body.innerHTML='<p style="color:var(--text3);text-align:center;padding:20px">Nenhum favorito salvo</p>'; return; }
-  body.innerHTML = favs.map(f=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+  const body=document.getElementById('favs-modal-body');
+  const favs=data.favorites||[];
+  if (!favs.length){body.innerHTML='<p style="color:var(--text3);text-align:center;padding:20px">Nenhum favorito salvo</p>';return;}
+  body.innerHTML=favs.map(f=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
     <div style="flex:1">
       <div style="font-size:14px;font-weight:600">${CAT_EMOJIS[f.category]||'📦'} ${f.name}</div>
-      <div style="font-size:11px;color:var(--text3)">${f.type==='pagar'?'A Pagar':'A Receber'} • ${f.category}</div>
+      <div style="font-size:11px;color:var(--text3)">${f.type==='pagar'?'💸 A Pagar':'💰 A Receber'} • ${f.category}</div>
     </div>
     <button class="small-btn small-btn-active" onclick="useFavorite('${f.id}');closeModal('favs-modal')">Usar</button>
-    <button class="small-btn" onclick="deleteFav('${f.id}')" style="color:var(--red2)">✕</button>
+    <button class="small-btn" style="color:var(--red2)" onclick="deleteFav('${f.id}')">✕</button>
   </div>`).join('');
 }
 
 function useFavorite(id) {
-  const f = (data.favorites||[]).find(x=>x.id===id);
+  const f=(data.favorites||[]).find(x=>x.id===id);
   if (!f) return;
   openAddModal(f);
 }
-
 function deleteFav(id) {
-  data.favorites = (data.favorites||[]).filter(x=>x.id!==id);
-  saveProfileData(state.activeProfileId, data);
-  renderFavsModal();
-  renderFavs();
+  data.favorites=(data.favorites||[]).filter(x=>x.id!==id);
+  saveProfileData(state.activeProfileId,data);
+  renderFavsModal(); renderFavs();
   showToast('Favorito removido!');
 }
 
-// ==================== PROFILES MODAL ====================
+// ===================== PROFILES MODAL =====================
 function renderProfilesModal() {
-  const body = document.getElementById('profiles-modal-body');
-  let html = '<div id="profile-list">';
-  html += state.profiles.map(p=>{
-    const isActive = p.id===state.activeProfileId;
-    return `<div class="profile-list-item" id="pli-${p.id}">
+  const body=document.getElementById('profiles-modal-body');
+  let html=state.profiles.map(p=>{
+    const isActive=p.id===state.activeProfileId;
+    return `<div class="profile-list-item">
       <span class="profile-emoji-btn" onclick="cycleProfileEmoji('${p.id}')">${p.emoji}</span>
       <div class="profile-item-info">
         <div class="profile-item-name">${p.name}${isActive?' ✦':''}</div>
@@ -1125,237 +1137,188 @@ function renderProfilesModal() {
       </div>
     </div>`;
   }).join('');
-  html += '</div>';
-  
-  // new profile section
-  html += `<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+  html+=`<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
     <div class="form-label" style="margin-bottom:8px">Criar Novo Perfil</div>
-    <div class="emoji-grid" id="new-emoji-grid">
-      ${EMOJIS.map((e,i)=>`<div class="emoji-option${i===0?' selected':''}" onclick="selectNewEmoji(this,'${e}')">${e}</div>`).join('')}
-    </div>
+    <div class="emoji-grid">${EMOJIS.map((e,i)=>`<div class="emoji-option${i===0?' selected':''}" onclick="selectNewEmoji(this,'${e}')">${e}</div>`).join('')}</div>
     <input type="text" id="new-profile-name" class="form-input" placeholder="NOME DO PERFIL" style="margin-bottom:8px" oninput="this.value=this.value.toUpperCase()"/>
     <button class="btn-primary" onclick="createProfile()">Criar Perfil</button>
   </div>`;
-  
-  body.innerHTML = html;
-  window._newProfileEmoji = EMOJIS[0];
+  body.innerHTML=html;
+  window._newProfileEmoji=EMOJIS[0];
 }
 
-let _newProfileEmoji = '👤';
-function selectNewEmoji(el, emoji) {
+function selectNewEmoji(el,emoji) {
   document.querySelectorAll('.emoji-option').forEach(e=>e.classList.remove('selected'));
   el.classList.add('selected');
-  window._newProfileEmoji = emoji;
+  window._newProfileEmoji=emoji;
 }
-
 function cycleProfileEmoji(id) {
-  const p = state.profiles.find(x=>x.id===id);
+  const p=state.profiles.find(x=>x.id===id);
   if (!p) return;
-  const idx = EMOJIS.indexOf(p.emoji);
-  p.emoji = EMOJIS[(idx+1)%EMOJIS.length];
-  saveState();
-  renderProfilesModal();
-  renderProfileBar();
-  renderProfileChip();
+  p.emoji=EMOJIS[(EMOJIS.indexOf(p.emoji)+1)%EMOJIS.length];
+  saveState(); renderProfilesModal(); renderProfileBar(); renderProfileChip();
 }
-
 function createProfile() {
-  const name = document.getElementById('new-profile-name').value.trim();
-  if (!name) { showToast('Informe o nome!'); return; }
-  const id = uid();
-  state.profiles.push({id, name, emoji:window._newProfileEmoji||'👤'});
-  saveState();
-  renderProfilesModal();
-  renderProfileBar();
+  const name=document.getElementById('new-profile-name').value.trim();
+  if (!name){showToast('⚠️ Informe o nome!');return;}
+  state.profiles.push({id:uid(),name,emoji:window._newProfileEmoji||'👤'});
+  saveState(); renderProfilesModal(); renderProfileBar();
   showToast('Perfil criado!');
 }
-
 function renameProfile(id) {
-  const p = state.profiles.find(x=>x.id===id);
+  const p=state.profiles.find(x=>x.id===id);
   if (!p) return;
-  const n = prompt('Novo nome:', p.name);
-  if (n && n.trim()) {
-    p.name = n.trim().toUpperCase();
-    saveState();
-    renderProfilesModal();
-    renderProfileBar();
-    renderProfileChip();
-    showToast('Nome atualizado!');
-  }
+  const n=prompt('Novo nome:',p.name);
+  if (n&&n.trim()){p.name=n.trim().toUpperCase();saveState();renderProfilesModal();renderProfileBar();renderProfileChip();showToast('Nome atualizado!');}
 }
-
 function deleteProfile(id) {
-  if (!confirm('Excluir este perfil e todos seus dados?')) return;
-  state.profiles = state.profiles.filter(x=>x.id!==id);
-  if (state.activeProfileId===id) {
-    state.activeProfileId = state.profiles[0].id;
-    data = loadProfileData(state.activeProfileId);
-  }
+  if (!confirm('Excluir este perfil e todos os dados?')) return;
+  state.profiles=state.profiles.filter(x=>x.id!==id);
+  if (state.activeProfileId===id){state.activeProfileId=state.profiles[0].id;data=loadProfileData(state.activeProfileId);}
   localStorage.removeItem('fintracker_profile_'+id);
-  saveState();
-  renderProfilesModal();
-  renderAll();
+  saveState(); renderProfilesModal(); renderAll();
   showToast('Perfil excluído!');
 }
 
-// ==================== SETTINGS ====================
+// ===================== SETTINGS =====================
 function toggleStats() {
-  data.showStats = !data.showStats;
-  saveProfileData(state.activeProfileId, data);
-  updateStatsToggle();
-  renderStats();
+  data.showStats=!data.showStats;
+  saveProfileData(state.activeProfileId,data);
+  updateStatsToggle(); renderStats();
 }
 function updateStatsToggle() {
-  const t = document.getElementById('stats-toggle');
-  t.classList.toggle('on', !!data.showStats);
+  document.getElementById('stats-toggle').classList.toggle('on',!!data.showStats);
 }
-
 function exportData() {
-  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `apagar-receber-${getActiveProfile().name}-${new Date().toISOString().slice(0,10)}.json`;
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`financeiro-${getActiveProfile().name}-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   showToast('Dados exportados!');
 }
-
 function importData(e) {
-  const file = e.target.files[0];
+  const file=e.target.files[0];
   if (!file) return;
-  const r = new FileReader();
-  r.onload = ev => {
+  const r=new FileReader();
+  r.onload=ev=>{
     try {
-      if (!confirm('Importar irá substituir todos os dados do perfil atual. Continuar?')) return;
-      data = JSON.parse(ev.target.result);
-      saveProfileData(state.activeProfileId, data);
-      renderAll();
-      showToast('Dados importados!');
+      if (!confirm('Isso substituirá todos os dados do perfil atual. Continuar?')) return;
+      data=JSON.parse(ev.target.result);
+      saveProfileData(state.activeProfileId,data);
+      renderAll(); showToast('Dados importados!');
     } catch { showToast('Arquivo inválido!'); }
   };
   r.readAsText(file);
   e.target.value='';
 }
-
 function clearData() {
   if (!confirm('Limpar todos os dados do perfil atual?')) return;
   if (!confirm('Tem certeza? Esta ação não pode ser desfeita.')) return;
-  data = { entries:[], favorites:[], showStats:data.showStats };
-  saveProfileData(state.activeProfileId, data);
-  selectedDay=null;
-  renderAll();
-  showToast('Dados apagados!');
+  data={entries:[],favorites:[],showStats:data.showStats};
+  saveProfileData(state.activeProfileId,data);
+  selectedDay=null; renderAll(); showToast('Dados apagados!');
 }
 
-// ==================== SEARCH ====================
+// ===================== SEARCH =====================
 function toggleSearch() {
-  const bar = document.getElementById('search-bar');
-  const res = document.getElementById('search-results');
-  const cal = document.getElementById('calendar-section');
+  const bar=document.getElementById('search-bar');
+  const res=document.getElementById('search-results');
+  const main=document.getElementById('main-content');
   bar.classList.toggle('visible');
   if (!bar.classList.contains('visible')) {
     document.getElementById('search-input').value='';
-    res.style.display='none';
-    cal.style.display='';
+    res.style.display='none'; main.style.display='';
   } else {
     document.getElementById('search-input').focus();
   }
 }
-
 function doSearch(q) {
-  const res = document.getElementById('search-results');
-  const cal = document.getElementById('calendar-section');
-  if (!q.trim()) { res.style.display='none'; cal.style.display=''; return; }
-  cal.style.display='none';
-  const qUp = q.toUpperCase();
-  const matches = [];
+  const res=document.getElementById('search-results');
+  const main=document.getElementById('main-content');
+  if (!q.trim()){res.style.display='none';main.style.display='';return;}
+  main.style.display='none';
+  const qUp=q.toUpperCase();
+  const matches=[];
   for (const e of data.entries) {
-    if (e.name.includes(qUp) || (e.obs||'').toUpperCase().includes(qUp) || e.category.includes(qUp)) {
-      for (const o of getOccurrences(e)) {
-        matches.push({...o, entry:e});
-      }
+    if (e.name.includes(qUp)||(e.obs||'').toUpperCase().includes(qUp)||e.category.includes(qUp)) {
+      for (const o of getOccurrences(e)) matches.push({...o,entry:e});
     }
   }
-  if (!matches.length) { res.innerHTML='<p style="color:var(--text3);padding:12px">Nenhum resultado</p>'; res.style.display=''; return; }
   res.style.display='';
-  res.innerHTML = `<div class="section-title" style="padding-top:10px">${matches.length} resultado(s)</div>` +
-    matches.slice(0,20).map(o=>{
-      const d = new Date(o.year,o.month,o.day);
-      const dd = String(d.getDate()).padStart(2,'0');
-      const mm = String(d.getMonth()+1).padStart(2,'0');
-      const parcelaStr = o.total>1?` (${o.parcela}/${o.total})`:'';
-      return `<div class="search-result-item">
-        <div class="sr-left">
-          <div class="sr-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}${parcelaStr}</div>
+  if (!matches.length){res.innerHTML='<p style="color:var(--text3);padding:16px 0;text-align:center">Nenhum resultado encontrado</p>';return;}
+  matches.sort((a,b)=>new Date(a.year,a.month,a.day)-new Date(b.year,b.month,b.day));
+  res.innerHTML=`<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);padding:10px 0 8px;letter-spacing:.6px">${matches.length} resultado(s)</div>`+
+    matches.slice(0,30).map(o=>{
+      const d=`${String(o.day).padStart(2,'0')}/${String(o.month+1).padStart(2,'0')}/${o.year}`;
+      const ps=o.total>1?` (${o.parcela}/${o.total})`:'';
+      return `<div class="sr-item">
+        <div>
+          <div class="sr-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}${ps}</div>
           <div class="sr-sub">${o.entry.obs||''} ${o.paid?'✅ PAGO':''}</div>
         </div>
-        <div class="sr-right">
+        <div>
           <div class="sr-val" style="color:${o.paid?'var(--green2)':(o.entry.type==='pagar'?'var(--red2)':'var(--indigo2)')}">${fmt(o.value)}</div>
-          <div class="sr-date">${dd}/${mm}/${o.year}</div>
+          <div class="sr-date">${d}</div>
         </div>
       </div>`;
     }).join('');
 }
 
-// ==================== MONTH NAV ====================
+// ===================== MONTH NAV =====================
 function changeMonth(dir) {
-  curMonth += dir;
-  if (curMonth>11) { curMonth=0; curYear++; }
-  if (curMonth<0) { curMonth=11; curYear--; }
+  curMonth+=dir;
+  if (curMonth>11){curMonth=0;curYear++;}
+  if (curMonth<0){curMonth=11;curYear--;}
   selectedDay=null;
   renderAll();
 }
 
-// ==================== TOAST ====================
+// ===================== TOAST =====================
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
+  const t=document.getElementById('toast');
+  t.textContent=msg;
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2200);
+  setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-// ==================== UTIL ====================
+// ===================== UTIL =====================
 function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
-// ==================== PWA ====================
+// ===================== PWA =====================
 function setupPWA() {
-  const manifest = {
+  const manifest={
     name:'A Pagar & Receber',short_name:'Financeiro',
     start_url:'.',display:'standalone',
-    background_color:'#0a0d14',theme_color:'#6366f1',
-    orientation:'portrait',
-    icons:[128,192,512].map(s=>({
-      src:`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='${s}' height='${s}'><rect width='${s}' height='${s}' rx='${s*.2}' fill='%236366f1'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-size='${s*.5}'>💸</text></svg>`,
+    background_color:'#0a0d14',theme_color:'#6366f1',orientation:'portrait',
+    icons:[192,512].map(s=>({
+      src:`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='${s}' height='${s}'><rect width='${s}' height='${s}' rx='${s*.2}' fill='%236366f1'/><text x='50%25' y='57%25' dominant-baseline='middle' text-anchor='middle' font-size='${s*.5}'>💸</text></svg>`,
       sizes:`${s}x${s}`,type:'image/svg+xml'
     }))
   };
-  const ml = document.createElement('link');
+  const ml=document.createElement('link');
   ml.rel='manifest';
   ml.href='data:application/json,'+encodeURIComponent(JSON.stringify(manifest));
   document.head.appendChild(ml);
-  
-  // SW
   if ('serviceWorker' in navigator) {
-    const sw = `self.addEventListener('install',e=>e.waitUntil(caches.open('v1').then(c=>c.add('/'))));
+    const sw=`self.addEventListener('install',e=>e.waitUntil(caches.open('v2').then(c=>c.add('/'))));
 self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
-    const blob = new Blob([sw],{type:'application/javascript'});
-    navigator.serviceWorker.register(URL.createObjectURL(blob));
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'})));
   }
-  
-  // Install banner
-  window.addEventListener('beforeinstallprompt', e=>{
+  window.addEventListener('beforeinstallprompt',e=>{
     e.preventDefault();
-    const banner = document.createElement('div');
-    banner.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--indigo);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;z-index:999;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,.6)';
-    banner.textContent='📲 Instalar como app';
-    banner.onclick=()=>{ e.prompt(); banner.remove(); };
-    document.body.appendChild(banner);
-    setTimeout(()=>banner.remove(), 8000);
+    const b=document.createElement('div');
+    b.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--indigo);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,.6)';
+    b.textContent='📲 Instalar como app';
+    b.onclick=()=>{e.prompt();b.remove();};
+    document.body.appendChild(b);
+    setTimeout(()=>b.remove(),8000);
   });
 }
 
-// ==================== INIT ====================
+// ===================== INIT =====================
 loadState();
-data = loadProfileData(state.activeProfileId);
+data=loadProfileData(state.activeProfileId);
 setupPWA();
 renderAll();
 </script>
