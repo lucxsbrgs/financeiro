@@ -510,22 +510,13 @@ body{display:flex;flex-direction:column;align-items:center}
         </div>
         <div class="form-row">
           <span class="form-label">Categoria</span>
-          <div class="chips" id="cat-chips">
-            <div class="chip" data-cat="CASA" onclick="selectCat(this)">🏠 CASA</div>
-            <div class="chip" data-cat="VEICULO" onclick="selectCat(this)">🚗 VEICULO</div>
-            <div class="chip" data-cat="CARTAO" onclick="selectCat(this)">💳 CARTAO</div>
-            <div class="chip" data-cat="ALIMENTACAO" onclick="selectCat(this)">🍔 ALIMENTACAO</div>
-            <div class="chip" data-cat="LAZER" onclick="selectCat(this)">🎮 LAZER</div>
-            <div class="chip" data-cat="SAUDE" onclick="selectCat(this)">🏥 SAUDE</div>
-            <div class="chip" data-cat="TRABALHO" onclick="selectCat(this)">💼 TRABALHO</div>
-            <div class="chip active" data-cat="OUTROS" onclick="selectCat(this)">📦 OUTROS</div>
-          </div>
+          <div class="chips" id="cat-chips"></div>
         </div>
         <div class="form-row">
           <span class="form-label">Modo de Parcelas</span>
           <div class="mode-btns">
-            <button class="mode-btn active" id="btn-div" onclick="setMode('div')">➗ DIVIDIDO</button>
-            <button class="mode-btn" id="btn-fix" onclick="setMode('fix')">🔒 FIXO</button>
+            <button class="mode-btn active" id="btn-div" onclick="setMode('div')">DIVIDIDO</button>
+            <button class="mode-btn" id="btn-fix" onclick="setMode('fix')">FIXO</button>
           </div>
         </div>
         <div class="form-row">
@@ -622,6 +613,59 @@ body{display:flex;flex-direction:column;align-items:center}
     </div>
   </div>
 
+  <!-- ===== LEMBRETE AUTOMÁTICO MODAL (5 dias antes do vencimento) ===== -->
+  <div class="modal-overlay" id="reminder-modal" onclick="handleOverlayClick(event,'reminder-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title">⏰ Lembrete de Vencimento</span>
+        <button class="modal-close" onclick="dismissReminderModal()">Fechar</button>
+      </div>
+      <div class="modal-body">
+        <div id="reminder-modal-info" style="font-size:13px;color:var(--text2);margin-bottom:12px"></div>
+        <div class="form-row wpp-name-input">
+          <label class="form-label">Nome de quem está devendo (opcional)</label>
+          <input type="text" id="reminder-person-input" class="form-input" placeholder="Ex: JOÃO" oninput="this.value=this.value.toUpperCase();updateReminderPreview()"/>
+        </div>
+        <div class="form-row">
+          <span class="form-label">Pré-visualização da mensagem</span>
+          <div class="wpp-preview-box">
+            <div class="wpp-bubble" id="reminder-preview-text"></div>
+          </div>
+        </div>
+        <button class="btn-whatsapp" onclick="sendReminderWhatsapp()">📲 Enviar lembrete no WhatsApp</button>
+        <button class="btn-secondary" onclick="copyReminderText()">📋 Copiar texto do lembrete</button>
+        <button class="btn-secondary" onclick="dismissReminderModal()" style="margin-top:8px">Agora não</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== QUITAÇÃO MODAL (gerada ao marcar como pago) ===== -->
+  <div class="modal-overlay" id="quitacao-modal" onclick="handleOverlayClick(event,'quitacao-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title">✅ Comprovante de Quitação</span>
+        <button class="modal-close" onclick="closeModal('quitacao-modal')">Fechar</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row wpp-name-input">
+          <label class="form-label">Nome de quem pagou/recebeu (opcional)</label>
+          <input type="text" id="quitacao-person-input" class="form-input" placeholder="Ex: JOÃO" oninput="this.value=this.value.toUpperCase();updateQuitacaoPreview()"/>
+        </div>
+        <div class="form-row">
+          <span class="form-label">Pré-visualização da mensagem</span>
+          <div class="wpp-preview-box">
+            <div class="wpp-bubble" id="quitacao-preview-text"></div>
+          </div>
+        </div>
+        <button class="btn-whatsapp" onclick="sendQuitacaoWhatsapp()">📲 Enviar no WhatsApp</button>
+        <button class="btn-secondary" onclick="copyQuitacaoText()">📋 Copiar texto de quitação</button>
+        <button class="btn-secondary" onclick="closeModal('quitacao-modal')" style="margin-top:8px">Agora não</button>
+      </div>
+    </div>
+  </div>
+
   <!-- FAVORITES MODAL -->
   <div class="modal-overlay" id="favs-modal" onclick="handleOverlayClick(event,'favs-modal')">
     <div class="modal-sheet">
@@ -664,6 +708,7 @@ body{display:flex;flex-direction:column;align-items:center}
             <div class="toggle-knob"></div>
           </div>
         </div>
+        <button class="btn-secondary" onclick="openModal('categories-modal')">🏷️ Gerenciar Categorias</button>
         <button class="btn-secondary" onclick="exportData()">📤 Exportar Dados (JSON)</button>
         <div style="margin-top:8px;position:relative">
           <button class="btn-secondary" onclick="document.getElementById('import-file').click()">📥 Importar Dados (JSON)</button>
@@ -673,20 +718,54 @@ body{display:flex;flex-direction:column;align-items:center}
       </div>
     </div>
   </div>
+
+  <!-- CATEGORIES MODAL -->
+  <div class="modal-overlay" id="categories-modal" onclick="handleOverlayClick(event,'categories-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title">🏷️ Categorias</span>
+        <button class="modal-close" onclick="closeModal('categories-modal')">Fechar</button>
+      </div>
+      <div class="modal-body">
+        <div id="categories-list"></div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+          <div class="form-label" style="margin-bottom:8px">Nova Categoria</div>
+          <div class="form-row" style="display:flex;gap:8px;margin-bottom:10px">
+            <input type="text" id="new-cat-emoji" class="form-input" placeholder="🏷️" maxlength="4" style="width:64px;text-align:center;font-size:18px"/>
+            <input type="text" id="new-cat-name" class="form-input" placeholder="NOME DA CATEGORIA" oninput="this.value=this.value.toUpperCase()" style="flex:1"/>
+          </div>
+          <button class="btn-primary" onclick="createCategory()">Adicionar Categoria</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 // ===================== CONSTANTS =====================
 const EMOJIS = ['👤','😊','🦁','🐺','🦊','🐻','🐼','🐨','🦋','🌟','🔥','💎','🚀','🎯','🎸'];
-const CAT_EMOJIS = {CASA:'🏠',VEICULO:'🚗',CARTAO:'💳',ALIMENTACAO:'🍔',LAZER:'🎮',SAUDE:'🏥',TRABALHO:'💼',OUTROS:'📦'};
+// Categorias padrão (semente). A partir daqui, cada perfil tem sua própria lista
+// editável em data.categories, mas estes valores garantem compatibilidade total
+// com lançamentos já salvos antes desta atualização (que usam estes mesmos nomes).
+const DEFAULT_CATEGORIES = [
+  {id:'CASA', emoji:'🏠', name:'CASA'},
+  {id:'VEICULO', emoji:'🚗', name:'VEICULO'},
+  {id:'CARTAO', emoji:'💳', name:'CARTAO'},
+  {id:'ALIMENTACAO', emoji:'🍔', name:'ALIMENTACAO'},
+  {id:'LAZER', emoji:'🎮', name:'LAZER'},
+  {id:'SAUDE', emoji:'🏥', name:'SAUDE'},
+  {id:'TRABALHO', emoji:'💼', name:'TRABALHO'},
+  {id:'OUTROS', emoji:'📦', name:'OUTROS'}
+];
 const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const MONTHS_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const CHART_COLORS = ['#D85A30','#7F77DD','#5DCAA5','#F0997B','#D4537E','#378ADD','#639922','#EF9F27'];
 
 // ===================== STATE =====================
 let state = { profiles:[{id:'main',name:'PRINCIPAL',emoji:'👤'}], activeProfileId:'main' };
-let data = { entries:[], favorites:[], showStats:true };
+let data = { entries:[], favorites:[], showStats:true, categories: null };
 let curYear = new Date().getFullYear();
 let curMonth = new Date().getMonth();
 let dashYear = new Date().getFullYear();
@@ -704,6 +783,26 @@ let yearChartInstance = null;
 let wppCurrentOcc = null;
 let wppMultiSelected = {};
 
+// ===================== CATEGORIES (dinâmicas, editáveis) =====================
+// Garante que data.categories sempre exista; se for a primeira vez (dado antigo
+// sem essa propriedade), semeia com as categorias padrão para não quebrar nada.
+function ensureCategories() {
+  if (!data.categories || !Array.isArray(data.categories) || !data.categories.length) {
+    data.categories = DEFAULT_CATEGORIES.map(c=>({...c}));
+  }
+}
+function getCategoryById(id) {
+  return (data.categories||[]).find(c=>c.id===id);
+}
+function catEmoji(id) {
+  const c = getCategoryById(id);
+  return c ? c.emoji : '📦';
+}
+function catName(id) {
+  const c = getCategoryById(id);
+  return c ? c.name : (id||'OUTROS');
+}
+
 // ===================== STORAGE =====================
 function loadState() {
   try {
@@ -718,10 +817,18 @@ function loadState() {
 }
 function saveState() { localStorage.setItem('fintracker_profiles', JSON.stringify(state)); }
 function loadProfileData(id) {
+  let d;
   try {
-    const d = localStorage.getItem('fintracker_profile_'+id);
-    return d ? JSON.parse(d) : { entries:[], favorites:[], showStats:true };
-  } catch(e) { return { entries:[], favorites:[], showStats:true }; }
+    const raw = localStorage.getItem('fintracker_profile_'+id);
+    d = raw ? JSON.parse(raw) : { entries:[], favorites:[], showStats:true };
+  } catch(e) { d = { entries:[], favorites:[], showStats:true }; }
+  // Migração segura: garante categorias (perfis antigos não tinham essa propriedade)
+  if (!d.categories || !Array.isArray(d.categories) || !d.categories.length) {
+    d.categories = DEFAULT_CATEGORIES.map(c=>({...c}));
+  }
+  // Migração segura: garante array de lembretes enviados (controle de duplicidade)
+  if (!Array.isArray(d.remindersSent)) d.remindersSent = [];
+  return d;
 }
 function saveProfileData(id, d) { localStorage.setItem('fintracker_profile_'+id, JSON.stringify(d)); }
 
@@ -734,6 +841,7 @@ function switchProfile(id) {
   selectedDay = null;
   renderAll();
   showToast('Perfil alterado!');
+  setTimeout(checkReminders, 500);
 }
 function getActiveProfile() {
   return state.profiles.find(p=>p.id===state.activeProfileId) || state.profiles[0];
@@ -792,10 +900,24 @@ function togglePaid(entryId, parcelaIdx) {
   const e = data.entries.find(x=>x.id===entryId);
   if (!e) return;
   if (!e.paid) e.paid = {};
-  e.paid[parcelaIdx] = !e.paid[parcelaIdx];
+  if (!e.paidDates) e.paidDates = {};
+  const willBePaid = !e.paid[parcelaIdx];
+  e.paid[parcelaIdx] = willBePaid;
+  // Salva a data/hora exata em que a parcela foi marcada como paga (ISO 8601).
+  // Se desmarcar, removemos a data registrada para refletir o estado real.
+  if (willBePaid) {
+    e.paidDates[parcelaIdx] = new Date().toISOString();
+  } else {
+    delete e.paidDates[parcelaIdx];
+  }
   saveProfileData(state.activeProfileId, data);
-  showToast(e.paid[parcelaIdx] ? (e.type==='pagar'?'✅ Marcado como PAGO!':'✅ Marcado como RECEBIDO!') : '↩️ Voltou para PENDENTE');
+  showToast(willBePaid ? (e.type==='pagar'?'✅ Marcado como PAGO!':'✅ Marcado como RECEBIDO!') : '↩️ Voltou para PENDENTE');
   renderAll();
+  // Ao marcar como pago, oferece a mensagem de quitação pronta para WhatsApp
+  if (willBePaid) {
+    const occ = getOccurrences(e).find(o=>o.parcela-1===parcelaIdx);
+    if (occ) openQuitacaoModal({...occ, entry:e, paid:true});
+  }
 }
 
 function deleteEntry(entryId) {
@@ -905,7 +1027,7 @@ function handleDayClick(d) {
 
 function renderFavs() {
   const favs=data.favorites||[];
-  const chips=favs.map(f=>`<div class="fav-chip" onclick="useFavorite('${f.id}')">${CAT_EMOJIS[f.category]||'📦'} ${f.name}</div>`).join('');
+  const chips=favs.map(f=>`<div class="fav-chip" onclick="useFavorite('${f.id}')">${catEmoji(f.category)} ${f.name}</div>`).join('');
   document.getElementById('favs-list').innerHTML=chips+`<button class="fav-manage-btn" onclick="openModal('favs-modal')">⭐ Gerenciar</button>`;
 }
 
@@ -964,7 +1086,7 @@ function buildEntryCard(o) {
     <div class="entry-card-main">
       <div class="entry-avatar ${avatarCls}">${(o.entry.name||'?')[0]}</div>
       <div class="entry-info">
-        <div class="entry-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}</div>
+        <div class="entry-name">${catEmoji(o.entry.category)} ${o.entry.name}</div>
         <div class="entry-sub">${parcelaStr}${dd}/${mm}${personStr}${obsStr}</div>
       </div>
       <div class="entry-right">
@@ -1021,7 +1143,7 @@ function renderMonthDashboard() {
     if (labels.length) {
       catChartInstance = new Chart(document.getElementById('catChart'), {
         type:'bar',
-        data:{ labels: labels.map(l=>(CAT_EMOJIS[l]||'')+' '+l), datasets:[{ data:vals, backgroundColor: labels.map((_,i)=>CHART_COLORS[i%CHART_COLORS.length]) }] },
+        data:{ labels: labels.map(l=>(catEmoji(l)||'')+' '+catName(l)), datasets:[{ data:vals, backgroundColor: labels.map((_,i)=>CHART_COLORS[i%CHART_COLORS.length]) }] },
         options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
           scales:{ y:{ ticks:{ color:'#94a3b8', callback:v=>'R$'+v }, grid:{color:'#252a40'} }, x:{ ticks:{ color:'#94a3b8', font:{size:10} }, grid:{display:false} } } }
       });
@@ -1131,6 +1253,7 @@ function openModal(id) {
   if (id==='profiles-modal') renderProfilesModal();
   if (id==='favs-modal') renderFavsModal();
   if (id==='settings-modal') updateStatsToggle();
+  if (id==='categories-modal') renderCategoriesModal();
 }
 function closeModal(id) { document.getElementById(id).classList.remove('visible'); }
 function handleOverlayClick(e,id) { if (e.target===document.getElementById(id)) closeModal(id); }
@@ -1161,7 +1284,7 @@ function openEditModal(entryId) {
   document.getElementById('f-value').value=e.value;
   document.getElementById('f-date').value=e.date;
   document.getElementById('f-obs').value=e.obs||'';
-  document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.toggle('active',c.dataset.cat===e.category));
+  renderCatChips(e.category);
   setMode(e.mode||'div');
   formParcelas=e.parcelas||1;
   document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.toggle('active',parseInt(c.dataset.p)===formParcelas));
@@ -1181,7 +1304,7 @@ function resetForm() {
   setType('pagar');
   setMode('div');
   document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.toggle('active',c.dataset.p==='1'));
-  document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.toggle('active',c.dataset.cat==='OUTROS'));
+  renderCatChips('OUTROS');
   document.getElementById('parcela-custom').value='';
   updatePaidToggle();
   updatePreview();
@@ -1191,7 +1314,7 @@ function applyPrefill(f) {
   setType(f.type||'pagar');
   document.getElementById('f-name').value=f.name||'';
   document.getElementById('f-obs').value=f.obs||'';
-  document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.toggle('active',c.dataset.cat===(f.category||'OUTROS')));
+  renderCatChips(f.category||'OUTROS');
 }
 
 function setType(t) {
@@ -1204,6 +1327,14 @@ function setMode(m) {
   document.getElementById('btn-div').classList.toggle('active',m==='div');
   document.getElementById('btn-fix').classList.toggle('active',m==='fix');
   updatePreview();
+}
+function renderCatChips(activeCatId) {
+  const wrap = document.getElementById('cat-chips');
+  const cats = data.categories && data.categories.length ? data.categories : DEFAULT_CATEGORIES;
+  const active = activeCatId || 'OUTROS';
+  wrap.innerHTML = cats.map(c=>
+    `<div class="chip${c.id===active?' active':''}" data-cat="${c.id}" onclick="selectCat(this)">${c.emoji} ${c.name}</div>`
+  ).join('');
 }
 function selectCat(el) {
   document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.remove('active'));
@@ -1313,7 +1444,7 @@ function buildSingleMessage(o, person) {
   const mm=String(o.month+1).padStart(2,'0');
   const parcelaStr = o.total>1 ? `Parcela: ${o.parcela}/${o.total}\n` : '';
   const greet = person ? `Oi, ${cap(person)}! ` : '';
-  return `📋 *Lembrete de pagamento*\n\n${greet}passando para lembrar sobre:\n\n${CAT_EMOJIS[o.entry.category]||'📦'} ${cap(o.entry.name)}\n${parcelaStr}Valor: ${fmt(o.value)}\nVencimento: ${dd}/${mm}/${o.year}\n\nStatus: ⏳ Pendente\n\n_Mensagem gerada via app Financeiro_`;
+  return `📋 *Lembrete de pagamento*\n\n${greet}passando para lembrar sobre:\n\n${catEmoji(o.entry.category)} ${cap(o.entry.name)}\n${parcelaStr}Valor: ${fmt(o.value)}\nVencimento: ${dd}/${mm}/${o.year}\n\nStatus: ⏳ Pendente\n\n_Mensagem gerada via app Financeiro_`;
 }
 
 function cap(s) {
@@ -1338,6 +1469,136 @@ function copyWppText() {
   copyToClipboard(text);
 }
 
+// ===================== QUITAÇÃO (mensagem ao marcar como pago) =====================
+let quitacaoCurrentOcc = null;
+
+function openQuitacaoModal(occ) {
+  quitacaoCurrentOcc = occ;
+  document.getElementById('quitacao-person-input').value = occ.entry.person || '';
+  updateQuitacaoPreview();
+  openModal('quitacao-modal');
+}
+
+function buildQuitacaoMessage(o, person) {
+  const e = o.entry;
+  const paidIso = (e.paidDates && e.paidDates[o.parcela-1]) ? e.paidDates[o.parcela-1] : new Date().toISOString();
+  const paidDate = new Date(paidIso);
+  const dd = String(paidDate.getDate()).padStart(2,'0');
+  const mm = String(paidDate.getMonth()+1).padStart(2,'0');
+  const yyyy = paidDate.getFullYear();
+  const hh = String(paidDate.getHours()).padStart(2,'0');
+  const min = String(paidDate.getMinutes()).padStart(2,'0');
+  const parcelaStr = o.total>1 ? `Parcela: ${o.parcela}/${o.total}\n` : '';
+  const greet = person ? `Oi, ${cap(person)}! ` : '';
+  const acao = e.type==='pagar' ? 'pagamento' : 'recebimento';
+  return `✅ *Confirmação de ${acao}*\n\n${greet}confirmando que ficou quitado:\n\n${catEmoji(e.category)} ${cap(e.name)}\n${parcelaStr}Valor: ${fmt(o.value)}\n\nPago em: ${dd}/${mm}/${yyyy} às ${hh}:${min}\n\nStatus: ✅ Quitado\n\n_Mensagem gerada via app Financeiro_`;
+}
+
+function updateQuitacaoPreview() {
+  if (!quitacaoCurrentOcc) return;
+  const person = document.getElementById('quitacao-person-input').value.trim();
+  document.getElementById('quitacao-preview-text').textContent = buildQuitacaoMessage(quitacaoCurrentOcc, person);
+}
+
+function sendQuitacaoWhatsapp() {
+  const person = document.getElementById('quitacao-person-input').value.trim();
+  const msg = buildQuitacaoMessage(quitacaoCurrentOcc, person);
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+}
+
+function copyQuitacaoText() {
+  const text = document.getElementById('quitacao-preview-text').textContent;
+  copyToClipboard(text);
+}
+
+// ===================== LEMBRETES AUTOMÁTICOS (5 dias antes do vencimento) =====================
+// Fila de lembretes pendentes de exibição nesta sessão
+let reminderQueue = [];
+let reminderCurrentOcc = null;
+
+// Verifica todos os lançamentos "a pagar" pendentes e identifica quais vencem
+// em exatamente 5 dias a partir de hoje. Cada lembrete só é oferecido uma vez
+// por parcela (controlado por data.remindersSent), então reabrir o app no
+// mesmo dia não fica repetindo o aviso.
+function checkReminders() {
+  if (!Array.isArray(data.remindersSent)) data.remindersSent = [];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(today.getTime() + 5*86400000);
+  const queue = [];
+  for (const o of getAllOccs()) {
+    if (o.paid) continue;
+    if (o.entry.type!=='pagar') continue;
+    const due = new Date(o.year, o.month, o.day);
+    if (due.getTime()!==target.getTime()) continue;
+    if (data.remindersSent.includes(o.key)) continue;
+    queue.push(o);
+  }
+  reminderQueue = queue;
+  if (reminderQueue.length) showNextReminder();
+}
+
+function showNextReminder() {
+  if (!reminderQueue.length) return;
+  reminderCurrentOcc = reminderQueue[0];
+  const o = reminderCurrentOcc;
+  document.getElementById('reminder-modal-info').textContent =
+    `${cap(o.entry.name)} vence em 5 dias (${String(o.day).padStart(2,'0')}/${String(o.month+1).padStart(2,'0')}/${o.year}). Deseja enviar um lembrete?`;
+  document.getElementById('reminder-person-input').value = o.entry.person || '';
+  updateReminderPreview();
+  openModal('reminder-modal');
+}
+
+function buildReminderMessage(o, person) {
+  const dd=String(o.day).padStart(2,'0');
+  const mm=String(o.month+1).padStart(2,'0');
+  const parcelaStr = o.total>1 ? `Parcela: ${o.parcela}/${o.total}\n` : '';
+  const greet = person ? `Oi, ${cap(person)}! ` : '';
+  return `⏰ *Lembrete de vencimento próximo*\n\n${greet}passando para avisar que falta(m) 5 dias para o vencimento de:\n\n${catEmoji(o.entry.category)} ${cap(o.entry.name)}\n${parcelaStr}Valor: ${fmt(o.value)}\nVencimento: ${dd}/${mm}/${o.year}\n\nStatus: ⏳ Pendente\n\n_Mensagem gerada via app Financeiro_`;
+}
+
+function updateReminderPreview() {
+  if (!reminderCurrentOcc) return;
+  const person = document.getElementById('reminder-person-input').value.trim();
+  document.getElementById('reminder-preview-text').textContent = buildReminderMessage(reminderCurrentOcc, person);
+}
+
+function markReminderSent(key) {
+  if (!Array.isArray(data.remindersSent)) data.remindersSent = [];
+  if (!data.remindersSent.includes(key)) data.remindersSent.push(key);
+  saveProfileData(state.activeProfileId, data);
+}
+
+function sendReminderWhatsapp() {
+  const person = document.getElementById('reminder-person-input').value.trim();
+  const msg = buildReminderMessage(reminderCurrentOcc, person);
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+  markReminderSent(reminderCurrentOcc.key);
+  advanceReminderQueue();
+}
+
+function copyReminderText() {
+  const text = document.getElementById('reminder-preview-text').textContent;
+  copyToClipboard(text);
+  markReminderSent(reminderCurrentOcc.key);
+  advanceReminderQueue();
+}
+
+function dismissReminderModal() {
+  // "Agora não" também marca como já visto, para não ficar reaparecendo
+  // toda vez que o app é reaberto no mesmo dia.
+  if (reminderCurrentOcc) markReminderSent(reminderCurrentOcc.key);
+  advanceReminderQueue();
+}
+
+function advanceReminderQueue() {
+  closeModal('reminder-modal');
+  reminderQueue.shift();
+  reminderCurrentOcc = null;
+  if (reminderQueue.length) {
+    setTimeout(showNextReminder, 400);
+  }
+}
+
 // ===================== WHATSAPP — MULTI (CONSOLIDADA) =====================
 function renderWppMultiList() {
   const occs = getAllOccs().filter(o=>!o.paid && o.entry.type==='pagar');
@@ -1355,7 +1616,7 @@ function renderWppMultiList() {
     return `<label class="charge-row">
       <input type="checkbox" class="charge-check" ${checked} onchange="toggleWppMultiSel('${o.key}',this.checked)"/>
       <div class="charge-info">
-        <div class="charge-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}${ps}</div>
+        <div class="charge-name">${catEmoji(o.entry.category)} ${o.entry.name}${ps}</div>
         <div class="charge-sub">Vence ${dd}/${mm}/${o.year}</div>
       </div>
       <div class="charge-val">${fmt(o.value)}</div>
@@ -1379,7 +1640,7 @@ function buildMultiMessage(person) {
   const lines = occs.map(o=>{
     total += o.value;
     const ps = o.total>1?` (${o.parcela}/${o.total})`:'';
-    return `${CAT_EMOJIS[o.entry.category]||'📦'} ${cap(o.entry.name)}${ps} — ${fmt(o.value)}`;
+    return `${catEmoji(o.entry.category)} ${cap(o.entry.name)}${ps} — ${fmt(o.value)}`;
   });
   const dates = occs.map(o=>new Date(o.year,o.month,o.day));
   const minD = new Date(Math.min(...dates));
@@ -1438,7 +1699,7 @@ function renderFavsModal() {
   if (!favs.length){body.innerHTML='<p style="color:var(--text3);text-align:center;padding:20px">Nenhum favorito salvo</p>';return;}
   body.innerHTML=favs.map(f=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
     <div style="flex:1">
-      <div style="font-size:14px;font-weight:600">${CAT_EMOJIS[f.category]||'📦'} ${f.name}</div>
+      <div style="font-size:14px;font-weight:600">${catEmoji(f.category)} ${f.name}</div>
       <div style="font-size:11px;color:var(--text3)">${f.type==='pagar'?'💸 A Pagar':'💰 A Receber'} • ${f.category}</div>
     </div>
     <button class="small-btn small-btn-active" onclick="useFavorite('${f.id}');closeModal('favs-modal')">Usar</button>
@@ -1457,7 +1718,87 @@ function deleteFav(id) {
   showToast('Favorito removido!');
 }
 
-// ===================== PROFILES MODAL =====================
+// ===================== CATEGORIES MODAL (Gerenciamento) =====================
+function renderCategoriesModal() {
+  ensureCategories();
+  const list = document.getElementById('categories-list');
+  if (!data.categories.length) {
+    list.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px">Nenhuma categoria cadastrada</p>';
+    return;
+  }
+  list.innerHTML = data.categories.map(c=>{
+    const usageCount = data.entries.filter(e=>e.category===c.id).length;
+    return `<div class="profile-list-item">
+      <span class="profile-emoji-btn" style="cursor:default">${c.emoji}</span>
+      <div class="profile-item-info">
+        <div class="profile-item-name">${c.name}</div>
+        <div class="profile-item-sub">${usageCount} lançamento${usageCount!==1?'s':''}</div>
+      </div>
+      <div class="profile-item-actions">
+        <button class="small-btn" onclick="editCategory('${c.id}')">✏️</button>
+        <button class="small-btn" style="color:var(--red2)" onclick="deleteCategory('${c.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function createCategory() {
+  ensureCategories();
+  const emojiInput = document.getElementById('new-cat-emoji');
+  const nameInput = document.getElementById('new-cat-name');
+  let emoji = emojiInput.value.trim();
+  const name = nameInput.value.trim();
+  if (!name) { showToast('⚠️ Informe o nome da categoria!'); return; }
+  if (!emoji) emoji = '🏷️';
+  // Garante um ID único e estável (baseado no nome, sem acentos/espaços)
+  let baseId = name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]/g,'').toUpperCase() || uid().toUpperCase();
+  let id = baseId, n = 1;
+  while (data.categories.some(c=>c.id===id)) { id = baseId+'_'+n; n++; }
+  data.categories.push({id, emoji, name});
+  saveProfileData(state.activeProfileId, data);
+  emojiInput.value=''; nameInput.value='';
+  renderCategoriesModal();
+  renderFavs();
+  showToast('🏷️ Categoria adicionada!');
+}
+
+function editCategory(id) {
+  const c = getCategoryById(id);
+  if (!c) return;
+  const newName = prompt('Nome da categoria:', c.name);
+  if (newName===null) return;
+  const trimmed = newName.trim().toUpperCase();
+  if (!trimmed) { showToast('⚠️ Nome não pode ficar vazio!'); return; }
+  const newEmoji = prompt('Emoji da categoria (compatível com WhatsApp):', c.emoji);
+  if (newEmoji===null) return;
+  c.name = trimmed;
+  c.emoji = newEmoji.trim() || c.emoji;
+  saveProfileData(state.activeProfileId, data);
+  renderCategoriesModal();
+  renderAll();
+  showToast('✅ Categoria atualizada!');
+}
+
+function deleteCategory(id) {
+  if (data.categories.length<=1) { showToast('⚠️ Mantenha ao menos uma categoria!'); return; }
+  const usageCount = data.entries.filter(e=>e.category===id).length;
+  const msg = usageCount>0
+    ? `Esta categoria está em uso em ${usageCount} lançamento(s). Eles serão movidos para "OUTROS". Continuar?`
+    : 'Excluir esta categoria?';
+  if (!confirm(msg)) return;
+  // Move lançamentos órfãos para uma categoria de fallback existente (OUTROS, ou a primeira disponível)
+  const fallback = data.categories.find(c=>c.id==='OUTROS' && c.id!==id) || data.categories.find(c=>c.id!==id);
+  if (fallback) {
+    data.entries.forEach(e=>{ if (e.category===id) e.category = fallback.id; });
+  }
+  data.categories = data.categories.filter(c=>c.id!==id);
+  saveProfileData(state.activeProfileId, data);
+  renderCategoriesModal();
+  renderAll();
+  showToast('Categoria excluída!');
+}
+
+
 function renderProfilesModal() {
   const body=document.getElementById('profiles-modal-body');
   let html=state.profiles.map(p=>{
@@ -1543,6 +1884,8 @@ function importData(e) {
     try {
       if (!confirm('Isso substituirá todos os dados do perfil atual. Continuar?')) return;
       data=JSON.parse(ev.target.result);
+      ensureCategories();
+      if (!Array.isArray(data.remindersSent)) data.remindersSent=[];
       saveProfileData(state.activeProfileId,data);
       renderAll(); showToast('Dados importados!');
     } catch { showToast('Arquivo inválido!'); }
@@ -1553,7 +1896,7 @@ function importData(e) {
 function clearData() {
   if (!confirm('Limpar todos os dados do perfil atual?')) return;
   if (!confirm('Tem certeza? Esta ação não pode ser desfeita.')) return;
-  data={entries:[],favorites:[],showStats:data.showStats};
+  data={entries:[],favorites:[],showStats:data.showStats,categories:data.categories,remindersSent:[]};
   saveProfileData(state.activeProfileId,data);
   selectedDay=null; renderAll(); showToast('Dados apagados!');
 }
@@ -1592,7 +1935,7 @@ function doSearch(q) {
       const ps=o.total>1?` (${o.parcela}/${o.total})`:'';
       return `<div class="sr-item">
         <div>
-          <div class="sr-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}${ps}</div>
+          <div class="sr-name">${catEmoji(o.entry.category)} ${o.entry.name}${ps}</div>
           <div class="sr-sub">${o.entry.obs||''} ${o.paid?'✅ PAGO':''}</div>
         </div>
         <div>
@@ -1659,6 +2002,8 @@ loadState();
 data=loadProfileData(state.activeProfileId);
 setupPWA();
 renderAll();
+// Verifica lembretes de vencimento (5 dias) após o app carregar, sem travar a primeira renderização
+setTimeout(checkReminders, 700);
 </script>
 </body>
 </html>
