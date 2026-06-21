@@ -16,6 +16,7 @@
   --indigo:#6366f1;--indigo2:#818cf8;--indigo-bg:rgba(99,102,241,0.12);
   --red:#ef4444;--red2:#f87171;--red-bg:rgba(239,68,68,0.12);
   --green:#22c55e;--green2:#4ade80;--green-bg:rgba(34,197,94,0.12);
+  --whatsapp:#25d366;
   --yellow:#eab308;--orange:#f97316;
   --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
   --radius:12px;--radius2:8px;
@@ -26,13 +27,13 @@ body{display:flex;flex-direction:column;align-items:center}
 
 /* HEADER */
 #header{background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;z-index:50}
-.header-title{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px}
+.header-title{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px}
 .app-name{font-size:16px;font-weight:700;letter-spacing:-.3px}
 .app-name span{color:var(--indigo)}
 .header-actions{display:flex;gap:6px}
 .icon-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 9px;font-size:15px;cursor:pointer;line-height:1}
 .icon-btn:active{opacity:.7}
-.profile-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.profile-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;max-width:110px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .profile-chip:active{opacity:.7}
 
 /* SEARCH BAR */
@@ -41,36 +42,24 @@ body{display:flex;flex-direction:column;align-items:center}
 #search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:8px 12px;color:var(--text);font-size:14px;outline:none}
 #search-input:focus{border-color:var(--indigo)}
 
-/* DASHBOARD */
-.dashboard{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:8px 14px}
-.dash-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:8px 10px;text-align:center}
-.dash-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.dash-value{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dash-pagar .dash-value{color:var(--red2)}
-.dash-receber .dash-value{color:var(--indigo2)}
-.dash-saldo-pos .dash-value{color:var(--green2)}
-.dash-saldo-neg .dash-value{color:var(--red2)}
+/* TABS */
+.tab-bar{display:flex;gap:4px;padding:0 14px 10px;background:var(--bg)}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border:none;border-radius:var(--radius2);background:var(--card);color:var(--text3);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+.tab-btn.active{background:var(--indigo-bg);color:var(--indigo2)}
+.tab-btn-icon{font-size:16px;line-height:1}
 
-/* PROGRESS */
-.progress-wrap{padding:0 14px 8px}
-.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:12px}
-.progress-title{color:var(--text2);font-weight:600}
-.progress-pct{color:var(--indigo2);font-weight:700}
-.progress-bar-bg{background:var(--card2);border-radius:99px;height:7px;overflow:hidden}
-.progress-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--indigo),var(--green));transition:width .4s}
-.progress-sub{display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--text3)}
+/* SCROLLABLE */
+#content{flex:1;overflow-y:auto;padding-bottom:90px}
+#content::-webkit-scrollbar{display:none}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
-/* MONTH NAV */
-.month-nav{display:flex;align-items:center;justify-content:space-between;padding:6px 14px 8px}
+/* ===== CALENDAR TAB ===== */
+.month-nav{display:flex;align-items:center;justify-content:space-between;padding:6px 14px 10px}
 .month-nav-btn{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:5px 14px;font-size:16px;cursor:pointer}
 .month-nav-btn:active{opacity:.7}
 .month-label{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 
-/* SCROLLABLE */
-#content{flex:1;overflow-y:auto;padding-bottom:110px}
-#content::-webkit-scrollbar{display:none}
-
-/* CALENDAR */
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 10px}
 .cal-header-day{text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px 0;text-transform:uppercase}
 .cal-cell{height:52px;border-radius:var(--radius2);border:1.5px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .15s;user-select:none}
@@ -88,33 +77,31 @@ body{display:flex;flex-direction:column;align-items:center}
 .cal-dot-indigo{background:var(--indigo)}
 .cal-dot-green{background:var(--green)}
 
-/* LEGEND */
-.cal-legend{display:flex;gap:10px;flex-wrap:wrap;padding:8px 14px;justify-content:center}
+.cal-legend{display:flex;gap:10px;flex-wrap:wrap;padding:10px 14px;justify-content:center}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3)}
 .legend-dot{width:8px;height:8px;border-radius:50%}
 
-/* UPCOMING */
 .section{padding:10px 14px 4px}
 .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin-bottom:8px}
-.upcoming-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:9px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
-.upcoming-date{font-size:11px;font-weight:700;color:var(--text3);min-width:32px}
-.upcoming-info{flex:1;min-width:0}
-.upcoming-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.upcoming-sub{font-size:11px;color:var(--text3)}
-.upcoming-right{text-align:right}
-.upcoming-val{font-size:13px;font-weight:700}
-.badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;letter-spacing:.4px}
-.badge-pagar{background:var(--red-bg);color:var(--red2)}
-.badge-receber{background:var(--indigo-bg);color:var(--indigo2)}
-.badge-pago{background:var(--green-bg);color:var(--green2)}
 
-/* MONTH ENTRIES LIST */
+.favs-scroll{display:flex;gap:8px;overflow-x:auto;padding:0 14px 2px;scrollbar-width:none}
+.favs-scroll::-webkit-scrollbar{display:none}
+.fav-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:7px 12px;white-space:nowrap;font-size:12px;cursor:pointer;flex-shrink:0}
+.fav-chip:active{opacity:.7;border-color:var(--indigo)}
+.fav-manage-btn{background:transparent;border:1px solid var(--border2);border-radius:20px;padding:7px 12px;color:var(--text3);font-size:12px;cursor:pointer;flex-shrink:0}
+
+#day-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin:10px 14px 0;overflow:hidden}
+.day-panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)}
+.day-panel-title{font-size:13px;font-weight:700}
+.add-day-btn{background:var(--indigo);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.empty-day{padding:20px;text-align:center;color:var(--text3);font-size:13px}
+
 .month-list-wrap{padding:4px 14px 0}
 .month-list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .month-list-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text3)}
 .month-list-count{font-size:11px;color:var(--text3)}
 
-/* ENTRY CARD — lista do mês */
+/* ENTRY CARD */
 .entry-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .2s}
 .entry-card.paid{border-color:rgba(34,197,94,.3)}
 .entry-card-main{display:flex;align-items:center;gap:10px;padding:11px 12px}
@@ -131,38 +118,69 @@ body{display:flex;flex-direction:column;align-items:center}
 .entry-val-receber{color:var(--indigo2)}
 .entry-val-paid{color:var(--green2)}
 
-/* ENTRY ACTIONS BAR */
-.entry-actions{display:flex;border-top:1px solid var(--border);overflow:hidden}
-.entry-action-btn{flex:1;padding:9px 4px;font-size:12px;font-weight:600;border:none;background:transparent;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:4px;transition:background .15s}
+.entry-actions{display:flex;border-top:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.entry-actions::-webkit-scrollbar{display:none}
+.entry-action-btn{flex:1;min-width:62px;padding:9px 4px;font-size:11px;font-weight:600;border:none;background:transparent;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:3px;transition:background .15s;white-space:nowrap}
 .entry-action-btn:active{opacity:.7}
 .entry-action-btn + .entry-action-btn{border-left:1px solid var(--border)}
 .btn-pay-action{color:var(--green2)}
 .btn-pay-action.is-paid{color:var(--text3)}
 .btn-edit-action{color:var(--indigo2)}
 .btn-del-action{color:var(--red2)}
+.btn-wpp-action{color:var(--whatsapp)}
+.btn-copy-action{color:var(--text2)}
 
-/* DAY PANEL */
-#day-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin:10px 14px 0;overflow:hidden}
-.day-panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)}
-.day-panel-title{font-size:13px;font-weight:700}
-.add-day-btn{background:var(--indigo);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
-.empty-day{padding:20px;text-align:center;color:var(--text3);font-size:13px}
+.badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;letter-spacing:.4px}
 
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:12px}
-.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.stat-val{font-size:18px;font-weight:800}
-.stat-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.empty-month{padding:32px 20px;text-align:center}
+.empty-month-icon{font-size:40px;margin-bottom:10px}
+.empty-month-text{font-size:14px;color:var(--text3);margin-bottom:4px}
+.empty-month-sub{font-size:12px;color:var(--text3)}
 
-/* FAVORITES */
-.favs-scroll{display:flex;gap:8px;overflow-x:auto;padding:0 14px 2px;scrollbar-width:none}
-.favs-scroll::-webkit-scrollbar{display:none}
-.fav-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:7px 12px;white-space:nowrap;font-size:12px;cursor:pointer;flex-shrink:0}
-.fav-chip:active{opacity:.7;border-color:var(--indigo)}
-.fav-manage-btn{background:transparent;border:1px solid var(--border2);border-radius:20px;padding:7px 12px;color:var(--text3);font-size:12px;cursor:pointer;flex-shrink:0}
+/* ===== DASHBOARD SHARED ===== */
+.dash-tab-header{padding:10px 14px 4px;display:flex;align-items:center;justify-content:space-between}
+.dash-tab-title{font-size:15px;font-weight:700}
+.dash-period-nav{display:flex;align-items:center;gap:8px}
+.dash-period-btn{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:4px 10px;font-size:14px;cursor:pointer}
+.dash-period-label{font-size:12px;font-weight:700;color:var(--text2);min-width:64px;text-align:center}
 
-/* BOTTOM BAR */
+.balance-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem;margin:10px 14px}
+.balance-label{font-size:12px;color:var(--text3);margin-bottom:4px}
+.balance-val{font-size:26px;font-weight:800;margin-bottom:10px}
+.balance-val.pos{color:var(--green2)}
+.balance-val.neg{color:var(--red2)}
+.balance-legend{display:flex;gap:16px}
+.balance-legend-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.balance-legend-dot{width:8px;height:8px;border-radius:2px}
+
+.mini-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px;margin-bottom:14px}
+.mini-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:.85rem 1rem}
+.mini-card-label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.mini-card-val{font-size:18px;font-weight:700}
+.mini-card-sub{font-size:10px;color:var(--text3);margin-top:2px}
+
+.progress-card{padding:0 14px;margin-bottom:18px}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:6px}
+.progress-title{font-size:13px;color:var(--text2)}
+.progress-pct{font-size:13px;font-weight:700;color:var(--green2)}
+.progress-bar-bg{background:var(--card2);border-radius:99px;height:8px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--indigo),var(--green));transition:width .4s}
+.progress-sub{font-size:11px;color:var(--text3);margin-top:5px}
+
+.chart-wrap{padding:0 14px;margin-bottom:18px}
+.chart-title{font-size:13px;font-weight:600;margin-bottom:8px}
+.chart-canvas-box{position:relative;height:180px}
+
+/* Pending/paid list cobrança */
+.charge-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
+.charge-row:last-child{border-bottom:none}
+.charge-check{width:18px;height:18px;flex-shrink:0;accent-color:var(--indigo)}
+.charge-info{flex:1;min-width:0}
+.charge-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.charge-sub{font-size:11px;color:var(--text3)}
+.charge-val{font-size:13px;font-weight:700;color:var(--red2)}
+
+/* ===== BOTTOM BAR ===== */
 #profile-bar{position:absolute;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;z-index:60}
 #profile-bar::-webkit-scrollbar{display:none}
 .profile-tab{display:flex;flex-direction:column;align-items:center;padding:8px 14px 10px;cursor:pointer;min-width:70px;position:relative;flex-shrink:0}
@@ -176,9 +194,9 @@ body{display:flex;flex-direction:column;align-items:center}
 .new-profile-btn .ptab-emoji{font-size:16px;color:var(--indigo2)}
 .new-profile-btn .ptab-name{font-size:10px;font-weight:600;margin-top:2px}
 
-/* FAB */
 #fab{position:absolute;bottom:68px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--indigo);color:#fff;font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:65;box-shadow:0 4px 20px rgba(99,102,241,.5);transition:transform .15s}
 #fab:active{transform:scale(.92)}
+#fab.hidden{display:none}
 
 /* MODALS */
 .modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:80;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
@@ -220,8 +238,9 @@ body{display:flex;flex-direction:column;align-items:center}
 .btn-danger{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:var(--red2);border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
 .btn-primary{background:var(--indigo);border:none;color:#fff;border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
 .btn-secondary{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
+.btn-whatsapp{background:var(--whatsapp);border:none;color:#06301c;border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px}
 
-/* PAID STATUS TOGGLE in form */
+/* PAID TOGGLE */
 .paid-toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--radius2);padding:11px 14px}
 .paid-toggle-label{font-size:13px;font-weight:600}
 .paid-toggle-sub{font-size:11px;color:var(--text3);margin-top:1px}
@@ -262,11 +281,11 @@ body{display:flex;flex-direction:column;align-items:center}
 #toast{position:absolute;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:#22c55e;color:#fff;padding:9px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;max-width:90%}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* EMPTY STATE */
-.empty-month{padding:32px 20px;text-align:center}
-.empty-month-icon{font-size:40px;margin-bottom:10px}
-.empty-month-text{font-size:14px;color:var(--text3);margin-bottom:4px}
-.empty-month-sub{font-size:12px;color:var(--text3)}
+/* WHATSAPP PREVIEW MODAL */
+.wpp-preview-box{background:#0a0d14;border-radius:var(--radius2);padding:14px;border:1px solid var(--border)}
+.wpp-bubble{background:#005c4b;color:#e9edef;border-radius:8px 8px 8px 2px;padding:10px 12px;font-size:13px;line-height:1.65;white-space:pre-wrap;font-family:inherit}
+.wpp-name-input{margin-bottom:12px}
+.cobranca-list{max-height:240px;overflow-y:auto;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -287,35 +306,16 @@ body{display:flex;flex-direction:column;align-items:center}
     <div id="search-bar">
       <input type="text" id="search-input" class="form-input" placeholder="Buscar nome, categoria..." oninput="doSearch(this.value)"/>
     </div>
-    <div class="dashboard">
-      <div class="dash-card dash-pagar">
-        <div class="dash-label">A Pagar</div>
-        <div class="dash-value" id="d-pagar">R$ 0</div>
-      </div>
-      <div class="dash-card dash-receber">
-        <div class="dash-label">A Receber</div>
-        <div class="dash-value" id="d-receber">R$ 0</div>
-      </div>
-      <div class="dash-card" id="d-saldo-card">
-        <div class="dash-label">Saldo</div>
-        <div class="dash-value" id="d-saldo">R$ 0</div>
-      </div>
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-header">
-        <span class="progress-title">Contas Quitadas</span>
-        <span class="progress-pct" id="prog-pct">0%</span>
-      </div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
-      <div class="progress-sub">
-        <span id="prog-paid">Pago: R$ 0,00</span>
-        <span id="prog-total">Total: R$ 0,00</span>
-      </div>
-    </div>
-    <div class="month-nav">
-      <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
-      <span class="month-label" id="month-label"></span>
-      <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabbtn-cal" onclick="switchTab('cal')">
+        <span class="tab-btn-icon">📅</span>Calendário
+      </button>
+      <button class="tab-btn" id="tabbtn-mes" onclick="switchTab('mes')">
+        <span class="tab-btn-icon">📊</span>Mês
+      </button>
+      <button class="tab-btn" id="tabbtn-ano" onclick="switchTab('ano')">
+        <span class="tab-btn-icon">📈</span>Ano
+      </button>
     </div>
   </div>
 
@@ -324,8 +324,15 @@ body{display:flex;flex-direction:column;align-items:center}
     <div id="search-results" style="display:none"></div>
 
     <div id="main-content">
-      <!-- Calendar -->
-      <div id="calendar-section">
+
+      <!-- ===== TAB: CALENDÁRIO ===== -->
+      <div class="tab-panel active" id="tab-cal">
+        <div class="month-nav">
+          <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
+          <span class="month-label" id="month-label"></span>
+          <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
+        </div>
+
         <div class="cal-grid" id="cal-header"></div>
         <div class="cal-grid" id="cal-body" style="margin-top:2px"></div>
         <div class="cal-legend">
@@ -334,43 +341,129 @@ body{display:flex;flex-direction:column;align-items:center}
           <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Quitado</div>
           <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Vence em 3 dias</div>
         </div>
-      </div>
 
-      <!-- Upcoming -->
-      <div class="section" id="upcoming-section" style="display:none">
-        <div class="section-title">📅 Próximos Vencimentos (7 dias)</div>
-        <div id="upcoming-list"></div>
-      </div>
-
-      <!-- Stats -->
-      <div class="section" id="stats-section" style="display:none">
-        <div class="section-title">📊 Estatísticas</div>
-        <div class="stats-grid" id="stats-grid"></div>
-      </div>
-
-      <!-- Favorites -->
-      <div class="section" id="favs-section">
-        <div class="section-title">⭐ Favoritos</div>
-        <div class="favs-scroll" id="favs-list"></div>
-      </div>
-
-      <!-- Day panel -->
-      <div id="day-panel" style="display:none">
-        <div class="day-panel-header">
-          <span class="day-panel-title" id="day-panel-title">Dia</span>
-          <button class="add-day-btn" onclick="openAddForDay()">+ Adicionar</button>
+        <div class="section" id="favs-section">
+          <div class="section-title">⭐ Favoritos</div>
+          <div class="favs-scroll" id="favs-list"></div>
         </div>
-        <div id="day-panel-items"></div>
+
+        <div class="section">
+          <button class="btn-whatsapp" onclick="openWppMulti()">📲 Cobrança Consolidada via WhatsApp</button>
+        </div>
+
+        <div id="day-panel" style="display:none">
+          <div class="day-panel-header">
+            <span class="day-panel-title" id="day-panel-title">Dia</span>
+            <button class="add-day-btn" onclick="openAddForDay()">+ Adicionar</button>
+          </div>
+          <div id="day-panel-items"></div>
+        </div>
+
+        <div class="month-list-wrap" id="month-list-wrap">
+          <div class="month-list-header">
+            <span class="month-list-title" id="month-list-title">Lançamentos do Mês</span>
+            <span class="month-list-count" id="month-list-count"></span>
+          </div>
+          <div id="month-entries-list"></div>
+        </div>
       </div>
 
-      <!-- Month entries list -->
-      <div class="month-list-wrap" id="month-list-wrap">
-        <div class="month-list-header">
-          <span class="month-list-title" id="month-list-title">Lançamentos do Mês</span>
-          <span class="month-list-count" id="month-list-count"></span>
+      <!-- ===== TAB: MÊS (DASHBOARD MENSAL) ===== -->
+      <div class="tab-panel" id="tab-mes">
+        <div class="dash-tab-header">
+          <span class="dash-tab-title">Controle Mensal</span>
+          <div class="dash-period-nav">
+            <button class="dash-period-btn" onclick="changeMonth(-1)">‹</button>
+            <span class="dash-period-label" id="dash-month-label"></span>
+            <button class="dash-period-btn" onclick="changeMonth(1)">›</button>
+          </div>
         </div>
-        <div id="month-entries-list"></div>
+
+        <div class="balance-card">
+          <div class="balance-label">Saldo previsto do mês</div>
+          <div class="balance-val" id="m-saldo">R$ 0,00</div>
+          <div class="balance-legend">
+            <span class="balance-legend-item"><span class="balance-legend-dot" style="background:var(--red)"></span><span id="m-pagar-leg">A pagar R$ 0</span></span>
+            <span class="balance-legend-item"><span class="balance-legend-dot" style="background:var(--indigo)"></span><span id="m-receber-leg">A receber R$ 0</span></span>
+          </div>
+        </div>
+
+        <div class="mini-cards">
+          <div class="mini-card">
+            <div class="mini-card-label">Já pago</div>
+            <div class="mini-card-val" id="m-paid-val" style="color:var(--green2)">R$ 0</div>
+            <div class="mini-card-sub" id="m-paid-count">0 contas</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-label">Falta pagar</div>
+            <div class="mini-card-val" id="m-pending-val" style="color:var(--red2)">R$ 0</div>
+            <div class="mini-card-sub" id="m-pending-count">0 contas</div>
+          </div>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-header">
+            <span class="progress-title">Contas quitadas</span>
+            <span class="progress-pct" id="m-prog-pct">0%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="m-prog-bar" style="width:0%"></div></div>
+          <div class="progress-sub" id="m-prog-sub">0 de 0 contas já quitadas neste mês</div>
+        </div>
+
+        <div class="chart-wrap" id="m-chart-wrap" style="display:none">
+          <div class="chart-title">Gastos por categoria</div>
+          <div class="chart-canvas-box"><canvas id="catChart"></canvas></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">⏳ Pendentes neste mês</div>
+          <div id="m-pending-list"></div>
+        </div>
+
+        <div class="section" style="padding-bottom:20px">
+          <div class="section-title">✅ Já pagos neste mês</div>
+          <div id="m-paid-list"></div>
+        </div>
       </div>
+
+      <!-- ===== TAB: ANO (DASHBOARD ANUAL) ===== -->
+      <div class="tab-panel" id="tab-ano">
+        <div class="dash-tab-header">
+          <span class="dash-tab-title">Controle Anual</span>
+          <div class="dash-period-nav">
+            <button class="dash-period-btn" onclick="changeYear(-1)">‹</button>
+            <span class="dash-period-label" id="dash-year-label"></span>
+            <button class="dash-period-btn" onclick="changeYear(1)">›</button>
+          </div>
+        </div>
+
+        <div class="mini-cards">
+          <div class="mini-card">
+            <div class="mini-card-label">Total recebido</div>
+            <div class="mini-card-val" id="y-rec-val" style="color:var(--green2)">R$ 0</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-label">Total pago</div>
+            <div class="mini-card-val" id="y-pay-val" style="color:var(--red2)">R$ 0</div>
+          </div>
+        </div>
+
+        <div class="balance-card" style="text-align:center">
+          <div class="balance-label">Saldo acumulado no ano</div>
+          <div class="balance-val" id="y-saldo" style="margin-bottom:0">R$ 0,00</div>
+        </div>
+
+        <div class="chart-wrap" style="margin-top:18px">
+          <div class="chart-title">Evolução mês a mês</div>
+          <div class="chart-canvas-box" style="height:200px"><canvas id="yearChart"></canvas></div>
+        </div>
+
+        <div class="section" style="padding-bottom:20px">
+          <div class="section-title">📌 Destaques do ano</div>
+          <div id="y-highlights"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -402,6 +495,10 @@ body{display:flex;flex-direction:column;align-items:center}
         <div class="form-row">
           <label class="form-label">Nome</label>
           <input type="text" id="f-name" class="form-input" placeholder="Ex: ALUGUEL" oninput="this.value=this.value.toUpperCase()"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Devedor / Credor (opcional)</label>
+          <input type="text" id="f-person" class="form-input" placeholder="Ex: JOÃO" oninput="this.value=this.value.toUpperCase()"/>
         </div>
         <div class="form-row">
           <label class="form-label">Valor (R$)</label>
@@ -450,7 +547,6 @@ body{display:flex;flex-direction:column;align-items:center}
           <label class="form-label">Observação (opcional)</label>
           <input type="text" id="f-obs" class="form-input" placeholder="Ex: FATURA JULHO" oninput="this.value=this.value.toUpperCase()"/>
         </div>
-        <!-- STATUS DE PAGAMENTO -->
         <div class="form-row">
           <span class="form-label">Status de Pagamento</span>
           <div class="paid-toggle-row" onclick="toggleFormPaid()">
@@ -468,6 +564,60 @@ body{display:flex;flex-direction:column;align-items:center}
           <button class="btn-cancel" onclick="closeModal('add-modal')">Cancelar</button>
           <button class="btn-save" onclick="saveEntry()">Salvar</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== WHATSAPP CHARGE MODAL (single) ===== -->
+  <div class="modal-overlay" id="wpp-modal" onclick="handleOverlayClick(event,'wpp-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title">📲 Cobrar via WhatsApp</span>
+        <button class="modal-close" onclick="closeModal('wpp-modal')">Fechar</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row wpp-name-input">
+          <label class="form-label">Nome de quem está devendo (opcional)</label>
+          <input type="text" id="wpp-person-input" class="form-input" placeholder="Ex: JOÃO" oninput="this.value=this.value.toUpperCase();updateWppPreview()"/>
+        </div>
+        <div class="form-row">
+          <span class="form-label">Pré-visualização da mensagem</span>
+          <div class="wpp-preview-box">
+            <div class="wpp-bubble" id="wpp-preview-text"></div>
+          </div>
+        </div>
+        <button class="btn-whatsapp" onclick="sendWhatsappSingle()">📲 Enviar no WhatsApp</button>
+        <button class="btn-secondary" onclick="copyWppText()">📋 Copiar texto da cobrança</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== WHATSAPP MULTI CHARGE MODAL ===== -->
+  <div class="modal-overlay" id="wpp-multi-modal" onclick="handleOverlayClick(event,'wpp-multi-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <span class="modal-title">📲 Cobrança Consolidada</span>
+        <button class="modal-close" onclick="closeModal('wpp-multi-modal')">Fechar</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row wpp-name-input">
+          <label class="form-label">Nome de quem está devendo</label>
+          <input type="text" id="wpp-multi-person" class="form-input" placeholder="Ex: MARIA" oninput="this.value=this.value.toUpperCase();renderWppMultiList()"/>
+        </div>
+        <div class="form-row">
+          <span class="form-label">Selecione as contas pendentes</span>
+          <div class="cobranca-list" id="wpp-multi-list" style="background:var(--card2);border:1px solid var(--border);border-radius:var(--radius2)"></div>
+        </div>
+        <div class="form-row">
+          <span class="form-label">Pré-visualização da mensagem</span>
+          <div class="wpp-preview-box">
+            <div class="wpp-bubble" id="wpp-multi-preview-text">Selecione ao menos uma conta acima</div>
+          </div>
+        </div>
+        <button class="btn-whatsapp" onclick="sendWhatsappMulti()">📲 Enviar no WhatsApp</button>
+        <button class="btn-secondary" onclick="copyWppMultiText()">📋 Copiar texto da cobrança</button>
       </div>
     </div>
   </div>
@@ -507,8 +657,8 @@ body{display:flex;flex-direction:column;align-items:center}
       <div class="modal-body">
         <div class="setting-row">
           <div>
-            <div class="setting-label">Mostrar Estatísticas</div>
-            <div class="setting-sub">Exibir painel de estatísticas mensais</div>
+            <div class="setting-label">Mostrar gráfico por categoria</div>
+            <div class="setting-sub">Exibir gráfico na aba Mês</div>
           </div>
           <div class="toggle-switch" id="stats-toggle" onclick="toggleStats()">
             <div class="toggle-knob"></div>
@@ -525,17 +675,22 @@ body{display:flex;flex-direction:column;align-items:center}
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 // ===================== CONSTANTS =====================
 const EMOJIS = ['👤','😊','🦁','🐺','🦊','🐻','🐼','🐨','🦋','🌟','🔥','💎','🚀','🎯','🎸'];
 const CAT_EMOJIS = {CASA:'🏠',VEICULO:'🚗',CARTAO:'💳',ALIMENTACAO:'🍔',LAZER:'🎮',SAUDE:'🏥',TRABALHO:'💼',OUTROS:'📦'};
 const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const MONTHS_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const CHART_COLORS = ['#D85A30','#7F77DD','#5DCAA5','#F0997B','#D4537E','#378ADD','#639922','#EF9F27'];
 
 // ===================== STATE =====================
 let state = { profiles:[{id:'main',name:'PRINCIPAL',emoji:'👤'}], activeProfileId:'main' };
-let data = { entries:[], favorites:[], showStats:false };
+let data = { entries:[], favorites:[], showStats:true };
 let curYear = new Date().getFullYear();
 let curMonth = new Date().getMonth();
+let dashYear = new Date().getFullYear();
+let activeTab = 'cal';
 let selectedDay = null;
 let editingId = null;
 let formType = 'pagar';
@@ -544,6 +699,10 @@ let formParcelas = 1;
 let formPaid = false;
 let lastTapDay = null;
 let lastTapTime = 0;
+let catChartInstance = null;
+let yearChartInstance = null;
+let wppCurrentOcc = null;
+let wppMultiSelected = {};
 
 // ===================== STORAGE =====================
 function loadState() {
@@ -561,8 +720,8 @@ function saveState() { localStorage.setItem('fintracker_profiles', JSON.stringif
 function loadProfileData(id) {
   try {
     const d = localStorage.getItem('fintracker_profile_'+id);
-    return d ? JSON.parse(d) : { entries:[], favorites:[], showStats:false };
-  } catch(e) { return { entries:[], favorites:[], showStats:false }; }
+    return d ? JSON.parse(d) : { entries:[], favorites:[], showStats:true };
+  } catch(e) { return { entries:[], favorites:[], showStats:true }; }
 }
 function saveProfileData(id, d) { localStorage.setItem('fintracker_profile_'+id, JSON.stringify(d)); }
 
@@ -578,6 +737,18 @@ function switchProfile(id) {
 }
 function getActiveProfile() {
   return state.profiles.find(p=>p.id===state.activeProfileId) || state.profiles[0];
+}
+
+// ===================== TABS =====================
+function switchTab(tab) {
+  activeTab = tab;
+  ['cal','mes','ano'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('tabbtn-'+t).classList.toggle('active', t===tab);
+  });
+  document.getElementById('fab').classList.toggle('hidden', tab!=='cal');
+  if (tab==='mes') renderMonthDashboard();
+  if (tab==='ano') renderYearDashboard();
 }
 
 // ===================== OCCURRENCES =====================
@@ -601,16 +772,17 @@ function getOccurrences(entry) {
   return occs;
 }
 
-function getMonthOccs(year, month) {
+function getAllOccs() {
   const all = [];
-  for (const e of data.entries) {
-    for (const o of getOccurrences(e)) {
-      if (o.year===year && o.month===month) all.push({...o, entry:e});
-    }
-  }
+  for (const e of data.entries) for (const o of getOccurrences(e)) all.push({...o, entry:e});
   return all;
 }
-
+function getMonthOccs(year, month) {
+  return getAllOccs().filter(o=>o.year===year && o.month===month);
+}
+function getYearOccs(year) {
+  return getAllOccs().filter(o=>o.year===year);
+}
 function getDayOccs(year, month, day) {
   return getMonthOccs(year, month).filter(o=>o.day===day);
 }
@@ -622,7 +794,6 @@ function togglePaid(entryId, parcelaIdx) {
   if (!e.paid) e.paid = {};
   e.paid[parcelaIdx] = !e.paid[parcelaIdx];
   saveProfileData(state.activeProfileId, data);
-  const was = !e.paid[parcelaIdx];
   showToast(e.paid[parcelaIdx] ? (e.type==='pagar'?'✅ Marcado como PAGO!':'✅ Marcado como RECEBIDO!') : '↩️ Voltou para PENDENTE');
   renderAll();
 }
@@ -635,18 +806,19 @@ function deleteEntry(entryId) {
 }
 
 // ===================== CALC =====================
-function calcDashboard() {
-  const occs = getMonthOccs(curYear, curMonth);
-  let toPay=0, toRec=0, paid=0, total=0;
+function calcDashboard(year, month) {
+  const occs = getMonthOccs(year, month);
+  let toPay=0, toRec=0, paid=0, total=0, paidCount=0, pendingCount=0;
   for (const o of occs) {
     total += o.value;
-    if (o.paid) paid += o.value;
+    if (o.paid) { paid += o.value; paidCount++; }
     else {
+      pendingCount++;
       if (o.entry.type==='pagar') toPay += o.value;
       else toRec += o.value;
     }
   }
-  return {toPay, toRec, saldo:toRec-toPay, paid, total};
+  return {toPay, toRec, saldo:toRec-toPay, paid, total, paidCount, pendingCount, count:occs.length};
 }
 
 function fmt(v) {
@@ -659,35 +831,23 @@ function fmtShort(v) {
 
 // ===================== RENDER ALL =====================
 function renderAll() {
-  renderHeader();
-  renderCalendar();
-  renderUpcoming();
-  renderStats();
+  renderCalendarTab();
   renderFavs();
-  renderDayPanel();
-  renderMonthList();
   renderProfileBar();
   renderProfileChip();
   updateStatsToggle();
+  if (activeTab==='mes') renderMonthDashboard();
+  if (activeTab==='ano') renderYearDashboard();
 }
 
-// ===================== HEADER =====================
-function renderHeader() {
-  const d = calcDashboard();
-  document.getElementById('d-pagar').textContent = fmtShort(d.toPay);
-  document.getElementById('d-receber').textContent = fmtShort(d.toRec);
-  document.getElementById('d-saldo').textContent = fmtShort(d.saldo);
-  const sc = document.getElementById('d-saldo-card');
-  sc.className = 'dash-card '+(d.saldo>=0?'dash-saldo-pos':'dash-saldo-neg');
+// ===================== CALENDAR TAB =====================
+function renderCalendarTab() {
   document.getElementById('month-label').textContent = MONTHS_PT[curMonth]+' '+curYear;
-  const pct = d.total>0 ? Math.round(d.paid/d.total*100) : 0;
-  document.getElementById('prog-pct').textContent = pct+'%';
-  document.getElementById('prog-bar').style.width = pct+'%';
-  document.getElementById('prog-paid').textContent = 'Pago: '+fmt(d.paid);
-  document.getElementById('prog-total').textContent = 'Total: '+fmt(d.total);
+  renderCalendar();
+  renderDayPanel();
+  renderMonthList();
 }
 
-// ===================== CALENDAR =====================
 function renderCalendar() {
   const hdr = document.getElementById('cal-header');
   hdr.innerHTML = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'].map(d=>`<div class="cal-header-day">${d}</div>`).join('');
@@ -734,79 +894,21 @@ function renderCalendar() {
 function handleDayClick(d) {
   const now = Date.now();
   if (lastTapDay===d && now-lastTapTime<450) {
-    selectedDay=d;
-    renderCalendar();
-    renderDayPanel();
-    lastTapDay=null;
+    selectedDay=d; renderCalendar(); renderDayPanel(); lastTapDay=null;
   } else {
     lastTapDay=d; lastTapTime=now;
     selectedDay=(selectedDay===d)?null:d;
-    renderCalendar();
-    renderDayPanel();
-    if (selectedDay) {
-      setTimeout(()=>document.getElementById('day-panel').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
-    }
+    renderCalendar(); renderDayPanel();
+    if (selectedDay) setTimeout(()=>document.getElementById('day-panel').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
   }
 }
 
-// ===================== UPCOMING =====================
-function renderUpcoming() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const in7 = new Date(today.getTime()+7*86400000);
-  const results=[];
-  for (const e of data.entries) {
-    for (const o of getOccurrences(e)) {
-      if (o.paid) continue;
-      const od = new Date(o.year,o.month,o.day);
-      if (od>=today && od<=in7) results.push({...o,entry:e,dateObj:od});
-    }
-  }
-  results.sort((a,b)=>a.dateObj-b.dateObj);
-  const sec=document.getElementById('upcoming-section');
-  if (!results.length){sec.style.display='none';return;}
-  sec.style.display='';
-  document.getElementById('upcoming-list').innerHTML=results.slice(0,5).map(o=>{
-    const dd=String(o.day).padStart(2,'0');
-    const mm=String(o.month+1).padStart(2,'0');
-    const ps=o.total>1?` (${o.parcela}/${o.total})`:'';
-    return `<div class="upcoming-item">
-      <div class="upcoming-date">${dd}/${mm}</div>
-      <div class="upcoming-info">
-        <div class="upcoming-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}${ps}</div>
-        ${o.entry.obs?`<div class="upcoming-sub">${o.entry.obs}</div>`:''}
-      </div>
-      <div class="upcoming-right">
-        <div class="upcoming-val" style="color:${o.entry.type==='pagar'?'var(--red2)':'var(--indigo2)'}">${fmt(o.value)}</div>
-        <span class="badge badge-${o.entry.type}">${o.entry.type==='pagar'?'PAGAR':'RECEBER'}</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ===================== STATS =====================
-function renderStats() {
-  const sec=document.getElementById('stats-section');
-  if (!data.showStats){sec.style.display='none';return;}
-  sec.style.display='';
-  const d=calcDashboard();
-  const today=new Date();
-  const daysLeft=new Date(curYear,curMonth+1,0).getDate()-today.getDate();
-  const pct=d.total>0?Math.round(d.paid/d.total*100):0;
-  document.getElementById('stats-grid').innerHTML=`
-    <div class="stat-card"><div class="stat-label">A Pagar</div><div class="stat-val" style="color:var(--red2)">${fmt(d.toPay)}</div><div class="stat-sub">${pct}% quitado</div></div>
-    <div class="stat-card"><div class="stat-label">A Receber</div><div class="stat-val" style="color:var(--indigo2)">${fmt(d.toRec)}</div><div class="stat-sub">Recebido: ${fmt(d.paid)}</div></div>
-    <div class="stat-card"><div class="stat-label">Fluxo</div><div class="stat-val" style="color:${d.saldo>=0?'var(--green2)':'var(--red2)'}">${fmt(d.saldo)}</div><div class="stat-sub">${d.saldo>=0?'Positivo':'Negativo'}</div></div>
-    <div class="stat-card"><div class="stat-label">Dias Restantes</div><div class="stat-val">${daysLeft}</div><div class="stat-sub">no mês</div></div>`;
-}
-
-// ===================== FAVORITES =====================
 function renderFavs() {
   const favs=data.favorites||[];
   const chips=favs.map(f=>`<div class="fav-chip" onclick="useFavorite('${f.id}')">${CAT_EMOJIS[f.category]||'📦'} ${f.name}</div>`).join('');
   document.getElementById('favs-list').innerHTML=chips+`<button class="fav-manage-btn" onclick="openModal('favs-modal')">⭐ Gerenciar</button>`;
 }
 
-// ===================== DAY PANEL =====================
 function renderDayPanel() {
   const panel=document.getElementById('day-panel');
   if (!selectedDay){panel.style.display='none';return;}
@@ -817,20 +919,15 @@ function renderDayPanel() {
   const occs=getDayOccs(curYear,curMonth,selectedDay);
   const items=document.getElementById('day-panel-items');
   if (!occs.length){items.innerHTML='<div class="empty-day">Nenhum lançamento neste dia</div>';return;}
-  items.innerHTML=occs.map(o=>buildEntryCard(o, true)).join('');
+  items.innerHTML=occs.map(o=>buildEntryCard(o)).join('');
 }
 
-// ===================== MONTH LIST (NOVO) =====================
 function renderMonthList() {
   const occs = getMonthOccs(curYear, curMonth);
-  const wrap = document.getElementById('month-list-wrap');
   const listEl = document.getElementById('month-entries-list');
   const title = document.getElementById('month-list-title');
   const count = document.getElementById('month-list-count');
-
   title.textContent = `Lançamentos de ${MONTHS_PT[curMonth]}`;
-
-  // Só mostra entradas que existem neste mês
   if (!occs.length) {
     count.textContent = '';
     listEl.innerHTML = `<div class="empty-month">
@@ -840,37 +937,35 @@ function renderMonthList() {
     </div>`;
     return;
   }
-
-  // Ordenar por dia
   occs.sort((a,b)=>a.day-b.day);
   const pending = occs.filter(o=>!o.paid).length;
   count.textContent = `${occs.length} • ${pending} pendente${pending!==1?'s':''}`;
-  listEl.innerHTML = occs.map(o=>buildEntryCard(o, false)).join('');
+  listEl.innerHTML = occs.map(o=>buildEntryCard(o)).join('');
 }
 
-function buildEntryCard(o, compact) {
+function buildEntryCard(o) {
   const isPaid = o.paid;
   const paidLabel = isPaid ? (o.entry.type==='pagar'?'PAGO':'RECEBIDO') : 'PENDENTE';
   const paidBadgeStyle = isPaid
     ? 'background:var(--green-bg);color:var(--green2)'
-    : o.entry.type==='pagar'
-      ? 'background:var(--red-bg);color:var(--red2)'
-      : 'background:var(--indigo-bg);color:var(--indigo2)';
+    : o.entry.type==='pagar' ? 'background:var(--red-bg);color:var(--red2)' : 'background:var(--indigo-bg);color:var(--indigo2)';
   const valCls = isPaid ? 'entry-val-paid' : (o.entry.type==='pagar'?'entry-val-pagar':'entry-val-receber');
   const avatarCls = isPaid ? 'entry-avatar-paid' : (o.entry.type==='pagar'?'entry-avatar-pagar':'entry-avatar-receber');
   const dd=String(o.day).padStart(2,'0');
   const mm=String(o.month+1).padStart(2,'0');
   const parcelaStr = o.total>1?`Parcela ${o.parcela}/${o.total} • `:'';
+  const personStr = o.entry.person ? ` • ${o.entry.person}` : '';
   const obsStr = o.entry.obs ? ` • ${o.entry.obs}` : '';
   const payBtnLabel = isPaid
-    ? `<span>↩️</span><span>${o.entry.type==='pagar'?'Pago':'Recebido'}</span>`
+    ? `<span>↩️</span><span>${o.entry.type==='pagar'?'Pago':'Receb.'}</span>`
     : `<span>✅</span><span>${o.entry.type==='pagar'?'Pagar':'Receber'}</span>`;
+  const showCharge = !isPaid && o.entry.type==='pagar';
   return `<div class="entry-card${isPaid?' paid':''}" id="ec-${o.key}">
     <div class="entry-card-main">
       <div class="entry-avatar ${avatarCls}">${(o.entry.name||'?')[0]}</div>
       <div class="entry-info">
         <div class="entry-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}</div>
-        <div class="entry-sub">${parcelaStr}${dd}/${mm}${obsStr}</div>
+        <div class="entry-sub">${parcelaStr}${dd}/${mm}${personStr}${obsStr}</div>
       </div>
       <div class="entry-right">
         <div class="entry-val ${valCls}">${fmt(o.value)}</div>
@@ -878,11 +973,10 @@ function buildEntryCard(o, compact) {
       </div>
     </div>
     <div class="entry-actions">
-      <button class="entry-action-btn btn-pay-action${isPaid?' is-paid':''}" onclick="togglePaid('${o.entryId}',${o.parcela-1})">
-        ${payBtnLabel}
-      </button>
-      ${o.parcela===1?`<button class="entry-action-btn btn-edit-action" onclick="openEditModal('${o.entryId}')">✏️ Editar</button>`:''}
-      ${o.parcela===1?`<button class="entry-action-btn btn-del-action" onclick="confirmDelete('${o.entryId}')">🗑️ Excluir</button>`:''}
+      <button class="entry-action-btn btn-pay-action${isPaid?' is-paid':''}" onclick="togglePaid('${o.entryId}',${o.parcela-1})">${payBtnLabel}</button>
+      ${o.parcela===1?`<button class="entry-action-btn btn-edit-action" onclick="openEditModal('${o.entryId}')"><span>✏️</span><span>Editar</span></button>`:''}
+      ${showCharge?`<button class="entry-action-btn btn-wpp-action" onclick='openWppSingle(${JSON.stringify(o.key)})'><span>📲</span><span>Cobrar</span></button>`:''}
+      ${o.parcela===1?`<button class="entry-action-btn btn-del-action" onclick="confirmDelete('${o.entryId}')"><span>🗑️</span><span>Excluir</span></button>`:''}
     </div>
   </div>`;
 }
@@ -892,6 +986,115 @@ function confirmDelete(entryId) {
   if (!e) return;
   const total = e.parcelas>1 ? ` e todas as ${e.parcelas} parcelas` : '';
   if (confirm(`Excluir "${e.name}"${total}?`)) deleteEntry(entryId);
+}
+
+// ===================== MONTH DASHBOARD =====================
+function renderMonthDashboard() {
+  document.getElementById('dash-month-label').textContent = MONTHS_SHORT[curMonth]+'/'+curYear;
+  const d = calcDashboard(curYear, curMonth);
+  const saldoEl = document.getElementById('m-saldo');
+  saldoEl.textContent = fmt(d.saldo);
+  saldoEl.className = 'balance-val '+(d.saldo>=0?'pos':'neg');
+  document.getElementById('m-pagar-leg').textContent = 'A pagar '+fmtShort(d.toPay);
+  document.getElementById('m-receber-leg').textContent = 'A receber '+fmtShort(d.toRec);
+
+  document.getElementById('m-paid-val').textContent = fmt(d.paid);
+  document.getElementById('m-paid-count').textContent = `${d.paidCount} conta${d.paidCount!==1?'s':''}`;
+  document.getElementById('m-pending-val').textContent = fmt(d.toPay+d.toRec);
+  document.getElementById('m-pending-count').textContent = `${d.pendingCount} conta${d.pendingCount!==1?'s':''}`;
+
+  const pct = d.total>0 ? Math.round(d.paid/d.total*100) : 0;
+  document.getElementById('m-prog-pct').textContent = pct+'%';
+  document.getElementById('m-prog-bar').style.width = pct+'%';
+  document.getElementById('m-prog-sub').textContent = `${d.paidCount} de ${d.count} contas já quitadas neste mês`;
+
+  // Chart by category (only pending "pagar")
+  const chartWrap = document.getElementById('m-chart-wrap');
+  if (data.showStats) {
+    chartWrap.style.display='';
+    const occs = getMonthOccs(curYear, curMonth).filter(o=>o.entry.type==='pagar');
+    const byCat = {};
+    for (const o of occs) byCat[o.entry.category] = (byCat[o.entry.category]||0) + o.value;
+    const labels = Object.keys(byCat);
+    const vals = Object.values(byCat);
+    if (catChartInstance) catChartInstance.destroy();
+    if (labels.length) {
+      catChartInstance = new Chart(document.getElementById('catChart'), {
+        type:'bar',
+        data:{ labels: labels.map(l=>(CAT_EMOJIS[l]||'')+' '+l), datasets:[{ data:vals, backgroundColor: labels.map((_,i)=>CHART_COLORS[i%CHART_COLORS.length]) }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+          scales:{ y:{ ticks:{ color:'#94a3b8', callback:v=>'R$'+v }, grid:{color:'#252a40'} }, x:{ ticks:{ color:'#94a3b8', font:{size:10} }, grid:{display:false} } } }
+      });
+    }
+  } else {
+    chartWrap.style.display='none';
+  }
+
+  // Pending and paid lists
+  const occs = getMonthOccs(curYear, curMonth);
+  occs.sort((a,b)=>a.day-b.day);
+  const pendingOccs = occs.filter(o=>!o.paid);
+  const paidOccs = occs.filter(o=>o.paid);
+
+  document.getElementById('m-pending-list').innerHTML = pendingOccs.length
+    ? pendingOccs.map(o=>buildEntryCard(o)).join('')
+    : '<div class="empty-day">Nenhuma conta pendente 🎉</div>';
+
+  document.getElementById('m-paid-list').innerHTML = paidOccs.length
+    ? paidOccs.map(o=>buildEntryCard(o)).join('')
+    : '<div class="empty-day">Nenhuma conta paga ainda</div>';
+}
+
+// ===================== YEAR DASHBOARD =====================
+function changeYear(dir) {
+  dashYear += dir;
+  renderYearDashboard();
+}
+function renderYearDashboard() {
+  document.getElementById('dash-year-label').textContent = String(dashYear);
+  const occs = getYearOccs(dashYear);
+  let totalRec=0, totalPay=0;
+  const monthlyPay = new Array(12).fill(0);
+  const monthlyRec = new Array(12).fill(0);
+  for (const o of occs) {
+    if (o.entry.type==='receber') { totalRec += o.value; monthlyRec[o.month]+=o.value; }
+    else { totalPay += o.value; monthlyPay[o.month]+=o.value; }
+  }
+  document.getElementById('y-rec-val').textContent = fmt(totalRec);
+  document.getElementById('y-pay-val').textContent = fmt(totalPay);
+  const saldo = totalRec-totalPay;
+  const saldoEl = document.getElementById('y-saldo');
+  saldoEl.textContent = fmt(saldo);
+  saldoEl.className = 'balance-val '+(saldo>=0?'pos':'neg');
+
+  if (yearChartInstance) yearChartInstance.destroy();
+  yearChartInstance = new Chart(document.getElementById('yearChart'), {
+    type:'line',
+    data:{ labels: MONTHS_SHORT, datasets:[
+      { label:'A pagar', data: monthlyPay, borderColor:'#f87171', backgroundColor:'#f87171', tension:.3, pointRadius:3 },
+      { label:'A receber', data: monthlyRec, borderColor:'#818cf8', backgroundColor:'#818cf8', tension:.3, pointRadius:3 }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:'#94a3b8', font:{size:11} } } },
+      scales:{ y:{ ticks:{ color:'#94a3b8', callback:v=>'R$'+v }, grid:{color:'#252a40'} }, x:{ ticks:{ color:'#94a3b8' }, grid:{display:false} } } }
+  });
+
+  // Highlights
+  const hl = document.getElementById('y-highlights');
+  let maxIdx=0, maxVal=0;
+  monthlyPay.forEach((v,i)=>{ if (v>maxVal){maxVal=v;maxIdx=i;} });
+  if (maxVal>0) {
+    hl.innerHTML = `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div class="entry-avatar entry-avatar-pagar" style="font-size:12px">${MONTHS_SHORT[maxIdx]}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${MONTHS_PT[maxIdx]}</div>
+        <div style="font-size:11px;color:var(--text3)">Maior volume de contas a pagar</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:var(--red2)">${fmt(maxVal)}</div>
+    </div>`;
+  } else {
+    hl.innerHTML = '<div class="empty-day">Sem dados suficientes neste ano</div>';
+  }
 }
 
 // ===================== PROFILE BAR =====================
@@ -916,7 +1119,6 @@ function renderProfileBar() {
   </div>`;
   bar.innerHTML=html;
 }
-
 function renderProfileChip() {
   const p=getActiveProfile();
   document.getElementById('active-profile-emoji').textContent=p.emoji;
@@ -945,7 +1147,6 @@ function openAddModal(prefill) {
   }
   openModal('add-modal');
 }
-
 function openAddForDay() { openAddModal(); }
 
 function openEditModal(entryId) {
@@ -956,6 +1157,7 @@ function openEditModal(entryId) {
   resetForm();
   setType(e.type);
   document.getElementById('f-name').value=e.name;
+  document.getElementById('f-person').value=e.person||'';
   document.getElementById('f-value').value=e.value;
   document.getElementById('f-date').value=e.date;
   document.getElementById('f-obs').value=e.obs||'';
@@ -963,7 +1165,6 @@ function openEditModal(entryId) {
   setMode(e.mode||'div');
   formParcelas=e.parcelas||1;
   document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.toggle('active',parseInt(c.dataset.p)===formParcelas));
-  // Pega o status de pagamento da parcela 0 como referência
   formPaid = !!(e.paid && e.paid[0]);
   updatePaidToggle();
   updatePreview();
@@ -973,6 +1174,7 @@ function openEditModal(entryId) {
 function resetForm() {
   formType='pagar'; formMode='div'; formParcelas=1; formPaid=false;
   document.getElementById('f-name').value='';
+  document.getElementById('f-person').value='';
   document.getElementById('f-value').value='';
   document.getElementById('f-obs').value='';
   document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
@@ -1022,10 +1224,7 @@ function setParcelaCustom(v) {
     updatePreview();
   }
 }
-function toggleFormPaid() {
-  formPaid=!formPaid;
-  updatePaidToggle();
-}
+function toggleFormPaid() { formPaid=!formPaid; updatePaidToggle(); }
 function updatePaidToggle() {
   const sw=document.getElementById('paid-toggle-sw');
   const lbl=document.getElementById('paid-toggle-label');
@@ -1049,6 +1248,7 @@ function updatePreview() {
 
 function saveEntry() {
   const name=document.getElementById('f-name').value.trim();
+  const person=document.getElementById('f-person').value.trim();
   const value=parseFloat(document.getElementById('f-value').value);
   const date=document.getElementById('f-date').value;
   if (!name){showToast('⚠️ Informe o nome!');return;}
@@ -1060,19 +1260,16 @@ function saveEntry() {
   if (editingId) {
     const e=data.entries.find(x=>x.id===editingId);
     if (e) {
-      e.name=name; e.value=value; e.date=date; e.category=cat;
+      e.name=name; e.person=person; e.value=value; e.date=date; e.category=cat;
       e.obs=obs; e.type=formType; e.mode=formMode; e.parcelas=formParcelas;
-      // Atualiza status de pagamento da parcela 0
       if (!e.paid) e.paid={};
       e.paid[0]=formPaid;
     }
     showToast('✅ Lançamento atualizado!');
   } else {
     const paid={};
-    if (formPaid) {
-      for (let i=0;i<formParcelas;i++) paid[i]=true;
-    }
-    const e={id:uid(),name,value,date,category:cat,obs,type:formType,mode:formMode,parcelas:formParcelas,paid};
+    if (formPaid) for (let i=0;i<formParcelas;i++) paid[i]=true;
+    const e={id:uid(),name,person,value,date,category:cat,obs,type:formType,mode:formMode,parcelas:formParcelas,paid};
     data.entries.push(e);
     showToast('✅ Lançamento salvo!');
   }
@@ -1092,6 +1289,148 @@ function saveAsFavorite() {
   showToast('⭐ Favorito salvo!');
 }
 
+// ===================== WHATSAPP — INDIVIDUAL =====================
+function findOccByKey(key) {
+  for (const e of data.entries) {
+    for (const o of getOccurrences(e)) {
+      if (o.key===key) return {...o, entry:e};
+    }
+  }
+  return null;
+}
+
+function openWppSingle(key) {
+  const o = findOccByKey(key);
+  if (!o) return;
+  wppCurrentOcc = o;
+  document.getElementById('wpp-person-input').value = o.entry.person || '';
+  updateWppPreview();
+  openModal('wpp-modal');
+}
+
+function buildSingleMessage(o, person) {
+  const dd=String(o.day).padStart(2,'0');
+  const mm=String(o.month+1).padStart(2,'0');
+  const parcelaStr = o.total>1 ? `Parcela: ${o.parcela}/${o.total}\n` : '';
+  const greet = person ? `Oi, ${cap(person)}! ` : '';
+  return `📋 *Lembrete de pagamento*\n\n${greet}passando para lembrar sobre:\n\n${CAT_EMOJIS[o.entry.category]||'📦'} ${cap(o.entry.name)}\n${parcelaStr}Valor: ${fmt(o.value)}\nVencimento: ${dd}/${mm}/${o.year}\n\nStatus: ⏳ Pendente\n\n_Mensagem gerada via app Financeiro_`;
+}
+
+function cap(s) {
+  if (!s) return '';
+  return s.charAt(0)+s.slice(1).toLowerCase();
+}
+
+function updateWppPreview() {
+  if (!wppCurrentOcc) return;
+  const person = document.getElementById('wpp-person-input').value.trim();
+  document.getElementById('wpp-preview-text').textContent = buildSingleMessage(wppCurrentOcc, person);
+}
+
+function sendWhatsappSingle() {
+  const person = document.getElementById('wpp-person-input').value.trim();
+  const msg = buildSingleMessage(wppCurrentOcc, person);
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+}
+
+function copyWppText() {
+  const text = document.getElementById('wpp-preview-text').textContent;
+  copyToClipboard(text);
+}
+
+// ===================== WHATSAPP — MULTI (CONSOLIDADA) =====================
+function renderWppMultiList() {
+  const occs = getAllOccs().filter(o=>!o.paid && o.entry.type==='pagar');
+  occs.sort((a,b)=>new Date(a.year,a.month,a.day)-new Date(b.year,b.month,b.day));
+  const list = document.getElementById('wpp-multi-list');
+  if (!occs.length) {
+    list.innerHTML = '<div class="empty-day">Nenhuma conta pendente para cobrar</div>';
+    updateWppMultiPreview();
+    return;
+  }
+  list.innerHTML = occs.map(o=>{
+    const dd=String(o.day).padStart(2,'0'), mm=String(o.month+1).padStart(2,'0');
+    const ps = o.total>1?` (${o.parcela}/${o.total})`:'';
+    const checked = wppMultiSelected[o.key] ? 'checked' : '';
+    return `<label class="charge-row">
+      <input type="checkbox" class="charge-check" ${checked} onchange="toggleWppMultiSel('${o.key}',this.checked)"/>
+      <div class="charge-info">
+        <div class="charge-name">${CAT_EMOJIS[o.entry.category]||'📦'} ${o.entry.name}${ps}</div>
+        <div class="charge-sub">Vence ${dd}/${mm}/${o.year}</div>
+      </div>
+      <div class="charge-val">${fmt(o.value)}</div>
+    </label>`;
+  }).join('');
+  updateWppMultiPreview();
+}
+
+function toggleWppMultiSel(key, checked) {
+  if (checked) wppMultiSelected[key]=true;
+  else delete wppMultiSelected[key];
+  updateWppMultiPreview();
+}
+
+function buildMultiMessage(person) {
+  const keys = Object.keys(wppMultiSelected);
+  if (!keys.length) return null;
+  const occs = keys.map(k=>findOccByKey(k)).filter(Boolean);
+  occs.sort((a,b)=>new Date(a.year,a.month,a.day)-new Date(b.year,b.month,b.day));
+  let total = 0;
+  const lines = occs.map(o=>{
+    total += o.value;
+    const ps = o.total>1?` (${o.parcela}/${o.total})`:'';
+    return `${CAT_EMOJIS[o.entry.category]||'📦'} ${cap(o.entry.name)}${ps} — ${fmt(o.value)}`;
+  });
+  const dates = occs.map(o=>new Date(o.year,o.month,o.day));
+  const minD = new Date(Math.min(...dates));
+  const maxD = new Date(Math.max(...dates));
+  const fmtD = d => String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+  const periodo = minD.getTime()===maxD.getTime() ? `Vencimento: ${fmtD(minD)}/${minD.getFullYear()}` : `Vencimentos entre ${fmtD(minD)} e ${fmtD(maxD)}/${maxD.getFullYear()}`;
+  const titulo = person ? `Resumo de cobrança — ${cap(person)}` : 'Resumo de cobrança';
+  return `📋 *${titulo}*\n\n${lines.join('\n')}\n\n💰 *Total: ${fmt(total)}*\n\n${periodo}\n\n_Mensagem gerada via app Financeiro_`;
+}
+
+function updateWppMultiPreview() {
+  const person = document.getElementById('wpp-multi-person').value.trim();
+  const msg = buildMultiMessage(person);
+  document.getElementById('wpp-multi-preview-text').textContent = msg || 'Selecione ao menos uma conta acima';
+}
+
+function openWppMulti() {
+  wppMultiSelected = {};
+  document.getElementById('wpp-multi-person').value = '';
+  renderWppMultiList();
+  openModal('wpp-multi-modal');
+}
+
+function sendWhatsappMulti() {
+  const person = document.getElementById('wpp-multi-person').value.trim();
+  const msg = buildMultiMessage(person);
+  if (!msg) { showToast('⚠️ Selecione ao menos uma conta!'); return; }
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+}
+
+function copyWppMultiText() {
+  const text = document.getElementById('wpp-multi-preview-text').textContent;
+  if (!text || text.includes('Selecione ao menos')) { showToast('⚠️ Selecione ao menos uma conta!'); return; }
+  copyToClipboard(text);
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(()=>showToast('📋 Texto copiado!')).catch(()=>fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text) {
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast('📋 Texto copiado!'); } catch(e) { showToast('Não foi possível copiar'); }
+  document.body.removeChild(ta);
+}
+
 // ===================== FAVORITES MODAL =====================
 function renderFavsModal() {
   const body=document.getElementById('favs-modal-body');
@@ -1106,7 +1445,6 @@ function renderFavsModal() {
     <button class="small-btn" style="color:var(--red2)" onclick="deleteFav('${f.id}')">✕</button>
   </div>`).join('');
 }
-
 function useFavorite(id) {
   const f=(data.favorites||[]).find(x=>x.id===id);
   if (!f) return;
@@ -1146,7 +1484,6 @@ function renderProfilesModal() {
   body.innerHTML=html;
   window._newProfileEmoji=EMOJIS[0];
 }
-
 function selectNewEmoji(el,emoji) {
   document.querySelectorAll('.emoji-option').forEach(e=>e.classList.remove('selected'));
   el.classList.add('selected');
@@ -1184,7 +1521,8 @@ function deleteProfile(id) {
 function toggleStats() {
   data.showStats=!data.showStats;
   saveProfileData(state.activeProfileId,data);
-  updateStatsToggle(); renderStats();
+  updateStatsToggle();
+  if (activeTab==='mes') renderMonthDashboard();
 }
 function updateStatsToggle() {
   document.getElementById('stats-toggle').classList.toggle('on',!!data.showStats);
@@ -1241,7 +1579,7 @@ function doSearch(q) {
   const qUp=q.toUpperCase();
   const matches=[];
   for (const e of data.entries) {
-    if (e.name.includes(qUp)||(e.obs||'').toUpperCase().includes(qUp)||e.category.includes(qUp)) {
+    if (e.name.includes(qUp)||(e.obs||'').toUpperCase().includes(qUp)||e.category.includes(qUp)||(e.person||'').toUpperCase().includes(qUp)) {
       for (const o of getOccurrences(e)) matches.push({...o,entry:e});
     }
   }
@@ -1265,7 +1603,7 @@ function doSearch(q) {
     }).join('');
 }
 
-// ===================== MONTH NAV =====================
+// ===================== MONTH/YEAR NAV =====================
 function changeMonth(dir) {
   curMonth+=dir;
   if (curMonth>11){curMonth=0;curYear++;}
@@ -1301,7 +1639,7 @@ function setupPWA() {
   ml.href='data:application/json,'+encodeURIComponent(JSON.stringify(manifest));
   document.head.appendChild(ml);
   if ('serviceWorker' in navigator) {
-    const sw=`self.addEventListener('install',e=>e.waitUntil(caches.open('v2').then(c=>c.add('/'))));
+    const sw=`self.addEventListener('install',e=>e.waitUntil(caches.open('v3').then(c=>c.add('/'))));
 self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
     navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'})));
   }
