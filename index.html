@@ -8,288 +8,449 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>💸 A Pagar&amp;Receber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Geist:wght@500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0a0d14;--card:#13172a;--card2:#1e2337;
-  --border:#252a40;--border2:#2d3350;
-  --indigo:#6366f1;--indigo2:#818cf8;--indigo-bg:rgba(99,102,241,0.12);
-  --red:#ef4444;--red2:#f87171;--red-bg:rgba(239,68,68,0.12);
-  --green:#22c55e;--green2:#4ade80;--green-bg:rgba(34,197,94,0.12);
+  /* Synthetix Financial Design System */
+  --bg:#0a0d14;
+  --surface:#10131a;
+  --card:rgba(19,23,42,0.7);
+  --card2:rgba(30,35,55,0.8);
+  --card-solid:#1d1f27;
+  --card-solid2:#272a32;
+  --border:rgba(255,255,255,0.08);
+  --border2:#464554;
+  --indigo:#c0c1ff;
+  --indigo-dim:#8083ff;
+  --indigo2:#c0c1ff;
+  --indigo-bg:rgba(192,193,255,0.12);
+  --on-indigo:#1000a9;
+  --red:#ef4444;
+  --red2:#ffb4ab;
+  --red-bg:rgba(239,68,68,0.1);
+  --green:#4edea3;
+  --green2:#6ffbbe;
+  --green-bg:rgba(78,222,163,0.1);
   --whatsapp:#25d366;
-  --yellow:#eab308;--orange:#f97316;
-  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
-  --radius:12px;--radius2:8px;
+  --yellow:#f59e0b;
+  --orange:#f97316;
+  --text:#f8fafc;
+  --text2:#94a3b8;
+  --text3:#64748b;
+  --on-surface:#e1e2ec;
+  --radius:1rem;
+  --radius2:0.75rem;
+  --font-display:'Hanken Grotesk',system-ui,sans-serif;
+  --font-mono:'Geist',system-ui,sans-serif;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;overflow:hidden}
+
+/* BASE */
+html,body{height:100%;background:var(--bg);color:var(--on-surface);font-family:var(--font-display);font-size:14px;overflow:hidden;-webkit-font-smoothing:antialiased}
 body{display:flex;flex-direction:column;align-items:center}
 #app{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.glass{background:var(--card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border)}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;font-size:20px;line-height:1;vertical-align:middle;display:inline-flex;align-items:center}
 
 /* HEADER */
-#header{background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;z-index:50}
+#header{background:rgba(10,13,20,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);flex-shrink:0;z-index:50}
 .header-title{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px}
-.app-name{font-size:16px;font-weight:700;letter-spacing:-.3px}
-.app-name span{color:var(--indigo)}
-.header-actions{display:flex;gap:6px}
-.icon-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 9px;font-size:15px;cursor:pointer;line-height:1}
-.icon-btn:active{opacity:.7}
-.profile-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;max-width:110px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.app-name{font-size:17px;font-weight:800;letter-spacing:-.02em;font-family:var(--font-display)}
+.app-name span{color:var(--indigo2)}
+.header-actions{display:flex;gap:6px;align-items:center}
+.icon-btn{background:var(--card);border:1px solid var(--border);color:var(--indigo2);border-radius:var(--radius2);padding:7px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(20px);transition:transform .15s}
+.icon-btn:active{transform:scale(.9)}
+.profile-chip{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius2);padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;max-width:110px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-family:var(--font-mono);letter-spacing:.04em}
 .profile-chip:active{opacity:.7}
 
-/* SEARCH BAR */
+/* SEARCH */
 #search-bar{display:none;padding:0 14px 8px}
 #search-bar.visible{display:block}
-#search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:8px 12px;color:var(--text);font-size:14px;outline:none}
-#search-input:focus{border-color:var(--indigo)}
+#search-input{width:100%;background:rgba(30,35,55,0.8);border:1.5px solid var(--border);border-radius:var(--radius2);padding:9px 12px;color:var(--text);font-size:14px;outline:none;font-family:var(--font-display);backdrop-filter:blur(20px);transition:border-color .2s}
+#search-input:focus{border-color:var(--indigo2);box-shadow:0 0 0 3px rgba(192,193,255,.1)}
 
 /* TABS */
-.tab-bar{display:flex;gap:4px;padding:0 14px 10px;background:var(--bg)}
-.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border:none;border-radius:var(--radius2);background:var(--card);color:var(--text3);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+.tab-bar{display:flex;gap:4px;padding:0 14px 10px;background:transparent}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;border:none;border-radius:var(--radius2);background:transparent;color:var(--text3);font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase}
 .tab-btn.active{background:var(--indigo-bg);color:var(--indigo2)}
-.tab-btn-icon{font-size:16px;line-height:1}
+.tab-btn-icon{font-size:18px!important;line-height:1}
 
 /* SCROLLABLE */
 #content{flex:1;overflow-y:auto;padding-bottom:90px}
-#content::-webkit-scrollbar{display:none}
+#content::-webkit-scrollbar{width:4px}
+#content::-webkit-scrollbar-track{background:transparent}
+#content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:10px}
+
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
-/* ===== CALENDAR TAB ===== */
+/* MONTH NAV */
 .month-nav{display:flex;align-items:center;justify-content:space-between;padding:6px 14px 10px}
-.month-nav-btn{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:5px 14px;font-size:16px;cursor:pointer}
-.month-nav-btn:active{opacity:.7}
-.month-label{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.month-nav-btn{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);color:var(--indigo2);border-radius:var(--radius2);padding:7px 12px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.month-nav-btn:active{transform:scale(.9)}
+.month-label{font-size:18px;font-weight:700;letter-spacing:-.01em;color:var(--indigo2)}
+.month-label-sub{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-family:var(--font-mono);text-align:center;margin-top:2px}
 
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 10px}
-.cal-header-day{text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px 0;text-transform:uppercase}
-.cal-cell{height:52px;border-radius:var(--radius2);border:1.5px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .15s;user-select:none}
-.cal-cell.empty{cursor:default}
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:0 10px}
+.cal-header-day{text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:6px 0;text-transform:uppercase;font-family:var(--font-mono);letter-spacing:.06em}
+.cal-cell{height:52px;border-radius:.5rem;border:1.5px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .15s;user-select:none;background:var(--card);backdrop-filter:blur(20px)}
+.cal-cell.empty{cursor:default;background:transparent;backdrop-filter:none}
 .cal-cell.today{border-color:var(--orange)!important}
-.cal-cell.selected{border-color:var(--indigo)!important;background:var(--indigo-bg)!important}
-.cal-cell.has-pagar{background:rgba(239,68,68,.08);border-color:var(--red)}
-.cal-cell.has-receber{background:rgba(99,102,241,.08);border-color:var(--indigo)}
-.cal-cell.all-paid{background:rgba(34,197,94,.08);border-color:var(--green)}
+.cal-cell.selected{border-color:var(--indigo2)!important;background:var(--indigo-dim)!important;box-shadow:0 0 15px rgba(192,193,255,.25)}
+.cal-cell.has-pagar{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.5)}
+.cal-cell.has-receber{background:rgba(192,193,255,.08);border-color:rgba(192,193,255,.3)}
+.cal-cell.all-paid{background:rgba(78,222,163,.08);border-color:rgba(78,222,163,.4)}
 .cal-cell.due-soon{border-color:var(--yellow)!important}
-.cal-day-num{font-size:13px;font-weight:600;line-height:1}
-.cal-dots{display:flex;gap:2px;margin-top:2px;flex-wrap:wrap;justify-content:center;max-width:28px}
+.cal-day-num{font-size:13px;font-weight:600;line-height:1;font-family:var(--font-mono)}
+.cal-dots{display:flex;gap:2px;margin-top:3px;flex-wrap:wrap;justify-content:center;max-width:28px}
 .cal-dot{width:5px;height:5px;border-radius:50%}
 .cal-dot-red{background:var(--red)}
-.cal-dot-indigo{background:var(--indigo)}
+.cal-dot-indigo{background:var(--indigo2)}
 .cal-dot-green{background:var(--green)}
 
-.cal-legend{display:flex;gap:10px;flex-wrap:wrap;padding:10px 14px;justify-content:center}
-.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3)}
-.legend-dot{width:8px;height:8px;border-radius:50%}
+/* LEGEND */
+.cal-legend{display:flex;gap:10px;flex-wrap:wrap;padding:8px 14px;justify-content:center}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);font-family:var(--font-mono);letter-spacing:.04em}
+.legend-dot{width:7px;height:7px;border-radius:50%}
 
+/* SECTION */
 .section{padding:10px 14px 4px}
-.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin-bottom:8px}
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;font-family:var(--font-mono)}
 
-.favs-scroll{display:flex;gap:8px;overflow-x:auto;padding:0 14px 2px;scrollbar-width:none}
-.favs-scroll::-webkit-scrollbar{display:none}
-.fav-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:7px 12px;white-space:nowrap;font-size:12px;cursor:pointer;flex-shrink:0}
-.fav-chip:active{opacity:.7;border-color:var(--indigo)}
-.fav-manage-btn{background:transparent;border:1px solid var(--border2);border-radius:20px;padding:7px 12px;color:var(--text3);font-size:12px;cursor:pointer;flex-shrink:0}
+/* UPCOMING */
+.upcoming-item{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius2);padding:9px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.upcoming-date{font-size:11px;font-weight:700;color:var(--text3);min-width:32px;font-family:var(--font-mono)}
+.upcoming-info{flex:1;min-width:0}
+.upcoming-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.upcoming-sub{font-size:11px;color:var(--text3)}
+.upcoming-right{text-align:right}
+.upcoming-val{font-size:13px;font-weight:600;font-family:var(--font-mono)}
+.badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:999px;display:inline-block;letter-spacing:.06em;font-family:var(--font-mono);text-transform:uppercase}
+.badge-pagar{background:var(--red-bg);color:var(--red2)}
+.badge-receber{background:var(--indigo-bg);color:var(--indigo2)}
 
-#day-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin:10px 14px 0;overflow:hidden}
-.day-panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border)}
-.day-panel-title{font-size:13px;font-weight:700}
-.add-day-btn{background:var(--indigo);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer}
-.empty-day{padding:20px;text-align:center;color:var(--text3);font-size:13px}
-
+/* MONTH LIST */
 .month-list-wrap{padding:4px 14px 0}
 .month-list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.month-list-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text3)}
-.month-list-count{font-size:11px;color:var(--text3)}
+.month-list-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono)}
+.month-list-count{font-size:11px;color:var(--text3);font-family:var(--font-mono)}
 
 /* ENTRY CARD */
-.entry-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color .2s}
-.entry-card.paid{border-color:rgba(34,197,94,.3)}
-.entry-card-main{display:flex;align-items:center;gap:10px;padding:11px 12px}
-.entry-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
-.entry-avatar-pagar{background:var(--red-bg);color:var(--red2)}
-.entry-avatar-receber{background:var(--indigo-bg);color:var(--indigo2)}
-.entry-avatar-paid{background:var(--green-bg);color:var(--green2)}
+.entry-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-left:3px solid var(--indigo2);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:all .2s}
+.entry-card.paid{border-left-color:var(--green);opacity:.85}
+.entry-card.type-pagar:not(.paid){border-left-color:var(--red)}
+.entry-card-main{display:flex;align-items:center;gap:10px;padding:12px 12px}
+.entry-avatar{width:40px;height:40px;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;background:var(--card-solid)}
+.entry-avatar-pagar{color:var(--red2)}
+.entry-avatar-receber{color:var(--indigo2)}
+.entry-avatar-paid{color:var(--green2)}
 .entry-info{flex:1;min-width:0}
 .entry-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.entry-sub{font-size:11px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entry-sub{font-size:11px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-mono)}
 .entry-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
-.entry-val{font-size:15px;font-weight:800}
+.entry-val{font-size:14px;font-weight:600;font-family:var(--font-mono);letter-spacing:-.01em}
 .entry-val-pagar{color:var(--red2)}
 .entry-val-receber{color:var(--indigo2)}
 .entry-val-paid{color:var(--green2)}
-
 .entry-actions{display:flex;border-top:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
 .entry-actions::-webkit-scrollbar{display:none}
-.entry-action-btn{flex:1;min-width:62px;padding:9px 4px;font-size:11px;font-weight:600;border:none;background:transparent;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:3px;transition:background .15s;white-space:nowrap}
-.entry-action-btn:active{opacity:.7}
-.entry-action-btn + .entry-action-btn{border-left:1px solid var(--border)}
+.entry-action-btn{flex:1;min-width:60px;padding:9px 4px;font-size:10px;font-weight:700;border:none;background:transparent;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;font-family:var(--font-mono);letter-spacing:.03em;text-transform:uppercase}
+.entry-action-btn:active{opacity:.6}
+.entry-action-btn+.entry-action-btn{border-left:1px solid var(--border)}
 .btn-pay-action{color:var(--green2)}
 .btn-pay-action.is-paid{color:var(--text3)}
 .btn-edit-action{color:var(--indigo2)}
 .btn-del-action{color:var(--red2)}
 .btn-wpp-action{color:var(--whatsapp)}
-.btn-copy-action{color:var(--text2)}
 
-.badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;letter-spacing:.4px}
-
+/* EMPTY STATE */
+.empty-day{padding:20px;text-align:center;color:var(--text3);font-size:13px}
 .empty-month{padding:32px 20px;text-align:center}
 .empty-month-icon{font-size:40px;margin-bottom:10px}
 .empty-month-text{font-size:14px;color:var(--text3);margin-bottom:4px}
 .empty-month-sub{font-size:12px;color:var(--text3)}
 
-/* ===== DASHBOARD SHARED ===== */
+/* FAVORITES */
+.favs-scroll{display:flex;gap:8px;overflow-x:auto;padding:0 14px 2px;scrollbar-width:none}
+.favs-scroll::-webkit-scrollbar{display:none}
+.fav-chip{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:999px;padding:7px 14px;white-space:nowrap;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:all .15s}
+.fav-chip:active{border-color:var(--indigo2);color:var(--indigo2)}
+.fav-manage-btn{background:transparent;border:1px solid var(--border2);border-radius:999px;padding:7px 14px;color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+
+/* DAY PANEL */
+#day-panel{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-left:3px solid var(--indigo2);border-radius:var(--radius);margin:10px 14px 0;overflow:hidden}
+.day-panel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
+.day-panel-title{font-size:14px;font-weight:700}
+.add-day-btn{background:var(--indigo-dim);color:#fff;border:none;border-radius:var(--radius2);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+
+/* DASHBOARD */
 .dash-tab-header{padding:10px 14px 4px;display:flex;align-items:center;justify-content:space-between}
 .dash-tab-title{font-size:15px;font-weight:700}
 .dash-period-nav{display:flex;align-items:center;gap:8px}
-.dash-period-btn{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:4px 10px;font-size:14px;cursor:pointer}
-.dash-period-label{font-size:12px;font-weight:700;color:var(--text2);min-width:64px;text-align:center}
+.dash-period-btn{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);color:var(--indigo2);border-radius:var(--radius2);padding:6px 10px;font-size:14px;cursor:pointer;display:flex;align-items:center;transition:transform .15s}
+.dash-period-btn:active{transform:scale(.9)}
+.dash-period-label{font-size:11px;font-weight:700;color:var(--indigo2);min-width:64px;text-align:center;font-family:var(--font-mono);letter-spacing:.04em}
 
-.balance-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem;margin:10px 14px}
-.balance-label{font-size:12px;color:var(--text3);margin-bottom:4px}
-.balance-val{font-size:26px;font-weight:800;margin-bottom:10px}
-.balance-val.pos{color:var(--green2)}
+/* BALANCE CARD */
+.balance-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 1.25rem;margin:10px 14px;position:relative;overflow:hidden}
+.balance-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(192,193,255,0.05),transparent 60%);pointer-events:none}
+.balance-label{font-size:11px;color:var(--text2);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.balance-val{font-size:32px;font-weight:800;margin-bottom:16px;letter-spacing:-.02em;color:var(--text)}
 .balance-val.neg{color:var(--red2)}
-.balance-legend{display:flex;gap:16px}
-.balance-legend-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px}
-.balance-legend-dot{width:8px;height:8px;border-radius:2px}
+.balance-legend{display:flex;gap:20px;border-top:1px solid var(--border);padding-top:14px}
+.balance-legend-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.balance-legend-dot{width:4px;height:24px;border-radius:99px;flex-shrink:0}
 
+/* MINI CARDS */
 .mini-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px;margin-bottom:14px}
-.mini-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:.85rem 1rem}
-.mini-card-label{font-size:11px;color:var(--text3);margin-bottom:4px}
-.mini-card-val{font-size:18px;font-weight:700}
-.mini-card-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.mini-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius2);padding:.9rem 1rem}
+.mini-card-icon{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.mini-card-label{font-size:10px;color:var(--text3);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.mini-card-val{font-size:17px;font-weight:700;font-family:var(--font-display)}
+.mini-card-sub{font-size:10px;color:var(--text3);margin-top:2px;font-family:var(--font-mono)}
 
-.progress-card{padding:0 14px;margin-bottom:18px}
-.progress-header{display:flex;justify-content:space-between;margin-bottom:6px}
-.progress-title{font-size:13px;color:var(--text2)}
-.progress-pct{font-size:13px;font-weight:700;color:var(--green2)}
-.progress-bar-bg{background:var(--card2);border-radius:99px;height:8px;overflow:hidden}
-.progress-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--indigo),var(--green));transition:width .4s}
-.progress-sub{font-size:11px;color:var(--text3);margin-top:5px}
+/* PROGRESS */
+.progress-card{padding:0 14px;margin-bottom:14px}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:6px;align-items:flex-end}
+.progress-title{font-size:14px;font-weight:700}
+.progress-sub-title{font-size:12px;color:var(--text2);margin-top:1px}
+.progress-pct{font-size:13px;font-weight:700;color:var(--indigo2);font-family:var(--font-mono)}
+.progress-bar-bg{background:var(--card-solid2);border-radius:999px;height:8px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--indigo-dim),var(--green));transition:width .5s cubic-bezier(.17,.67,.83,.67);box-shadow:0 0 10px rgba(128,131,255,.3)}
+.progress-sub{font-size:11px;color:var(--text3);margin-top:5px;font-family:var(--font-mono)}
 
-.chart-wrap{padding:0 14px;margin-bottom:18px}
-.chart-title{font-size:13px;font-weight:600;margin-bottom:8px}
+/* CHART */
+.chart-wrap{padding:0 14px;margin-bottom:14px}
+.chart-title{font-size:13px;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
 .chart-canvas-box{position:relative;height:180px}
 
-/* Pending/paid list cobrança */
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px}
+.stat-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius2);padding:14px}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-family:var(--font-mono)}
+.stat-val{font-size:18px;font-weight:700}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:3px;font-family:var(--font-mono)}
+
+/* CHARGE ROW */
 .charge-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border)}
 .charge-row:last-child{border-bottom:none}
-.charge-check{width:18px;height:18px;flex-shrink:0;accent-color:var(--indigo)}
+.charge-check{width:18px;height:18px;flex-shrink:0;accent-color:var(--indigo-dim)}
 .charge-info{flex:1;min-width:0}
 .charge-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .charge-sub{font-size:11px;color:var(--text3)}
-.charge-val{font-size:13px;font-weight:700;color:var(--red2)}
+.charge-val{font-size:13px;font-weight:600;color:var(--red2);font-family:var(--font-mono)}
 
-/* ===== BOTTOM BAR ===== */
-#profile-bar{position:absolute;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;z-index:60}
+/* BOTTOM BAR */
+#profile-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(16,19,26,0.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);border-radius:1rem 1rem 0 0;display:flex;overflow-x:auto;scrollbar-width:none;z-index:60;padding:4px 6px}
 #profile-bar::-webkit-scrollbar{display:none}
-.profile-tab{display:flex;flex-direction:column;align-items:center;padding:8px 14px 10px;cursor:pointer;min-width:70px;position:relative;flex-shrink:0}
+.profile-tab{display:flex;flex-direction:column;align-items:center;padding:8px 12px 10px;cursor:pointer;min-width:70px;position:relative;flex-shrink:0;transition:all .15s;border-radius:.75rem}
+.profile-tab:active{transform:scale(.95)}
+.profile-tab.active{background:var(--indigo-bg)}
 .profile-tab.active .ptab-name{color:var(--indigo2)}
-.profile-tab-bar{height:2.5px;background:var(--indigo);border-radius:2px;width:80%;position:absolute;bottom:0;display:none}
-.profile-tab.active .profile-tab-bar{display:block}
-.ptab-emoji{font-size:18px;line-height:1}
-.ptab-name{font-size:10px;font-weight:600;color:var(--text3);margin-top:2px;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ptab-badge{position:absolute;top:6px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--red);border:1.5px solid var(--card)}
-.new-profile-btn{display:flex;flex-direction:column;align-items:center;padding:8px 14px 10px;cursor:pointer;min-width:60px;flex-shrink:0;color:var(--text3)}
-.new-profile-btn .ptab-emoji{font-size:16px;color:var(--indigo2)}
-.new-profile-btn .ptab-name{font-size:10px;font-weight:600;margin-top:2px}
+.profile-tab.active .ptab-emoji{filter:drop-shadow(0 0 6px rgba(192,193,255,.5))}
+.profile-tab-bar{display:none}
+.ptab-emoji{font-size:20px;line-height:1;transition:filter .2s}
+.ptab-name{font-size:10px;font-weight:700;color:var(--text3);margin-top:3px;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+.ptab-badge{position:absolute;top:6px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--red);border:1.5px solid #10131a}
+.new-profile-btn{display:flex;flex-direction:column;align-items:center;padding:8px 12px 10px;cursor:pointer;min-width:60px;flex-shrink:0}
+.new-profile-btn .ptab-emoji{font-size:18px;color:var(--indigo2)}
+.new-profile-btn .ptab-name{font-size:10px;font-weight:700;margin-top:3px;font-family:var(--font-mono);text-transform:uppercase;color:var(--text3)}
 
-#fab{position:absolute;bottom:68px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--indigo);color:#fff;font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:65;box-shadow:0 4px 20px rgba(99,102,241,.5);transition:transform .15s}
+/* FAB */
+#fab{position:absolute;bottom:70px;right:16px;width:56px;height:56px;border-radius:50%;background:var(--indigo-dim);color:#fff;font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:65;box-shadow:0 8px 32px rgba(128,131,255,.4);transition:transform .15s}
 #fab:active{transform:scale(.92)}
+#fab:hover{transform:scale(1.08)}
 #fab.hidden{display:none}
 
 /* MODALS */
-.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:80;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:80;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-overlay.visible{opacity:1;pointer-events:all}
-.modal-sheet{background:var(--card);border-radius:20px 20px 0 0;max-height:92%;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,0,.15,1)}
+.modal-sheet{background:rgba(19,23,42,.95);backdrop-filter:blur(40px);border:1px solid var(--border);border-radius:1.5rem 1.5rem 0 0;max-height:92%;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,0,.15,1)}
 .modal-sheet::-webkit-scrollbar{display:none}
 .modal-overlay.visible .modal-sheet{transform:translateY(0)}
-.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:10px auto 0}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px}
-.modal-title{font-size:16px;font-weight:700}
-.modal-close{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:7px;padding:5px 10px;font-size:13px;cursor:pointer}
-.modal-body{padding:0 18px 28px}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 0}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px}
+.modal-title{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.modal-close{background:var(--card-solid2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+.modal-body{padding:0 20px 28px}
 
 /* FORM */
 .form-row{margin-bottom:14px}
-.form-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:block}
+.form-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:block;font-family:var(--font-mono)}
 .type-btns,.mode-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.type-btn,.mode-btn{padding:10px;border-radius:var(--radius2);border:1.5px solid var(--border);background:var(--card2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
-.type-btn.active-pagar{background:var(--red-bg);border-color:var(--red);color:var(--red2)}
-.type-btn.active-receber{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
-.mode-btn.active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
-.form-input{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--radius2);padding:10px 12px;color:var(--text);font-size:14px;outline:none;font-family:inherit}
-.form-input:focus{border-color:var(--indigo)}
+.type-btn,.mode-btn{padding:11px;border-radius:var(--radius2);border:1.5px solid var(--border);background:var(--card-solid);color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;font-family:var(--font-display)}
+.type-btn.active-pagar{background:var(--red-bg);border-color:rgba(239,68,68,.4);color:var(--red2)}
+.type-btn.active-receber{background:var(--indigo-bg);border-color:rgba(192,193,255,.3);color:var(--indigo2)}
+.mode-btn.active{background:var(--indigo-bg);border-color:rgba(192,193,255,.3);color:var(--indigo2)}
+.form-input{width:100%;background:rgba(30,35,55,0.8);border:1.5px solid var(--border);border-radius:var(--radius2);padding:11px 14px;color:var(--text);font-size:14px;outline:none;font-family:var(--font-display);transition:border-color .2s,box-shadow .2s}
+.form-input:focus{border-color:var(--indigo2);box-shadow:0 0 0 3px rgba(192,193,255,.1)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{background:var(--card2);border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;transition:all .15s}
-.chip.active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
+.chip{background:var(--card-solid);border:1.5px solid var(--border);border-radius:999px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+.chip.active{background:var(--indigo-bg);border-color:rgba(192,193,255,.3);color:var(--indigo2)}
 .parcela-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.parcela-chip{background:var(--card2);border:1.5px solid var(--border);border-radius:20px;padding:6px 10px;font-size:12px;cursor:pointer;transition:all .15s}
-.parcela-chip.active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
-.parcela-input{width:56px;background:var(--card2);border:1.5px solid var(--border);border-radius:20px;padding:6px 8px;color:var(--text);font-size:12px;text-align:center;outline:none}
-.parcela-input:focus{border-color:var(--indigo)}
-.preview-box{border-radius:var(--radius2);padding:10px 12px;font-size:12px;margin-top:4px;line-height:1.6}
-.preview-div{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);color:var(--indigo2)}
-.preview-fix{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);color:#fde047}
-.form-actions{display:flex;gap:8px;margin-top:6px}
-.btn-cancel{flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:11px;font-size:14px;font-weight:600;cursor:pointer}
-.btn-save{flex:2;background:var(--indigo);border:none;color:#fff;border-radius:var(--radius2);padding:11px;font-size:14px;font-weight:700;cursor:pointer}
-.btn-fav{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:11px 12px;font-size:14px;cursor:pointer}
-.btn-danger{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:var(--red2);border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
-.btn-primary{background:var(--indigo);border:none;color:#fff;border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
-.btn-secondary{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
-.btn-whatsapp{background:var(--whatsapp);border:none;color:#06301c;border-radius:var(--radius2);padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.parcela-chip{background:var(--card-solid);border:1.5px solid var(--border);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;font-family:var(--font-mono)}
+.parcela-chip.active{background:var(--indigo-bg);border-color:rgba(192,193,255,.3);color:var(--indigo2)}
+.parcela-input{width:56px;background:var(--card-solid);border:1.5px solid var(--border);border-radius:999px;padding:6px 8px;color:var(--text);font-size:11px;text-align:center;outline:none;font-family:var(--font-mono)}
+.parcela-input:focus{border-color:var(--indigo2)}
+.preview-box{border-radius:var(--radius2);padding:11px 14px;font-size:12px;margin-top:4px;line-height:1.6;font-family:var(--font-mono)}
+.preview-div{background:rgba(192,193,255,.08);border:1px solid rgba(192,193,255,.2);color:var(--indigo2)}
+.preview-fix{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:var(--yellow)}
+.form-actions{display:flex;gap:8px;margin-top:8px}
+.btn-cancel{flex:1;background:var(--card-solid);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+.btn-save{flex:2;background:var(--indigo-dim);border:none;color:#fff;border-radius:var(--radius2);padding:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em;box-shadow:0 4px 16px rgba(128,131,255,.3)}
+.btn-fav{background:var(--card-solid);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:12px 14px;font-size:14px;cursor:pointer}
+.btn-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--red2);border-radius:var(--radius2);padding:11px 14px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:10px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+.btn-primary{background:var(--indigo-dim);border:none;color:#fff;border-radius:var(--radius2);padding:11px 14px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+.btn-secondary{background:var(--card-solid);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius2);padding:11px 14px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
+.btn-whatsapp{background:var(--whatsapp);border:none;color:#06301c;border-radius:var(--radius2);padding:12px 14px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
 
 /* PAID TOGGLE */
-.paid-toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--radius2);padding:11px 14px}
+.paid-toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--card-solid);border:1.5px solid var(--border);border-radius:var(--radius2);padding:12px 14px;cursor:pointer}
 .paid-toggle-label{font-size:13px;font-weight:600}
-.paid-toggle-sub{font-size:11px;color:var(--text3);margin-top:1px}
-.toggle-switch{width:46px;height:26px;background:var(--border2);border-radius:13px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.paid-toggle-sub{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--font-mono)}
+.toggle-switch{width:48px;height:26px;background:var(--card-solid2);border-radius:13px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
 .toggle-switch.on{background:var(--green)}
 .toggle-knob{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
-.toggle-switch.on .toggle-knob{left:23px}
+.toggle-switch.on .toggle-knob{left:25px}
 
 /* PROFILES */
-.profile-list-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.profile-list-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
 .profile-list-item:last-child{border-bottom:none}
-.profile-emoji-btn{font-size:24px;cursor:pointer;padding:4px;border-radius:8px;background:var(--card2);border:1px solid var(--border)}
+.profile-emoji-btn{font-size:26px;cursor:pointer;padding:4px;border-radius:.75rem;background:var(--card-solid);border:1px solid var(--border)}
 .profile-item-info{flex:1}
-.profile-item-name{font-size:14px;font-weight:600}
-.profile-item-sub{font-size:11px;color:var(--text3)}
+.profile-item-name{font-size:14px;font-weight:700}
+.profile-item-sub{font-size:11px;color:var(--text3);font-family:var(--font-mono)}
 .profile-item-actions{display:flex;gap:6px}
-.small-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer}
-.small-btn-active{background:var(--indigo-bg);border-color:var(--indigo);color:var(--indigo2)}
+.small-btn{background:var(--card-solid);border:1px solid var(--border);color:var(--text2);border-radius:.5rem;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.03em}
+.small-btn-active{background:var(--indigo-bg);border-color:rgba(192,193,255,.3);color:var(--indigo2)}
 .emoji-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}
-.emoji-option{font-size:24px;text-align:center;cursor:pointer;padding:6px;border-radius:8px;border:1.5px solid var(--border);background:var(--card2)}
-.emoji-option.selected{border-color:var(--indigo);background:var(--indigo-bg)}
+.emoji-option{font-size:24px;text-align:center;cursor:pointer;padding:8px;border-radius:.75rem;border:1.5px solid var(--border);background:var(--card-solid)}
+.emoji-option.selected{border-color:var(--indigo2);background:var(--indigo-bg)}
 
 /* SETTINGS */
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
 .setting-row:last-child{border-bottom:none}
-.setting-label{font-size:14px;font-weight:500}
+.setting-label{font-size:14px;font-weight:600}
 .setting-sub{font-size:11px;color:var(--text3);margin-top:2px}
 
 /* SEARCH RESULTS */
 #search-results{padding:0 14px}
-.sr-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-.sr-name{font-size:13px;font-weight:600}
-.sr-sub{font-size:11px;color:var(--text3)}
-.sr-val{font-size:14px;font-weight:700;text-align:right}
-.sr-date{font-size:11px;color:var(--text3);text-align:right}
+.sr-item{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius2);padding:11px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.sr-name{font-size:13px;font-weight:700}
+.sr-sub{font-size:11px;color:var(--text3);font-family:var(--font-mono)}
+.sr-val{font-size:14px;font-weight:600;text-align:right;font-family:var(--font-mono)}
+.sr-date{font-size:11px;color:var(--text3);text-align:right;font-family:var(--font-mono)}
 
 /* TOAST */
-#toast{position:absolute;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:#22c55e;color:#fff;padding:9px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;max-width:90%}
+#toast{position:absolute;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(19,23,42,.95);backdrop-filter:blur(20px);border:1px solid var(--border);color:var(--on-surface);padding:10px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none;max-width:90%;font-family:var(--font-mono)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* WHATSAPP PREVIEW MODAL */
+/* WHATSAPP */
 .wpp-preview-box{background:#0a0d14;border-radius:var(--radius2);padding:14px;border:1px solid var(--border)}
-.wpp-bubble{background:#005c4b;color:#e9edef;border-radius:8px 8px 8px 2px;padding:10px 12px;font-size:13px;line-height:1.65;white-space:pre-wrap;font-family:inherit}
+.wpp-bubble{background:#005c4b;color:#e9edef;border-radius:8px 8px 8px 2px;padding:11px 14px;font-size:13px;line-height:1.65;white-space:pre-wrap;font-family:var(--font-display)}
 .wpp-name-input{margin-bottom:12px}
-.cobranca-list{max-height:240px;overflow-y:auto;margin-bottom:8px}
+.cobranca-list{max-height:240px;overflow-y:auto;margin-bottom:8px;border-radius:var(--radius2);border:1px solid var(--border);background:var(--card-solid)}
+
+/* AUTH SCREEN */
+#auth-screen{position:fixed;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(128,131,255,.12),transparent 60%),var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
+#auth-screen.hidden{display:none}
+.auth-box{width:100%;max-width:400px}
+.auth-logo{text-align:center;margin-bottom:28px}
+.auth-logo-emoji{width:88px;height:88px;border-radius:50%;background:radial-gradient(circle,rgba(128,131,255,.2),rgba(128,131,255,.04));border:1px solid rgba(192,193,255,.2);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 18px;box-shadow:0 0 40px rgba(128,131,255,.2)}
+.auth-logo-title{font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--indigo2)}
+.auth-logo-title span{color:var(--on-surface)}
+.auth-logo-sub{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.6;padding:0 8px}
+.auth-form-card{background:rgba(19,23,42,.8);backdrop-filter:blur(40px);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px}
+.auth-tabs{display:flex;gap:4px;background:var(--card-solid);padding:4px;border-radius:var(--radius2);margin-bottom:22px}
+.auth-tab-btn{flex:1;padding:10px;border:none;border-radius:.6rem;background:transparent;color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase}
+.auth-tab-btn.active{background:var(--indigo-dim);color:#fff}
+.auth-field{margin-bottom:14px}
+.auth-field-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:block;font-family:var(--font-mono)}
+.auth-error{background:var(--red-bg);border:1px solid rgba(239,68,68,.3);color:var(--red2);border-radius:var(--radius2);padding:10px 14px;font-size:12px;margin-bottom:12px;display:none;font-family:var(--font-mono)}
+.auth-error.show{display:block}
+.auth-submit-btn{width:100%;background:var(--indigo-dim);border:none;color:#fff;border-radius:var(--radius2);padding:14px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(128,131,255,.25);transition:transform .15s;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.06em}
+.auth-submit-btn:active{transform:scale(.98)}
+.auth-submit-btn:disabled{opacity:.6;cursor:default}
+.auth-switch{text-align:center;font-size:12px;color:var(--text3);margin-top:16px}
+.auth-switch a{color:var(--indigo2);cursor:pointer;text-decoration:underline}
+.auth-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.auth-forgot{text-align:right;font-size:10px;color:var(--indigo2);margin:-4px 0 16px;cursor:pointer;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase;font-weight:700}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:20px 0 16px;color:var(--text3);font-size:10px;font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.auth-guest-btn{width:100%;background:transparent;border:1.5px solid var(--border2);color:var(--on-surface);border-radius:var(--radius2);padding:14px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .2s}
+.auth-guest-btn:active{border-color:var(--indigo2);color:var(--indigo2)}
+.auth-guest-note{text-align:center;font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5;font-family:var(--font-mono)}
+.auth-footer-brand{text-align:center;margin-top:24px;font-size:10px;color:var(--text3);font-family:var(--font-mono);letter-spacing:.2em;text-transform:uppercase}
+.guest-banner{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fde047;border-radius:var(--radius2);padding:10px 14px;margin:0 14px 8px;font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-family:var(--font-mono)}
+.guest-banner-text{flex:1;font-size:11px}
+.guest-banner-btn{background:var(--indigo-dim);color:#fff;border:none;border-radius:.5rem;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em}
+
+/* SYNC STATUS */
+#sync-status{position:fixed;top:10px;left:50%;transform:translateX(-50%) translateY(-48px);background:rgba(19,23,42,.95);backdrop-filter:blur(20px);border:1px solid var(--border);color:var(--text2);padding:7px 16px;border-radius:999px;font-size:11px;font-weight:700;z-index:150;display:flex;align-items:center;gap:6px;transition:transform .3s;pointer-events:none;font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+#sync-status.show{transform:translateX(-50%) translateY(0)}
+#sync-status.synced{color:var(--green2);border-color:rgba(78,222,163,.25)}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--text3)}
+#sync-status.synced .sync-dot{background:var(--green2)}
+#sync-status.syncing .sync-dot{background:var(--yellow);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ACCOUNT CARD */
+.account-card{background:var(--card-solid);border:1px solid var(--border);border-radius:var(--radius2);padding:14px;margin-bottom:14px}
+.account-email{font-size:13px;font-weight:700;word-break:break-all;font-family:var(--font-mono)}
+.account-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-family:var(--font-mono)}
 </style>
 </head>
 <body>
 <div id="app">
+
+  <!-- ===== TELA DE LOGIN/CADASTRO ===== -->
+  <div id="auth-screen">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="auth-logo-emoji">💸</div>
+        <div class="auth-logo-title">A Pagar <span>&amp; Receber</span></div>
+        <div class="auth-logo-sub">Sincronização inteligente de fluxo de caixa para gestão financeira de alta precisão.</div>
+      </div>
+      <div class="auth-form-card">
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="auth-tab-login" onclick="setAuthMode('login')">Entrar</button>
+          <button class="auth-tab-btn" id="auth-tab-signup" onclick="setAuthMode('signup')">Criar conta</button>
+        </div>
+        <div class="auth-error" id="auth-error"></div>
+        <div class="auth-field">
+          <label class="auth-field-label">E-mail</label>
+          <input type="email" id="auth-email" class="form-input" placeholder="nome@exemplo.com" autocomplete="email"/>
+        </div>
+        <div class="auth-field">
+          <label class="auth-field-label">Senha</label>
+          <input type="password" id="auth-password" class="form-input" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+        <div class="auth-forgot" id="auth-forgot-link" onclick="handleForgotPassword()">Esqueci minha senha</div>
+        <button class="auth-submit-btn" id="auth-submit-btn" onclick="handleAuthSubmit()">
+          <span id="auth-submit-label">Entrar</span>
+        </button>
+        <div class="auth-switch" id="auth-switch-text">
+          Não tem conta? <a onclick="setAuthMode('signup')">Criar agora</a>
+        </div>
+        <div class="auth-divider"><span>Ou continuar como</span></div>
+        <button class="auth-guest-btn" onclick="handleGuestMode()">
+          <span class="material-symbols-outlined" style="font-size:18px">person</span>
+          Continuar sem login
+        </button>
+        <div class="auth-guest-note">Nota: seus dados serão armazenados apenas localmente neste dispositivo.</div>
+      </div>
+      <div class="auth-footer-brand">Precision Finance</div>
+    </div>
+  </div>
+
+  <!-- INDICADOR DE SINCRONIZAÇÃO -->
+  <div id="sync-status"><span class="sync-dot"></span><span id="sync-status-text">Sincronizado</span></div>
+
   <!-- HEADER -->
   <div id="header">
     <div class="header-title">
@@ -299,22 +460,26 @@ body{display:flex;flex-direction:column;align-items:center}
           <span id="active-profile-emoji">👤</span>
           <span id="active-profile-name">PRINCIPAL</span>
         </div>
-        <button class="icon-btn" onclick="toggleSearch()">🔍</button>
-        <button class="icon-btn" onclick="openModal('settings-modal')">⚙️</button>
+        <button class="icon-btn" onclick="toggleSearch()"><span class="material-symbols-outlined">search</span></button>
+        <button class="icon-btn" onclick="openModal('settings-modal')"><span class="material-symbols-outlined">settings</span></button>
       </div>
     </div>
     <div id="search-bar">
       <input type="text" id="search-input" class="form-input" placeholder="Buscar nome, categoria..." oninput="doSearch(this.value)"/>
     </div>
+    <div class="guest-banner" id="guest-banner" style="display:none">
+      <span class="guest-banner-text">⚠️ Modo sem login — dados salvos só neste aparelho</span>
+      <button class="guest-banner-btn" onclick="exitGuestMode()">Criar conta</button>
+    </div>
     <div class="tab-bar">
       <button class="tab-btn active" id="tabbtn-cal" onclick="switchTab('cal')">
-        <span class="tab-btn-icon">📅</span>Calendário
+        <span class="tab-btn-icon material-symbols-outlined">calendar_month</span>Calendário
       </button>
       <button class="tab-btn" id="tabbtn-mes" onclick="switchTab('mes')">
-        <span class="tab-btn-icon">📊</span>Mês
+        <span class="tab-btn-icon material-symbols-outlined">dashboard</span>Mês
       </button>
       <button class="tab-btn" id="tabbtn-ano" onclick="switchTab('ano')">
-        <span class="tab-btn-icon">📈</span>Ano
+        <span class="tab-btn-icon material-symbols-outlined">analytics</span>Ano
       </button>
     </div>
   </div>
@@ -329,7 +494,7 @@ body{display:flex;flex-direction:column;align-items:center}
       <div class="tab-panel active" id="tab-cal">
         <div class="month-nav">
           <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
-          <span class="month-label" id="month-label"></span>
+          <div style="text-align:center"><div class="month-label" id="month-label"></div><div class="month-label-sub">Fluxo Mensal</div></div>
           <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
         </div>
 
@@ -383,8 +548,8 @@ body{display:flex;flex-direction:column;align-items:center}
           <div class="balance-label">Saldo previsto do mês</div>
           <div class="balance-val" id="m-saldo">R$ 0,00</div>
           <div class="balance-legend">
-            <span class="balance-legend-item"><span class="balance-legend-dot" style="background:var(--red)"></span><span id="m-pagar-leg">A pagar R$ 0</span></span>
-            <span class="balance-legend-item"><span class="balance-legend-dot" style="background:var(--indigo)"></span><span id="m-receber-leg">A receber R$ 0</span></span>
+            <span class="balance-legend-item"><div class="balance-legend-dot" style="background:var(--red)"></div><div><div class="form-label" style="margin-bottom:2px">A PAGAR</div><div class="entry-val entry-val-pagar" id="m-pagar-leg" style="font-size:13px">R$ 0</div></div></span>
+            <span class="balance-legend-item"><div class="balance-legend-dot" style="background:var(--green)"></div><div><div class="form-label" style="margin-bottom:2px">A RECEBER</div><div class="entry-val entry-val-receber" id="m-receber-leg" style="font-size:13px">R$ 0</div></div></span>
           </div>
         </div>
 
@@ -468,7 +633,7 @@ body{display:flex;flex-direction:column;align-items:center}
   </div>
 
   <!-- FAB -->
-  <button id="fab" onclick="openAddModal()">＋</button>
+  <button id="fab" onclick="openAddModal()"><span class="material-symbols-outlined" style="font-size:28px;font-variation-settings:'FILL' 1,'wght' 700,'GRAD' 0,'opsz' 24">add</span></button>
 
   <!-- PROFILE BAR -->
   <div id="profile-bar"></div>
@@ -699,6 +864,17 @@ body{display:flex;flex-direction:column;align-items:center}
         <button class="modal-close" onclick="closeModal('settings-modal')">Fechar</button>
       </div>
       <div class="modal-body">
+        <div class="account-card" id="account-card-logged">
+          <div class="account-label">Conta conectada</div>
+          <div class="account-email" id="account-email-display">—</div>
+          <button class="btn-secondary" style="margin-top:10px" onclick="handleLogout()">🚪 Sair da Conta</button>
+        </div>
+        <div class="account-card" id="account-card-guest" style="display:none">
+          <div class="account-label">Status</div>
+          <div class="account-email">⚠️ Modo sem login</div>
+          <div class="setting-sub" style="margin:4px 0 10px">Dados salvos só neste aparelho. Crie uma conta para sincronizar entre dispositivos.</div>
+          <button class="btn-primary" style="margin-top:0" onclick="exitGuestMode()">Criar conta agora</button>
+        </div>
         <div class="setting-row">
           <div>
             <div class="setting-label">Mostrar gráfico por categoria</div>
@@ -741,6 +917,64 @@ body{display:flex;flex-direction:column;align-items:center}
     </div>
   </div>
 </div>
+
+<!-- ===================== FIREBASE SDK (módulo) ===================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged, sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCcHPhQEScLxj-Mx3mkwD9wpDIArCeA2Ns",
+  authDomain: "app-apagarreceber.firebaseapp.com",
+  projectId: "app-apagarreceber",
+  storageBucket: "app-apagarreceber.firebasestorage.app",
+  messagingSenderId: "483166582209",
+  appId: "1:483166582209:web:0d05a147b42dd67e122b40"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const fbAuth = getAuth(fbApp);
+const fbDb = getFirestore(fbApp);
+
+// Ponte exposta para o script principal (não-módulo) poder usar Firebase.
+// Cada perfil financeiro vira um documento dentro da coleção do usuário logado:
+// users/{uid}/profiles_data/{profileId} — e users/{uid} guarda a lista de perfis.
+window.firebaseAPI = {
+  // ---- AUTH ----
+  signUp: (email, password) => createUserWithEmailAndPassword(fbAuth, email, password),
+  signIn: (email, password) => signInWithEmailAndPassword(fbAuth, email, password),
+  signOutUser: () => signOut(fbAuth),
+  resetPassword: (email) => sendPasswordResetEmail(fbAuth, email),
+  onAuthChange: (cb) => onAuthStateChanged(fbAuth, cb),
+
+  // ---- FIRESTORE: estado de perfis (lista + perfil ativo) ----
+  saveUserState: (uid, stateObj) => setDoc(doc(fbDb, 'users', uid), { ...stateObj, updatedAt: serverTimestamp() }, { merge: true }),
+  loadUserState: async (uid) => {
+    const snap = await getDoc(doc(fbDb, 'users', uid));
+    return snap.exists() ? snap.data() : null;
+  },
+  watchUserState: (uid, cb) => onSnapshot(doc(fbDb, 'users', uid), (snap) => cb(snap.exists() ? snap.data() : null)),
+
+  // ---- FIRESTORE: dados de cada perfil financeiro ----
+  saveProfileDoc: (uid, profileId, profileData) =>
+    setDoc(doc(fbDb, 'users', uid, 'profiles_data', profileId), { ...profileData, updatedAt: serverTimestamp() }),
+  loadProfileDoc: async (uid, profileId) => {
+    const snap = await getDoc(doc(fbDb, 'users', uid, 'profiles_data', profileId));
+    return snap.exists() ? snap.data() : null;
+  },
+  watchProfileDoc: (uid, profileId, cb) =>
+    onSnapshot(doc(fbDb, 'users', uid, 'profiles_data', profileId), (snap) => cb(snap.exists() ? snap.data() : null)),
+};
+
+// Sinaliza para o script principal que o Firebase já está pronto para uso
+window.dispatchEvent(new Event('firebase-ready'));
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
@@ -804,6 +1038,12 @@ function catName(id) {
 }
 
 // ===================== STORAGE =====================
+// ===================== AUTH STATE =====================
+let currentUser = null;
+let unsubProfileWatch = null;
+let isApplyingRemoteUpdate = false;
+let saveDebounceTimer = null;
+
 function loadState() {
   try {
     const s = localStorage.getItem('fintracker_profiles');
@@ -815,7 +1055,14 @@ function loadState() {
     }
   } catch(e){}
 }
-function saveState() { localStorage.setItem('fintracker_profiles', JSON.stringify(state)); }
+
+function saveState() {
+  localStorage.setItem('fintracker_profiles', JSON.stringify(state));
+  if (currentUser && window.firebaseAPI) {
+    window.firebaseAPI.saveUserState(currentUser.uid, state).catch(()=>{});
+  }
+}
+
 function loadProfileData(id) {
   let d;
   try {
@@ -830,7 +1077,35 @@ function loadProfileData(id) {
   if (!Array.isArray(d.remindersSent)) d.remindersSent = [];
   return d;
 }
-function saveProfileData(id, d) { localStorage.setItem('fintracker_profile_'+id, JSON.stringify(d)); }
+
+// Salva localmente de forma instantânea (UI nunca espera a rede) e sincroniza
+// com o Firestore em segundo plano, com um pequeno debounce para não disparar
+// uma escrita na nuvem a cada toque de tecla.
+function saveProfileData(id, d) {
+  localStorage.setItem('fintracker_profile_'+id, JSON.stringify(d));
+  if (currentUser && window.firebaseAPI && !isApplyingRemoteUpdate) {
+    showSyncStatus('syncing');
+    clearTimeout(saveDebounceTimer);
+    saveDebounceTimer = setTimeout(()=>{
+      window.firebaseAPI.saveProfileDoc(currentUser.uid, id, d)
+        .then(()=>showSyncStatus('synced'))
+        .catch(()=>showSyncStatus('error'));
+    }, 600);
+  }
+}
+
+function showSyncStatus(kind) {
+  const el = document.getElementById('sync-status');
+  const txt = document.getElementById('sync-status-text');
+  if (!el) return;
+  el.classList.remove('synced','syncing');
+  if (kind==='syncing') { el.classList.add('syncing'); txt.textContent='Sincronizando...'; }
+  else if (kind==='synced') { el.classList.add('synced'); txt.textContent='Sincronizado'; }
+  else if (kind==='error') { txt.textContent='Sem conexão — salvo localmente'; }
+  el.classList.add('show');
+  clearTimeout(window._syncHideTimer);
+  window._syncHideTimer = setTimeout(()=>el.classList.remove('show'), 2000);
+}
 
 // ===================== PROFILES =====================
 function switchProfile(id) {
@@ -839,6 +1114,7 @@ function switchProfile(id) {
   saveState();
   data = loadProfileData(id);
   selectedDay = null;
+  watchActiveProfileRemote();
   renderAll();
   showToast('Perfil alterado!');
   setTimeout(checkReminders, 500);
@@ -1082,7 +1358,7 @@ function buildEntryCard(o) {
     ? `<span>↩️</span><span>${o.entry.type==='pagar'?'Pago':'Receb.'}</span>`
     : `<span>✅</span><span>${o.entry.type==='pagar'?'Pagar':'Receber'}</span>`;
   const showCharge = !isPaid && o.entry.type==='pagar';
-  return `<div class="entry-card${isPaid?' paid':''}" id="ec-${o.key}">
+  return `<div class="entry-card${isPaid?' paid':''} ${o.entry.type==='pagar'?'type-pagar':''}" id="ec-${o.key}">
     <div class="entry-card-main">
       <div class="entry-avatar ${avatarCls}">${(o.entry.name||'?')[0]}</div>
       <div class="entry-info">
@@ -1252,7 +1528,7 @@ function openModal(id) {
   document.getElementById(id).classList.add('visible');
   if (id==='profiles-modal') renderProfilesModal();
   if (id==='favs-modal') renderFavsModal();
-  if (id==='settings-modal') updateStatsToggle();
+  if (id==='settings-modal') { updateStatsToggle(); updateAccountCard(); }
   if (id==='categories-modal') renderCategoriesModal();
 }
 function closeModal(id) { document.getElementById(id).classList.remove('visible'); }
@@ -1839,7 +2115,12 @@ function cycleProfileEmoji(id) {
 function createProfile() {
   const name=document.getElementById('new-profile-name').value.trim();
   if (!name){showToast('⚠️ Informe o nome!');return;}
-  state.profiles.push({id:uid(),name,emoji:window._newProfileEmoji||'👤'});
+  const newId = uid();
+  state.profiles.push({id:newId,name,emoji:window._newProfileEmoji||'👤'});
+  // Garante que o novo perfil já nasce com categorias padrão salvas localmente
+  // e na nuvem, para não ficar vazio até a primeira edição.
+  const seedData = { entries:[], favorites:[], showStats:true, categories: DEFAULT_CATEGORIES.map(c=>({...c})), remindersSent:[] };
+  saveProfileData(newId, seedData);
   saveState(); renderProfilesModal(); renderProfileBar();
   showToast('Perfil criado!');
 }
@@ -1852,7 +2133,11 @@ function renameProfile(id) {
 function deleteProfile(id) {
   if (!confirm('Excluir este perfil e todos os dados?')) return;
   state.profiles=state.profiles.filter(x=>x.id!==id);
-  if (state.activeProfileId===id){state.activeProfileId=state.profiles[0].id;data=loadProfileData(state.activeProfileId);}
+  if (state.activeProfileId===id){
+    state.activeProfileId=state.profiles[0].id;
+    data=loadProfileData(state.activeProfileId);
+    watchActiveProfileRemote();
+  }
   localStorage.removeItem('fintracker_profile_'+id);
   saveState(); renderProfilesModal(); renderAll();
   showToast('Perfil excluído!');
@@ -1997,13 +2282,255 @@ self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r
   });
 }
 
+// ===================== AUTENTICAÇÃO (LOGIN / CADASTRO) =====================
+let authMode = 'login';
+
+function setAuthMode(mode) {
+  authMode = mode;
+  document.getElementById('auth-tab-login').classList.toggle('active', mode==='login');
+  document.getElementById('auth-tab-signup').classList.toggle('active', mode==='signup');
+  document.getElementById('auth-submit-label').textContent = mode==='login' ? 'Entrar' : 'Criar conta';
+  document.getElementById('auth-forgot-link').style.display = mode==='login' ? 'block' : 'none';
+  const switchEl = document.getElementById('auth-switch-text');
+  switchEl.innerHTML = mode==='login'
+    ? 'Não tem conta? <a onclick="setAuthMode(\'signup\')">Criar agora</a>'
+    : 'Já tem conta? <a onclick="setAuthMode(\'login\')">Entrar</a>';
+  hideAuthError();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function hideAuthError() {
+  document.getElementById('auth-error').classList.remove('show');
+}
+
+function translateAuthError(code) {
+  const map = {
+    'auth/invalid-email': 'E-mail inválido.',
+    'auth/missing-password': 'Informe a senha.',
+    'auth/weak-password': 'A senha precisa ter ao menos 6 caracteres.',
+    'auth/email-already-in-use': 'Este e-mail já está cadastrado. Tente entrar.',
+    'auth/user-not-found': 'E-mail ou senha incorretos.',
+    'auth/wrong-password': 'E-mail ou senha incorretos.',
+    'auth/invalid-credential': 'E-mail ou senha incorretos.',
+    'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente novamente.',
+    'auth/network-request-failed': 'Sem conexão com a internet.'
+  };
+  return map[code] || 'Não foi possível concluir. Tente novamente.';
+}
+
+function setAuthLoading(loading) {
+  const btn = document.getElementById('auth-submit-btn');
+  btn.disabled = loading;
+  document.getElementById('auth-submit-label').innerHTML = loading
+    ? '<span class="auth-spinner"></span>'
+    : (authMode==='login' ? 'Entrar' : 'Criar conta');
+}
+
+async function handleAuthSubmit() {
+  hideAuthError();
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  if (!email || !password) { showAuthError('Preencha e-mail e senha.'); return; }
+  if (!window.firebaseAPI) { showAuthError('Conectando ao servidor, aguarde um instante e tente novamente.'); return; }
+  setAuthLoading(true);
+  try {
+    if (authMode==='login') {
+      await window.firebaseAPI.signIn(email, password);
+    } else {
+      await window.firebaseAPI.signUp(email, password);
+    }
+    // onAuthChange cuida do resto (carregar dados e mostrar o app)
+  } catch (err) {
+    showAuthError(translateAuthError(err.code));
+    setAuthLoading(false);
+  }
+}
+
+async function handleForgotPassword() {
+  const email = document.getElementById('auth-email').value.trim();
+  if (!email) { showAuthError('Digite seu e-mail no campo acima primeiro.'); return; }
+  if (!window.firebaseAPI) return;
+  try {
+    await window.firebaseAPI.resetPassword(email);
+    showToast('📧 E-mail de redefinição enviado!');
+  } catch (err) {
+    showAuthError(translateAuthError(err.code));
+  }
+}
+
+async function handleLogout() {
+  if (!confirm('Deseja sair da sua conta?')) return;
+  if (unsubProfileWatch) { unsubProfileWatch(); unsubProfileWatch = null; }
+  if (window.firebaseAPI) await window.firebaseAPI.signOutUser();
+  closeModal('settings-modal');
+}
+
+function showAuthScreen() {
+  document.getElementById('auth-screen').classList.remove('hidden');
+}
+function hideAuthScreen() {
+  document.getElementById('auth-screen').classList.add('hidden');
+}
+
+// ===================== MODO CONVIDADO (sem login) =====================
+// Permite usar o app só com localStorage, sem conta. Fica marcado em uma
+// flag separada do localStorage para o app saber, na próxima abertura, que
+// deve pular a tela de login automaticamente (até a pessoa decidir criar conta).
+function handleGuestMode() {
+  localStorage.setItem('fintracker_guest_mode', '1');
+  currentUser = null;
+  hideAuthScreen();
+  document.getElementById('guest-banner').style.display = 'flex';
+  updateAccountCard();
+  renderAll();
+  setupPWA();
+  setTimeout(checkReminders, 700);
+}
+
+function exitGuestMode() {
+  localStorage.removeItem('fintracker_guest_mode');
+  document.getElementById('guest-banner').style.display = 'none';
+  setAuthMode('signup');
+  showAuthScreen();
+}
+
+function isGuestMode() {
+  return localStorage.getItem('fintracker_guest_mode') === '1';
+}
+
+// Alterna qual card aparece em Configurações: conta logada (com e-mail e botão
+// sair) ou aviso de modo sem login (com botão para criar conta).
+function updateAccountCard() {
+  const loggedCard = document.getElementById('account-card-logged');
+  const guestCard = document.getElementById('account-card-guest');
+  if (currentUser) {
+    loggedCard.style.display = '';
+    guestCard.style.display = 'none';
+  } else {
+    loggedCard.style.display = 'none';
+    guestCard.style.display = '';
+  }
+}
+
+// Mantém o perfil ativo sincronizado em tempo real: qualquer alteração feita
+// em outro dispositivo aparece aqui automaticamente, sem precisar recarregar.
+function watchActiveProfileRemote() {
+  if (unsubProfileWatch) { unsubProfileWatch(); unsubProfileWatch = null; }
+  if (!currentUser || !window.firebaseAPI) return;
+  unsubProfileWatch = window.firebaseAPI.watchProfileDoc(currentUser.uid, state.activeProfileId, (remoteData) => {
+    if (!remoteData) return;
+    // Evita loop: se acabamos de salvar nós mesmos, o snapshot que volta é o nosso próprio dado
+    const localStr = JSON.stringify(data);
+    const { updatedAt, ...remoteClean } = remoteData;
+    const remoteStr = JSON.stringify(remoteClean);
+    if (localStr === remoteStr) return;
+    isApplyingRemoteUpdate = true;
+    data = remoteClean;
+    if (!data.categories || !data.categories.length) data.categories = DEFAULT_CATEGORIES.map(c=>({...c}));
+    if (!Array.isArray(data.remindersSent)) data.remindersSent = [];
+    localStorage.setItem('fintracker_profile_'+state.activeProfileId, JSON.stringify(data));
+    renderAll();
+    showSyncStatus('synced');
+    isApplyingRemoteUpdate = false;
+  });
+}
+
+// Faz upload de tudo que existe localmente (perfis + dados) para a nuvem.
+// Usado na primeira vez que um usuário loga, garantindo que nada se perca.
+async function pushLocalDataToCloud() {
+  if (!currentUser || !window.firebaseAPI) return;
+  await window.firebaseAPI.saveUserState(currentUser.uid, state);
+  for (const p of state.profiles) {
+    const pd = loadProfileData(p.id);
+    await window.firebaseAPI.saveProfileDoc(currentUser.uid, p.id, pd);
+  }
+}
+
+// Decide a estratégia de carga ao logar:
+// - Se a nuvem já tem dados (login em outro dispositivo), eles têm prioridade.
+// - Se a nuvem está vazia (primeiro login), os dados locais existentes sobem para a nuvem.
+async function syncOnLogin() {
+  showSyncStatus('syncing');
+  const remoteState = await window.firebaseAPI.loadUserState(currentUser.uid);
+  if (remoteState && Array.isArray(remoteState.profiles) && remoteState.profiles.length) {
+    const { updatedAt, ...cleanState } = remoteState;
+    state = cleanState;
+    saveState_localOnly();
+    for (const p of state.profiles) {
+      const remoteProfile = await window.firebaseAPI.loadProfileDoc(currentUser.uid, p.id);
+      if (remoteProfile) {
+        const { updatedAt: ua2, ...cleanProfile } = remoteProfile;
+        localStorage.setItem('fintracker_profile_'+p.id, JSON.stringify(cleanProfile));
+      }
+    }
+    data = loadProfileData(state.activeProfileId);
+  } else {
+    // Primeiro login deste usuário: sobe os dados locais (se houver) para a nuvem
+    await pushLocalDataToCloud();
+    data = loadProfileData(state.activeProfileId);
+  }
+  showSyncStatus('synced');
+}
+
+function saveState_localOnly() {
+  localStorage.setItem('fintracker_profiles', JSON.stringify(state));
+}
+
+function initAuthListener() {
+  window.firebaseAPI.onAuthChange(async (user) => {
+    if (user) {
+      // Login bem-sucedido (ou conta criada): sai do modo convidado, se estava nele
+      localStorage.removeItem('fintracker_guest_mode');
+      document.getElementById('guest-banner').style.display = 'none';
+      currentUser = user;
+      document.getElementById('account-email-display').textContent = user.email || '—';
+      updateAccountCard();
+      try {
+        await syncOnLogin();
+      } catch(e) {
+        // Sem internet no momento do login: segue com os dados locais já carregados
+        showSyncStatus('error');
+      }
+      hideAuthScreen();
+      watchActiveProfileRemote();
+      renderAll();
+      setupPWA();
+      setTimeout(checkReminders, 700);
+      setAuthLoading(false);
+      document.getElementById('auth-email').value='';
+      document.getElementById('auth-password').value='';
+    } else {
+      currentUser = null;
+      updateAccountCard();
+      if (unsubProfileWatch) { unsubProfileWatch(); unsubProfileWatch = null; }
+      if (isGuestMode()) {
+        // Pessoa optou por usar sem login nesta sessão/aparelho: pula a tela de auth
+        hideAuthScreen();
+        document.getElementById('guest-banner').style.display = 'flex';
+        renderAll();
+        setupPWA();
+        setTimeout(checkReminders, 700);
+      } else {
+        showAuthScreen();
+      }
+      setAuthLoading(false);
+    }
+  });
+}
+
 // ===================== INIT =====================
 loadState();
-data=loadProfileData(state.activeProfileId);
-setupPWA();
-renderAll();
-// Verifica lembretes de vencimento (5 dias) após o app carregar, sem travar a primeira renderização
-setTimeout(checkReminders, 700);
+data = loadProfileData(state.activeProfileId);
+
+if (window.firebaseAPI) {
+  initAuthListener();
+} else {
+  window.addEventListener('firebase-ready', initAuthListener, { once:true });
+}
 </script>
 </body>
 </html>
