@@ -1767,4 +1767,1158 @@ function renderFavPanelList() {
 
   // Próximos vencimentos
   const today = new Date(); today.setHours(0,0,0,0);
-  const next = occs.filter(o=>!o.paid && new Date(o.year,o.month,o.day)>=today).sort((a,b)=>new Date(a.year,a.month,a.day)-new Date(b.year,b.month,b.day))
+  const next = occs.filter(o=>!o.paid && new Date(o.year,o.month,o.day)>=today).sort((a,b)=>new Date(a.year,a.month,a.day)-new Date(b.year,b.month,b.day));
+  const nextEl = document.getElementById('fav-next-list');
+  const nextSec = document.getElementById('fav-next-section');
+  if (nextEl && nextSec) {
+    if (next.length) {
+      nextSec.style.display='';
+      nextEl.innerHTML = next.slice(0,3).map(o=>buildEntryCard(o)).join('');
+    } else {
+      nextSec.style.display='none';
+    }
+  }
+
+  // Histórico completo
+  const histEl = document.getElementById('fav-hist-list');
+  const histCount = document.getElementById('macc-fav-hist-count');
+  if (histEl) histEl.innerHTML = occs.length ? occs.map(o=>buildEntryCard(o)).join('') : '<div class="empty-day">Nenhum lançamento encontrado</div>';
+  if (histCount) histCount.textContent = occs.length;
+}
+
+function renderFavPanelAnalise(allOccs) {
+  const paidCount = allOccs.filter(o=>o.paid).length;
+  const taxa = allOccs.length ? Math.round((paidCount/allOccs.length)*100) : 0;
+  const totalGeral = allOccs.reduce((s,o)=>s+o.value,0);
+  const media = allOccs.length ? totalGeral/allOccs.length : 0;
+
+  const mediaEl = document.getElementById('fav-anal-media');
+  const taxaEl = document.getElementById('fav-anal-taxa');
+  if (mediaEl) mediaEl.textContent = fmt(media);
+  if (taxaEl) taxaEl.textContent = taxa+'%';
+
+  // Barras por categoria
+  const byCat = {};
+  for (const o of allOccs) byCat[o.entry.category]=(byCat[o.entry.category]||0)+o.value;
+  const sorted = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+  const maxV = sorted.length ? sorted[0][1] : 1;
+  const cEl = document.getElementById('fav-cat-bars');
+  if (cEl) {
+    cEl.innerHTML = sorted.map(([cat,val])=>`
+      <div class="fav-bar-item">
+        <span style="font-size:11px;color:var(--text2);min-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${catEmoji(cat)} ${catName(cat)}</span>
+        <div class="fav-bar-track"><div class="fav-bar-fill" style="width:${Math.round(val/maxV*100)}%;background:var(--indigo)"></div></div>
+        <div class="fav-bar-val" style="color:var(--indigo2)">${fmt(val)}</div>
+      </div>`).join('');
+  }
+}
+
+function openFavNewEntry() {
+  openAddModal();
+  // Pré-preencher o favorecido após abrir
+  setTimeout(()=>{
+    const fp = document.getElementById('f-person');
+    if(fp) fp.value = favPanelName;
+  }, 100);
+}
+function openFavWpp() {
+  openWppMulti();
+  setTimeout(()=>{
+    const mp = document.getElementById('wpp-multi-person');
+    if(mp) mp.value = favPanelName;
+    renderWppMultiList();
+  }, 100);
+}
+
+// ===================== YEAR DASHBOARD =====================
+function changeYear(dir) {
+  dashYear += dir;
+  renderYearDashboard();
+}
+function renderYearDashboard() {
+  document.getElementById('dash-year-label').textContent = String(dashYear);
+  const occs = getYearOccs(dashYear);
+  let totalRec=0, totalPay=0;
+  const monthlyPay = new Array(12).fill(0);
+  const monthlyRec = new Array(12).fill(0);
+  for (const o of occs) {
+    if (o.entry.type==='receber') { totalRec += o.value; monthlyRec[o.month]+=o.value; }
+    else { totalPay += o.value; monthlyPay[o.month]+=o.value; }
+  }
+  document.getElementById('y-rec-val').textContent = fmt(totalRec);
+  document.getElementById('y-pay-val').textContent = fmt(totalPay);
+  const saldo = totalRec-totalPay;
+  const saldoEl = document.getElementById('y-saldo');
+  saldoEl.textContent = fmt(saldo);
+  saldoEl.className = 'balance-val '+(saldo>=0?'pos':'neg');
+
+  if (yearChartInstance) yearChartInstance.destroy();
+  yearChartInstance = new Chart(document.getElementById('yearChart'), {
+    type:'line',
+    data:{ labels: MONTHS_SHORT, datasets:[
+      { label:'A pagar', data: monthlyPay, borderColor:'#f87171', backgroundColor:'#f87171', tension:.3, pointRadius:3 },
+      { label:'A receber', data: monthlyRec, borderColor:'#818cf8', backgroundColor:'#818cf8', tension:.3, pointRadius:3 }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:'#94a3b8', font:{size:11} } } },
+      scales:{ y:{ ticks:{ color:'#94a3b8', callback:v=>'R$'+v }, grid:{color:'#252a40'} }, x:{ ticks:{ color:'#94a3b8' }, grid:{display:false} } } }
+  });
+
+  // Highlights
+  const hl = document.getElementById('y-highlights');
+  let maxIdx=0, maxVal=0;
+  monthlyPay.forEach((v,i)=>{ if (v>maxVal){maxVal=v;maxIdx=i;} });
+  if (maxVal>0) {
+    hl.innerHTML = `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div class="entry-avatar entry-avatar-pagar" style="font-size:12px">${MONTHS_SHORT[maxIdx]}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${MONTHS_PT[maxIdx]}</div>
+        <div style="font-size:11px;color:var(--text3)">Maior volume de contas a pagar</div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:var(--red2)">${fmt(maxVal)}</div>
+    </div>`;
+  } else {
+    hl.innerHTML = '<div class="empty-day">Sem dados suficientes neste ano</div>';
+  }
+}
+
+// ===================== PROFILE BAR =====================
+function renderProfileBar() {
+  const bar=document.getElementById('profile-bar');
+  let html=state.profiles.map(p=>{
+    const isActive=p.id===state.activeProfileId;
+    const pData=isActive?data:loadProfileData(p.id);
+    const hasPending=!isActive&&(pData.entries||[]).some(e=>{
+      const today=new Date();
+      return getOccurrences(e).some(o=>!o.paid&&new Date(o.year,o.month,o.day)<=today);
+    });
+    return `<div class="profile-tab${isActive?' active':''}" onclick="switchProfile('${p.id}')">
+      <div class="ptab-emoji">${p.emoji}</div>
+      <div class="ptab-name">${p.name}</div>
+      ${hasPending?'<div class="ptab-badge"></div>':''}
+      <div class="profile-tab-bar"></div>
+    </div>`;
+  }).join('');
+  html+=`<div class="new-profile-btn" onclick="openModal('profiles-modal')">
+    <div class="ptab-emoji">＋</div><div class="ptab-name">Novo</div>
+  </div>`;
+  bar.innerHTML=html;
+}
+function renderProfileChip() {
+  const p=getActiveProfile();
+  document.getElementById('active-profile-emoji').textContent=p.emoji;
+  document.getElementById('active-profile-name').textContent=p.name;
+}
+
+// ===================== MODALS =====================
+function openModal(id) {
+  document.getElementById(id).classList.add('visible');
+  if (id==='profiles-modal') renderProfilesModal();
+  if (id==='favs-modal') renderFavsModal();
+  if (id==='settings-modal') { updateStatsToggle(); updateAccountCard(); }
+  if (id==='add-modal' && activeTab==='fav-panel') { /* manter contexto */ }
+  if (id==='categories-modal') renderCategoriesModal();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('visible'); }
+function handleOverlayClick(e,id) { if (e.target===document.getElementById(id)) closeModal(id); }
+
+// ===================== ADD / EDIT =====================
+function openAddModal(prefill) {
+  editingId=null;
+  document.getElementById('add-modal-title').textContent='Novo Lançamento';
+  resetForm();
+  if (prefill) applyPrefill(prefill);
+  if (selectedDay) {
+    const y=String(curYear),m=String(curMonth+1).padStart(2,'0'),d=String(selectedDay).padStart(2,'0');
+    document.getElementById('f-date').value=`${y}-${m}-${d}`;
+  }
+  openModal('add-modal');
+}
+function openAddForDay() { openAddModal(); }
+
+function openEditModal(entryId) {
+  const e=data.entries.find(x=>x.id===entryId);
+  if (!e) return;
+  editingId=entryId;
+  document.getElementById('add-modal-title').textContent='✏️ Editar Lançamento';
+  resetForm();
+  setType(e.type);
+  document.getElementById('f-name').value=e.name;
+  document.getElementById('f-person').value=e.person||'';
+  document.getElementById('f-value').value=e.value;
+  document.getElementById('f-date').value=e.date;
+  document.getElementById('f-obs').value=e.obs||'';
+  renderCatChips(e.category);
+  setMode(e.mode||'div');
+  formParcelas=e.parcelas||1;
+  document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.toggle('active',parseInt(c.dataset.p)===formParcelas));
+  formPaid = !!(e.paid && e.paid[0]);
+  updatePaidToggle();
+  updatePreview();
+  openModal('add-modal');
+}
+
+function resetForm() {
+  formType='pagar'; formMode='div'; formParcelas=1; formPaid=false;
+  document.getElementById('f-name').value='';
+  document.getElementById('f-person').value='';
+  document.getElementById('f-value').value='';
+  document.getElementById('f-obs').value='';
+  document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
+  setType('pagar');
+  setMode('div');
+  document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.toggle('active',c.dataset.p==='1'));
+  renderCatChips('OUTROS');
+  document.getElementById('parcela-custom').value='';
+  updatePaidToggle();
+  updatePreview();
+}
+
+function applyPrefill(f) {
+  setType(f.type||'pagar');
+  document.getElementById('f-name').value=f.name||'';
+  document.getElementById('f-obs').value=f.obs||'';
+  renderCatChips(f.category||'OUTROS');
+}
+
+function setType(t) {
+  formType=t;
+  document.getElementById('btn-pagar').className='type-btn'+(t==='pagar'?' active-pagar':'');
+  document.getElementById('btn-receber').className='type-btn'+(t==='receber'?' active-receber':'');
+}
+function setMode(m) {
+  formMode=m;
+  document.getElementById('btn-div').classList.toggle('active',m==='div');
+  document.getElementById('btn-fix').classList.toggle('active',m==='fix');
+  updatePreview();
+}
+function renderCatChips(activeCatId) {
+  const wrap = document.getElementById('cat-chips');
+  const cats = data.categories && data.categories.length ? data.categories : DEFAULT_CATEGORIES;
+  const active = activeCatId || 'OUTROS';
+  wrap.innerHTML = cats.map(c=>
+    `<div class="chip${c.id===active?' active':''}" data-cat="${c.id}" onclick="selectCat(this)">${c.emoji} ${c.name}</div>`
+  ).join('');
+}
+function selectCat(el) {
+  document.querySelectorAll('#cat-chips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+function selectParcela(el) {
+  document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  formParcelas=parseInt(el.dataset.p);
+  document.getElementById('parcela-custom').value='';
+  updatePreview();
+}
+function setParcelaCustom(v) {
+  const n=parseInt(v);
+  if (n>0) {
+    formParcelas=n;
+    document.querySelectorAll('.parcela-chip').forEach(c=>c.classList.remove('active'));
+    updatePreview();
+  }
+}
+function toggleFormPaid() { formPaid=!formPaid; updatePaidToggle(); }
+function updatePaidToggle() {
+  const sw=document.getElementById('paid-toggle-sw');
+  const lbl=document.getElementById('paid-toggle-label');
+  sw.classList.toggle('on',formPaid);
+  lbl.textContent=formPaid?'✅ Pago / Recebido':'⏳ Pendente';
+}
+function updatePreview() {
+  const val=parseFloat(document.getElementById('f-value').value)||0;
+  const box=document.getElementById('form-preview');
+  if (!val){box.textContent='—';return;}
+  if (formMode==='div') {
+    const each=val/formParcelas;
+    box.className='preview-box preview-div';
+    box.textContent=formParcelas===1?`${fmt(val)} — à vista`:`${fmt(val)} ÷ ${formParcelas}x = ${fmt(each)}/mês`;
+  } else {
+    const total=val*formParcelas;
+    box.className='preview-box preview-fix';
+    box.textContent=formParcelas===1?`${fmt(val)} — valor fixo`:`${fmt(val)} × ${formParcelas}x = ${fmt(total)} total`;
+  }
+}
+
+function saveEntry() {
+  const name=document.getElementById('f-name').value.trim();
+  const person=document.getElementById('f-person').value.trim();
+  const value=parseFloat(document.getElementById('f-value').value);
+  const date=document.getElementById('f-date').value;
+  if (!name){showToast('⚠️ Informe o nome!');return;}
+  if (!value||value<=0){showToast('⚠️ Informe o valor!');return;}
+  if (!date){showToast('⚠️ Informe a data!');return;}
+  const cat=document.querySelector('#cat-chips .chip.active')?.dataset.cat||'OUTROS';
+  const obs=document.getElementById('f-obs').value.trim();
+
+  if (editingId) {
+    const e=data.entries.find(x=>x.id===editingId);
+    if (e) {
+      e.name=name; e.person=person; e.value=value; e.date=date; e.category=cat;
+      e.obs=obs; e.type=formType; e.mode=formMode; e.parcelas=formParcelas;
+      if (!e.paid) e.paid={};
+      e.paid[0]=formPaid;
+    }
+    showToast('✅ Lançamento atualizado!');
+  } else {
+    const paid={};
+    if (formPaid) for (let i=0;i<formParcelas;i++) paid[i]=true;
+    const e={id:uid(),name,person,value,date,category:cat,obs,type:formType,mode:formMode,parcelas:formParcelas,paid};
+    data.entries.push(e);
+    showToast('✅ Lançamento salvo!');
+  }
+  saveProfileData(state.activeProfileId,data);
+  closeModal('add-modal');
+  renderAll();
+}
+
+function saveAsFavorite() {
+  const name=document.getElementById('f-name').value.trim();
+  if (!name){showToast('⚠️ Informe o nome antes!');return;}
+  const cat=document.querySelector('#cat-chips .chip.active')?.dataset.cat||'OUTROS';
+  const obs=document.getElementById('f-obs').value.trim();
+  if (!data.favorites) data.favorites=[];
+  data.favorites.push({id:uid(),name,type:formType,category:cat,obs});
+  saveProfileData(state.activeProfileId,data);
+  showToast('⭐ Favorito salvo!');
+}
+
+// ===================== WHATSAPP — INDIVIDUAL =====================
+function findOccByKey(key) {
+  for (const e of data.entries) {
+    for (const o of getOccurrences(e)) {
+      if (o.key===key) return {...o, entry:e};
+    }
+  }
+  return null;
+}
+
+function openWppSingle(key) {
+  const o = findOccByKey(key);
+  if (!o) return;
+  wppCurrentOcc = o;
+  document.getElementById('wpp-person-input').value = o.entry.person || '';
+  updateWppPreview();
+  openModal('wpp-modal');
+}
+
+function buildSingleMessage(o, person) {
+  const dd=String(o.day).padStart(2,'0');
+  const mm=String(o.month+1).padStart(2,'0');
+  const parcelaStr = o.total>1 ? `Parcela: ${o.parcela}/${o.total}\n` : '';
+  const greet = person ? `Oi, ${cap(person)}! ` : '';
+  return `📋 *Lembrete de pagamento*\n\n${greet}passando para lembrar sobre:\n\n${catEmoji(o.entry.category)} ${cap(o.entry.name)}\n${parcelaStr}Valor: ${fmt(o.value)}\nVencimento: ${dd}/${mm}/${o.year}\n\nStatus: ⏳ Pendente\n\n_Mensagem gerada via app Financeiro_`;
+}
+
+function cap(s) {
+  if (!s) return '';
+  return s.charAt(0)+s.slice(1).toLowerCase();
+}
+
+function updateWppPreview() {
+  if (!wppCurrentOcc) return;
+  const person = document.getElementById('wpp-person-input').value.trim();
+  document.getElementById('wpp-preview-text').textContent = buildSingleMessage(wppCurrentOcc, person);
+}
+
+function sendWhatsappSingle() {
+  const person = document.getElementById('wpp-person-input').value.trim();
+  const msg = buildSingleMessage(wppCurrentOcc, person);
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+}
+
+function copyWppText() {
+  const text = document.getElementById('wpp-preview-text').textContent;
+  copyToClipboard(text);
+}
+
+// ===================== QUITAÇÃO (mensagem ao marcar como pago) =====================
+let quitacaoCurrentOcc = null;
+
+function openQuitacaoModal(occ) {
+  quitacaoCurrentOcc = occ;
+  document.getElementById('quitacao-person-input').value = occ.entry.person || '';
+  updateQuitacaoPreview();
+  openModal('quitacao-modal');
+}
+
+function buildQuitacaoMessage(o, person) {
+  const e = o.entry;
+  const paidIso = (e.paidDates && e.paidDates[o.parcela-1]) ? e.paidDates[o.parcela-1] : new Date().toISOString();
+  const paidDate = new Date(paidIso);
+  const dd = String(paidDate.getDate()).padStart(2,'0');
+  const mm = String(paidDate.getMonth()+1).padStart(2,'0');
+  const yyyy = paidDate.getFullYear();
+  const hh = String(paidDate.getHours()).padStart(2,'0');
+  const min = String(paidDate.getMinutes()).padStart(2,'0');
+  const parcelaStr = o.total>1 ? `Parcela: ${o.parcela}/${o.total}\n` : '';
+  const greet = person ? `Oi, ${cap(person)}! ` : '';
+  const acao = e.type==='pagar' ? 'pagamento' : 'recebimento';
+  return `✅ *Confirmação de ${acao}*\n\n${greet}confirmando que ficou quitado:\n\n${catEmoji(e.category)} ${cap(e.name)}\n${parcelaStr}Valor: ${fmt(o.value)}\n\nPago em: ${dd}/${mm}/${yyyy} às ${hh}:${min}\n\nStatus: ✅ Quitado\n\n_Mensagem gerada via app Financeiro_`;
+}
+
+function updateQuitacaoPreview() {
+  if (!quitacaoCurrentOcc) return;
+  const person = document.getElementById('quitacao-person-input').value.trim();
+  document.getElementById('quitacao-preview-text').textContent = buildQuitacaoMessage(quitacaoCurrentOcc, person);
+}
+
+function sendQuitacaoWhatsapp() {
+  const person = document.getElementById('quitacao-person-input').value.trim();
+  const msg = buildQuitacaoMessage(quitacaoCurrentOcc, person);
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+}
+
+function copyQuitacaoText() {
+  const text = document.getElementById('quitacao-preview-text').textContent;
+  copyToClipboard(text);
+}
+
+// ===================== LEMBRETES AUTOMÁTICOS (5 dias antes do vencimento) =====================
+// Fila de lembretes pendentes de exibição nesta sessão
+let reminderQueue = [];
+let reminderCurrentOcc = null;
+
+// Verifica todos os lançamentos "a pagar" pendentes e identifica quais vencem
+// em exatamente 5 dias a partir de hoje. Cada lembrete só é oferecido uma vez
+// por parcela (controlado por data.remindersSent), então reabrir o app no
+// mesmo dia não fica repetindo o aviso.
+function checkReminders() {
+  if (!Array.isArray(data.remindersSent)) data.remindersSent = [];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(today.getTime() + 5*86400000);
+  const queue = [];
+  for (const o of getAllOccs()) {
+    if (o.paid) continue;
+    if (o.entry.type!=='pagar') continue;
+    const due = new Date(o.year, o.month, o.day);
+    if (due.getTime()!==target.getTime()) continue;
+    if (data.remindersSent.includes(o.key)) continue;
+    queue.push(o);
+  }
+  reminderQueue = queue;
+  if (reminderQueue.length) showNextReminder();
+}
+
+function showNextReminder() {
+  if (!reminderQueue.length) return;
+  reminderCurrentOcc = reminderQueue[0];
+  const o = reminderCurrentOcc;
+  document.getElementById('reminder-modal-info').textContent =
+    `${cap(o.entry.name)} vence em 5 dias (${String(o.day).padStart(2,'0')}/${String(o.month+1).padStart(2,'0')}/${o.year}). Deseja enviar um lembrete?`;
+  document.getElementById('reminder-person-input').value = o.entry.person || '';
+  updateReminderPreview();
+  openModal('reminder-modal');
+}
+
+function buildReminderMessage(o, person) {
+  const dd=String(o.day).padStart(2,'0');
+  const mm=String(o.month+1).padStart(2,'0');
+  const parcelaStr = o.total>1 ? `Parcela: ${o.parcela}/${o.total}\n` : '';
+  const greet = person ? `Oi, ${cap(person)}! ` : '';
+  return `⏰ *Lembrete de vencimento próximo*\n\n${greet}passando para avisar que falta(m) 5 dias para o vencimento de:\n\n${catEmoji(o.entry.category)} ${cap(o.entry.name)}\n${parcelaStr}Valor: ${fmt(o.value)}\nVencimento: ${dd}/${mm}/${o.year}\n\nStatus: ⏳ Pendente\n\n_Mensagem gerada via app Financeiro_`;
+}
+
+function updateReminderPreview() {
+  if (!reminderCurrentOcc) return;
+  const person = document.getElementById('reminder-person-input').value.trim();
+  document.getElementById('reminder-preview-text').textContent = buildReminderMessage(reminderCurrentOcc, person);
+}
+
+function markReminderSent(key) {
+  if (!Array.isArray(data.remindersSent)) data.remindersSent = [];
+  if (!data.remindersSent.includes(key)) data.remindersSent.push(key);
+  saveProfileData(state.activeProfileId, data);
+}
+
+function sendReminderWhatsapp() {
+  const person = document.getElementById('reminder-person-input').value.trim();
+  const msg = buildReminderMessage(reminderCurrentOcc, person);
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+  markReminderSent(reminderCurrentOcc.key);
+  advanceReminderQueue();
+}
+
+function copyReminderText() {
+  const text = document.getElementById('reminder-preview-text').textContent;
+  copyToClipboard(text);
+  markReminderSent(reminderCurrentOcc.key);
+  advanceReminderQueue();
+}
+
+function dismissReminderModal() {
+  // "Agora não" também marca como já visto, para não ficar reaparecendo
+  // toda vez que o app é reaberto no mesmo dia.
+  if (reminderCurrentOcc) markReminderSent(reminderCurrentOcc.key);
+  advanceReminderQueue();
+}
+
+function advanceReminderQueue() {
+  closeModal('reminder-modal');
+  reminderQueue.shift();
+  reminderCurrentOcc = null;
+  if (reminderQueue.length) {
+    setTimeout(showNextReminder, 400);
+  }
+}
+
+// ===================== WHATSAPP — MULTI (CONSOLIDADA) =====================
+function renderWppMultiList() {
+  const occs = getAllOccs().filter(o=>!o.paid && o.entry.type==='pagar');
+  occs.sort((a,b)=>new Date(a.year,a.month,a.day)-new Date(b.year,b.month,b.day));
+  const list = document.getElementById('wpp-multi-list');
+  if (!occs.length) {
+    list.innerHTML = '<div class="empty-day">Nenhuma conta pendente para cobrar</div>';
+    updateWppMultiPreview();
+    return;
+  }
+  list.innerHTML = occs.map(o=>{
+    const dd=String(o.day).padStart(2,'0'), mm=String(o.month+1).padStart(2,'0');
+    const ps = o.total>1?` (${o.parcela}/${o.total})`:'';
+    const checked = wppMultiSelected[o.key] ? 'checked' : '';
+    return `<label class="charge-row">
+      <input type="checkbox" class="charge-check" ${checked} onchange="toggleWppMultiSel('${o.key}',this.checked)"/>
+      <div class="charge-info">
+        <div class="charge-name">${catEmoji(o.entry.category)} ${o.entry.name}${ps}</div>
+        <div class="charge-sub">Vence ${dd}/${mm}/${o.year}</div>
+      </div>
+      <div class="charge-val">${fmt(o.value)}</div>
+    </label>`;
+  }).join('');
+  updateWppMultiPreview();
+}
+
+function toggleWppMultiSel(key, checked) {
+  if (checked) wppMultiSelected[key]=true;
+  else delete wppMultiSelected[key];
+  updateWppMultiPreview();
+}
+
+function buildMultiMessage(person) {
+  const keys = Object.keys(wppMultiSelected);
+  if (!keys.length) return null;
+  const occs = keys.map(k=>findOccByKey(k)).filter(Boolean);
+  occs.sort((a,b)=>new Date(a.year,a.month,a.day)-new Date(b.year,b.month,b.day));
+  let total = 0;
+  const lines = occs.map(o=>{
+    total += o.value;
+    const ps = o.total>1?` (${o.parcela}/${o.total})`:'';
+    return `${catEmoji(o.entry.category)} ${cap(o.entry.name)}${ps} — ${fmt(o.value)}`;
+  });
+  const dates = occs.map(o=>new Date(o.year,o.month,o.day));
+  const minD = new Date(Math.min(...dates));
+  const maxD = new Date(Math.max(...dates));
+  const fmtD = d => String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+  const periodo = minD.getTime()===maxD.getTime() ? `Vencimento: ${fmtD(minD)}/${minD.getFullYear()}` : `Vencimentos entre ${fmtD(minD)} e ${fmtD(maxD)}/${maxD.getFullYear()}`;
+  const titulo = person ? `Resumo de cobrança — ${cap(person)}` : 'Resumo de cobrança';
+  return `📋 *${titulo}*\n\n${lines.join('\n')}\n\n💰 *Total: ${fmt(total)}*\n\n${periodo}\n\n_Mensagem gerada via app Financeiro_`;
+}
+
+function updateWppMultiPreview() {
+  const person = document.getElementById('wpp-multi-person').value.trim();
+  const msg = buildMultiMessage(person);
+  document.getElementById('wpp-multi-preview-text').textContent = msg || 'Selecione ao menos uma conta acima';
+}
+
+function openWppMulti() {
+  wppMultiSelected = {};
+  document.getElementById('wpp-multi-person').value = '';
+  renderWppMultiList();
+  openModal('wpp-multi-modal');
+}
+
+function sendWhatsappMulti() {
+  const person = document.getElementById('wpp-multi-person').value.trim();
+  const msg = buildMultiMessage(person);
+  if (!msg) { showToast('⚠️ Selecione ao menos uma conta!'); return; }
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+}
+
+function copyWppMultiText() {
+  const text = document.getElementById('wpp-multi-preview-text').textContent;
+  if (!text || text.includes('Selecione ao menos')) { showToast('⚠️ Selecione ao menos uma conta!'); return; }
+  copyToClipboard(text);
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(()=>showToast('📋 Texto copiado!')).catch(()=>fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text) {
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast('📋 Texto copiado!'); } catch(e) { showToast('Não foi possível copiar'); }
+  document.body.removeChild(ta);
+}
+
+// ===================== FAVORITES MODAL =====================
+function renderFavsModal() {
+  const body=document.getElementById('favs-modal-body');
+  const favs=data.favorites||[];
+  if (!favs.length){body.innerHTML='<p style="color:var(--text3);text-align:center;padding:20px">Nenhum favorito salvo</p>';return;}
+  body.innerHTML=favs.map(f=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:600">${catEmoji(f.category)} ${f.name}</div>
+      <div style="font-size:11px;color:var(--text3)">${f.type==='pagar'?'💸 A Pagar':'💰 A Receber'} • ${f.category}</div>
+    </div>
+    <button class="small-btn small-btn-active" onclick="useFavorite('${f.id}');closeModal('favs-modal')">Usar</button>
+    <button class="small-btn" style="color:var(--red2)" onclick="deleteFav('${f.id}')">✕</button>
+  </div>`).join('');
+}
+function useFavorite(id) {
+  const f=(data.favorites||[]).find(x=>x.id===id);
+  if (!f) return;
+  openAddModal(f);
+}
+function deleteFav(id) {
+  data.favorites=(data.favorites||[]).filter(x=>x.id!==id);
+  saveProfileData(state.activeProfileId,data);
+  renderFavsModal(); renderFavs();
+  showToast('Favorito removido!');
+}
+
+// ===================== CATEGORIES MODAL (Gerenciamento) =====================
+function renderCategoriesModal() {
+  ensureCategories();
+  const list = document.getElementById('categories-list');
+  if (!data.categories.length) {
+    list.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px">Nenhuma categoria cadastrada</p>';
+    return;
+  }
+  list.innerHTML = data.categories.map(c=>{
+    const usageCount = data.entries.filter(e=>e.category===c.id).length;
+    return `<div class="profile-list-item">
+      <span class="profile-emoji-btn" style="cursor:default">${c.emoji}</span>
+      <div class="profile-item-info">
+        <div class="profile-item-name">${c.name}</div>
+        <div class="profile-item-sub">${usageCount} lançamento${usageCount!==1?'s':''}</div>
+      </div>
+      <div class="profile-item-actions">
+        <button class="small-btn" onclick="editCategory('${c.id}')">✏️</button>
+        <button class="small-btn" style="color:var(--red2)" onclick="deleteCategory('${c.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function createCategory() {
+  ensureCategories();
+  const emojiInput = document.getElementById('new-cat-emoji');
+  const nameInput = document.getElementById('new-cat-name');
+  let emoji = emojiInput.value.trim();
+  const name = nameInput.value.trim();
+  if (!name) { showToast('⚠️ Informe o nome da categoria!'); return; }
+  if (!emoji) emoji = '🏷️';
+  // Garante um ID único e estável (baseado no nome, sem acentos/espaços)
+  let baseId = name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]/g,'').toUpperCase() || uid().toUpperCase();
+  let id = baseId, n = 1;
+  while (data.categories.some(c=>c.id===id)) { id = baseId+'_'+n; n++; }
+  data.categories.push({id, emoji, name});
+  saveProfileData(state.activeProfileId, data);
+  emojiInput.value=''; nameInput.value='';
+  renderCategoriesModal();
+  renderFavs();
+  showToast('🏷️ Categoria adicionada!');
+}
+
+function editCategory(id) {
+  const c = getCategoryById(id);
+  if (!c) return;
+  const newName = prompt('Nome da categoria:', c.name);
+  if (newName===null) return;
+  const trimmed = newName.trim().toUpperCase();
+  if (!trimmed) { showToast('⚠️ Nome não pode ficar vazio!'); return; }
+  const newEmoji = prompt('Emoji da categoria (compatível com WhatsApp):', c.emoji);
+  if (newEmoji===null) return;
+  c.name = trimmed;
+  c.emoji = newEmoji.trim() || c.emoji;
+  saveProfileData(state.activeProfileId, data);
+  renderCategoriesModal();
+  renderAll();
+  showToast('✅ Categoria atualizada!');
+}
+
+function deleteCategory(id) {
+  if (data.categories.length<=1) { showToast('⚠️ Mantenha ao menos uma categoria!'); return; }
+  const usageCount = data.entries.filter(e=>e.category===id).length;
+  const msg = usageCount>0
+    ? `Esta categoria está em uso em ${usageCount} lançamento(s). Eles serão movidos para "OUTROS". Continuar?`
+    : 'Excluir esta categoria?';
+  if (!confirm(msg)) return;
+  // Move lançamentos órfãos para uma categoria de fallback existente (OUTROS, ou a primeira disponível)
+  const fallback = data.categories.find(c=>c.id==='OUTROS' && c.id!==id) || data.categories.find(c=>c.id!==id);
+  if (fallback) {
+    data.entries.forEach(e=>{ if (e.category===id) e.category = fallback.id; });
+  }
+  data.categories = data.categories.filter(c=>c.id!==id);
+  saveProfileData(state.activeProfileId, data);
+  renderCategoriesModal();
+  renderAll();
+  showToast('Categoria excluída!');
+}
+
+
+function renderProfilesModal() {
+  const body=document.getElementById('profiles-modal-body');
+  let html=state.profiles.map(p=>{
+    const isActive=p.id===state.activeProfileId;
+    return `<div class="profile-list-item">
+      <span class="profile-emoji-btn" onclick="cycleProfileEmoji('${p.id}')">${p.emoji}</span>
+      <div class="profile-item-info">
+        <div class="profile-item-name">${p.name}${isActive?' ✦':''}</div>
+        <div class="profile-item-sub">${isActive?'Perfil ativo':'Toque para acessar'}</div>
+      </div>
+      <div class="profile-item-actions">
+        ${!isActive?`<button class="small-btn small-btn-active" onclick="switchProfile('${p.id}');closeModal('profiles-modal')">Acessar</button>`:''}
+        <button class="small-btn" onclick="renameProfile('${p.id}')">✏️</button>
+        ${state.profiles.length>1?`<button class="small-btn" style="color:var(--red2)" onclick="deleteProfile('${p.id}')">🗑️</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  html+=`<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+    <div class="form-label" style="margin-bottom:8px">Criar Novo Perfil</div>
+    <div class="emoji-grid">${EMOJIS.map((e,i)=>`<div class="emoji-option${i===0?' selected':''}" onclick="selectNewEmoji(this,'${e}')">${e}</div>`).join('')}</div>
+    <input type="text" id="new-profile-name" class="form-input" placeholder="NOME DO PERFIL" style="margin-bottom:8px" oninput="this.value=this.value.toUpperCase()"/>
+    <button class="btn-primary" onclick="createProfile()">Criar Perfil</button>
+  </div>`;
+  body.innerHTML=html;
+  window._newProfileEmoji=EMOJIS[0];
+}
+function selectNewEmoji(el,emoji) {
+  document.querySelectorAll('.emoji-option').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  window._newProfileEmoji=emoji;
+}
+function cycleProfileEmoji(id) {
+  const p=state.profiles.find(x=>x.id===id);
+  if (!p) return;
+  p.emoji=EMOJIS[(EMOJIS.indexOf(p.emoji)+1)%EMOJIS.length];
+  saveState(); renderProfilesModal(); renderProfileBar(); renderProfileChip();
+}
+function createProfile() {
+  const name=document.getElementById('new-profile-name').value.trim();
+  if (!name){showToast('⚠️ Informe o nome!');return;}
+  const newId = uid();
+  state.profiles.push({id:newId,name,emoji:window._newProfileEmoji||'👤'});
+  // Garante que o novo perfil já nasce com categorias padrão salvas localmente
+  // e na nuvem, para não ficar vazio até a primeira edição.
+  const seedData = { entries:[], favorites:[], showStats:true, categories: DEFAULT_CATEGORIES.map(c=>({...c})), remindersSent:[] };
+  saveProfileData(newId, seedData);
+  saveState(); renderProfilesModal(); renderProfileBar();
+  showToast('Perfil criado!');
+}
+function renameProfile(id) {
+  const p=state.profiles.find(x=>x.id===id);
+  if (!p) return;
+  const n=prompt('Novo nome:',p.name);
+  if (n&&n.trim()){p.name=n.trim().toUpperCase();saveState();renderProfilesModal();renderProfileBar();renderProfileChip();showToast('Nome atualizado!');}
+}
+function deleteProfile(id) {
+  if (!confirm('Excluir este perfil e todos os dados?')) return;
+  state.profiles=state.profiles.filter(x=>x.id!==id);
+  if (state.activeProfileId===id){
+    state.activeProfileId=state.profiles[0].id;
+    data=loadProfileData(state.activeProfileId);
+    watchActiveProfileRemote();
+  }
+  localStorage.removeItem('fintracker_profile_'+id);
+  saveState(); renderProfilesModal(); renderAll();
+  showToast('Perfil excluído!');
+}
+
+// ===================== SETTINGS =====================
+function toggleStats() {
+  data.showStats=!data.showStats;
+  saveProfileData(state.activeProfileId,data);
+  updateStatsToggle();
+  if (activeTab==='mes') renderMonthDashboard();
+}
+function updateStatsToggle() {
+  document.getElementById('stats-toggle').classList.toggle('on',!!data.showStats);
+}
+function exportData() {
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`financeiro-${getActiveProfile().name}-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('Dados exportados!');
+}
+function importData(e) {
+  const file=e.target.files[0];
+  if (!file) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try {
+      if (!confirm('Isso substituirá todos os dados do perfil atual. Continuar?')) return;
+      data=JSON.parse(ev.target.result);
+      ensureCategories();
+      if (!Array.isArray(data.remindersSent)) data.remindersSent=[];
+      saveProfileData(state.activeProfileId,data);
+      renderAll(); showToast('Dados importados!');
+    } catch { showToast('Arquivo inválido!'); }
+  };
+  r.readAsText(file);
+  e.target.value='';
+}
+function clearData() {
+  if (!confirm('Limpar todos os dados do perfil atual?')) return;
+  if (!confirm('Tem certeza? Esta ação não pode ser desfeita.')) return;
+  data={entries:[],favorites:[],showStats:data.showStats,categories:data.categories,remindersSent:[]};
+  saveProfileData(state.activeProfileId,data);
+  selectedDay=null; renderAll(); showToast('Dados apagados!');
+}
+
+// ===================== SEARCH =====================
+function toggleSearch() {
+  const bar=document.getElementById('search-bar');
+  const res=document.getElementById('search-results');
+  const main=document.getElementById('main-content');
+  bar.classList.toggle('visible');
+  if (!bar.classList.contains('visible')) {
+    document.getElementById('search-input').value='';
+    res.style.display='none'; main.style.display='';
+  } else {
+    document.getElementById('search-input').focus();
+  }
+}
+function doSearch(q) {
+  const res=document.getElementById('search-results');
+  const main=document.getElementById('main-content');
+  if (!q.trim()){res.style.display='none';main.style.display='';return;}
+  main.style.display='none';
+  const qUp=q.toUpperCase();
+  const matches=[];
+  for (const e of data.entries) {
+    if (e.name.includes(qUp)||(e.obs||'').toUpperCase().includes(qUp)||e.category.includes(qUp)||(e.person||'').toUpperCase().includes(qUp)) {
+      for (const o of getOccurrences(e)) matches.push({...o,entry:e});
+    }
+  }
+  res.style.display='';
+  if (!matches.length){res.innerHTML='<p style="color:var(--text3);padding:16px 0;text-align:center">Nenhum resultado encontrado</p>';return;}
+  matches.sort((a,b)=>new Date(a.year,a.month,a.day)-new Date(b.year,b.month,b.day));
+  res.innerHTML=`<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);padding:10px 0 8px;letter-spacing:.6px">${matches.length} resultado(s)</div>`+
+    matches.slice(0,30).map(o=>{
+      const d=`${String(o.day).padStart(2,'0')}/${String(o.month+1).padStart(2,'0')}/${o.year}`;
+      const ps=o.total>1?` (${o.parcela}/${o.total})`:'';
+      return `<div class="sr-item">
+        <div>
+          <div class="sr-name">${catEmoji(o.entry.category)} ${o.entry.name}${ps}</div>
+          <div class="sr-sub">${o.entry.obs||''} ${o.paid?'✅ PAGO':''}</div>
+        </div>
+        <div>
+          <div class="sr-val" style="color:${o.paid?'var(--green2)':(o.entry.type==='pagar'?'var(--red2)':'var(--indigo2)')}">${fmt(o.value)}</div>
+          <div class="sr-date">${d}</div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+// ===================== MONTH/YEAR NAV =====================
+function changeMonth(dir) {
+  curMonth+=dir;
+  if (curMonth>11){curMonth=0;curYear++;}
+  if (curMonth<0){curMonth=11;curYear--;}
+  selectedDay=null;
+  renderAll();
+}
+
+// ===================== TOAST =====================
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ===================== UTIL =====================
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+// ===================== PWA =====================
+function setupPWA() {
+  const manifest={
+    name:'A Pagar & Receber',short_name:'Financeiro',
+    start_url:'.',display:'standalone',
+    background_color:'#0a0d14',theme_color:'#6366f1',orientation:'portrait',
+    icons:[192,512].map(s=>({
+      src:`data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='${s}' height='${s}'><rect width='${s}' height='${s}' rx='${s*.2}' fill='%236366f1'/><text x='50%25' y='57%25' dominant-baseline='middle' text-anchor='middle' font-size='${s*.5}'>💸</text></svg>`,
+      sizes:`${s}x${s}`,type:'image/svg+xml'
+    }))
+  };
+  const ml=document.createElement('link');
+  ml.rel='manifest';
+  ml.href='data:application/json,'+encodeURIComponent(JSON.stringify(manifest));
+  document.head.appendChild(ml);
+  if ('serviceWorker' in navigator) {
+    const sw=`self.addEventListener('install',e=>e.waitUntil(caches.open('v3').then(c=>c.add('/'))));
+self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'})));
+  }
+  window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault();
+    const b=document.createElement('div');
+    b.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--indigo);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,.6)';
+    b.textContent='📲 Instalar como app';
+    b.onclick=()=>{e.prompt();b.remove();};
+    document.body.appendChild(b);
+    setTimeout(()=>b.remove(),8000);
+  });
+}
+
+// ===================== AUTENTICAÇÃO (LOGIN / CADASTRO) =====================
+let authMode = 'login';
+
+function setAuthMode(mode) {
+  authMode = mode;
+  document.getElementById('auth-tab-login').classList.toggle('active', mode==='login');
+  document.getElementById('auth-tab-signup').classList.toggle('active', mode==='signup');
+  document.getElementById('auth-submit-label').textContent = mode==='login' ? 'Entrar' : 'Criar conta';
+  document.getElementById('auth-forgot-link').style.display = mode==='login' ? 'block' : 'none';
+  const switchEl = document.getElementById('auth-switch-text');
+  switchEl.innerHTML = mode==='login'
+    ? 'Não tem conta? <a onclick="setAuthMode(\'signup\')">Criar agora</a>'
+    : 'Já tem conta? <a onclick="setAuthMode(\'login\')">Entrar</a>';
+  hideAuthError();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function hideAuthError() {
+  document.getElementById('auth-error').classList.remove('show');
+}
+
+function translateAuthError(code) {
+  const map = {
+    'auth/invalid-email': 'E-mail inválido.',
+    'auth/missing-password': 'Informe a senha.',
+    'auth/weak-password': 'A senha precisa ter ao menos 6 caracteres.',
+    'auth/email-already-in-use': 'Este e-mail já está cadastrado. Tente entrar.',
+    'auth/user-not-found': 'E-mail ou senha incorretos.',
+    'auth/wrong-password': 'E-mail ou senha incorretos.',
+    'auth/invalid-credential': 'E-mail ou senha incorretos.',
+    'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente novamente.',
+    'auth/network-request-failed': 'Sem conexão com a internet.'
+  };
+  return map[code] || 'Não foi possível concluir. Tente novamente.';
+}
+
+function setAuthLoading(loading) {
+  const btn = document.getElementById('auth-submit-btn');
+  btn.disabled = loading;
+  document.getElementById('auth-submit-label').innerHTML = loading
+    ? '<span class="auth-spinner"></span>'
+    : (authMode==='login' ? 'Entrar' : 'Criar conta');
+}
+
+async function handleAuthSubmit() {
+  hideAuthError();
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  if (!email || !password) { showAuthError('Preencha e-mail e senha.'); return; }
+  if (!window.firebaseAPI) { showAuthError('Conectando ao servidor, aguarde um instante e tente novamente.'); return; }
+  setAuthLoading(true);
+  try {
+    if (authMode==='login') {
+      await window.firebaseAPI.signIn(email, password);
+    } else {
+      await window.firebaseAPI.signUp(email, password);
+    }
+    // onAuthChange cuida do resto (carregar dados e mostrar o app)
+  } catch (err) {
+    showAuthError(translateAuthError(err.code));
+    setAuthLoading(false);
+  }
+}
+
+async function handleForgotPassword() {
+  const email = document.getElementById('auth-email').value.trim();
+  if (!email) { showAuthError('Digite seu e-mail no campo acima primeiro.'); return; }
+  if (!window.firebaseAPI) return;
+  try {
+    await window.firebaseAPI.resetPassword(email);
+    showToast('📧 E-mail de redefinição enviado!');
+  } catch (err) {
+    showAuthError(translateAuthError(err.code));
+  }
+}
+
+async function handleLogout() {
+  if (!confirm('Deseja sair da sua conta?')) return;
+  if (unsubProfileWatch) { unsubProfileWatch(); unsubProfileWatch = null; }
+  if (window.firebaseAPI) await window.firebaseAPI.signOutUser();
+  closeModal('settings-modal');
+}
+
+function showAuthScreen() {
+  document.getElementById('auth-screen').classList.remove('hidden');
+}
+function hideAuthScreen() {
+  document.getElementById('auth-screen').classList.add('hidden');
+}
+
+// ===================== MODO CONVIDADO (sem login) =====================
+// Permite usar o app só com localStorage, sem conta. Fica marcado em uma
+// flag separada do localStorage para o app saber, na próxima abertura, que
+// deve pular a tela de login automaticamente (até a pessoa decidir criar conta).
+function handleGuestMode() {
+  localStorage.setItem('fintracker_guest_mode', '1');
+  currentUser = null;
+  hideAuthScreen();
+  document.getElementById('guest-banner').style.display = 'flex';
+  updateAccountCard();
+  renderAll();
+  setupPWA();
+  setTimeout(checkReminders, 700);
+}
+
+function exitGuestMode() {
+  localStorage.removeItem('fintracker_guest_mode');
+  document.getElementById('guest-banner').style.display = 'none';
+  setAuthMode('signup');
+  showAuthScreen();
+}
+
+function isGuestMode() {
+  return localStorage.getItem('fintracker_guest_mode') === '1';
+}
+
+// Alterna qual card aparece em Configurações: conta logada (com e-mail e botão
+// sair) ou aviso de modo sem login (com botão para criar conta).
+function updateAccountCard() {
+  const loggedCard = document.getElementById('account-card-logged');
+  const guestCard = document.getElementById('account-card-guest');
+  if (currentUser) {
+    loggedCard.style.display = '';
+    guestCard.style.display = 'none';
+  } else {
+    loggedCard.style.display = 'none';
+    guestCard.style.display = '';
+  }
+}
+
+// Mantém o perfil ativo sincronizado em tempo real: qualquer alteração feita
+// em outro dispositivo aparece aqui automaticamente, sem precisar recarregar.
+function watchActiveProfileRemote() {
+  if (unsubProfileWatch) { unsubProfileWatch(); unsubProfileWatch = null; }
+  if (!currentUser || !window.firebaseAPI) return;
+  unsubProfileWatch = window.firebaseAPI.watchProfileDoc(currentUser.uid, state.activeProfileId, (remoteData) => {
+    if (!remoteData) return;
+    // Evita loop: se acabamos de salvar nós mesmos, o snapshot que volta é o nosso próprio dado
+    const localStr = JSON.stringify(data);
+    const { updatedAt, ...remoteClean } = remoteData;
+    const remoteStr = JSON.stringify(remoteClean);
+    if (localStr === remoteStr) return;
+    isApplyingRemoteUpdate = true;
+    data = remoteClean;
+    if (!data.categories || !data.categories.length) data.categories = DEFAULT_CATEGORIES.map(c=>({...c}));
+    if (!Array.isArray(data.remindersSent)) data.remindersSent = [];
+    localStorage.setItem('fintracker_profile_'+state.activeProfileId, JSON.stringify(data));
+    renderAll();
+    showSyncStatus('synced');
+    isApplyingRemoteUpdate = false;
+  });
+}
+
+// Faz upload de tudo que existe localmente (perfis + dados) para a nuvem.
+// Usado na primeira vez que um usuário loga, garantindo que nada se perca.
+async function pushLocalDataToCloud() {
+  if (!currentUser || !window.firebaseAPI) return;
+  await window.firebaseAPI.saveUserState(currentUser.uid, state);
+  for (const p of state.profiles) {
+    const pd = loadProfileData(p.id);
+    await window.firebaseAPI.saveProfileDoc(currentUser.uid, p.id, pd);
+  }
+}
+
+// Decide a estratégia de carga ao logar:
+// - Se a nuvem já tem dados (login em outro dispositivo), eles têm prioridade.
+// - Se a nuvem está vazia (primeiro login), os dados locais existentes sobem para a nuvem.
+async function syncOnLogin() {
+  showSyncStatus('syncing');
+  const remoteState = await window.firebaseAPI.loadUserState(currentUser.uid);
+  if (remoteState && Array.isArray(remoteState.profiles) && remoteState.profiles.length) {
+    const { updatedAt, ...cleanState } = remoteState;
+    state = cleanState;
+    saveState_localOnly();
+    for (const p of state.profiles) {
+      const remoteProfile = await window.firebaseAPI.loadProfileDoc(currentUser.uid, p.id);
+      if (remoteProfile) {
+        const { updatedAt: ua2, ...cleanProfile } = remoteProfile;
+        localStorage.setItem('fintracker_profile_'+p.id, JSON.stringify(cleanProfile));
+      }
+    }
+    data = loadProfileData(state.activeProfileId);
+  } else {
+    // Primeiro login deste usuário: sobe os dados locais (se houver) para a nuvem
+    await pushLocalDataToCloud();
+    data = loadProfileData(state.activeProfileId);
+  }
+  showSyncStatus('synced');
+}
+
+function saveState_localOnly() {
+  localStorage.setItem('fintracker_profiles', JSON.stringify(state));
+}
+
+function initAuthListener() {
+  window.firebaseAPI.onAuthChange(async (user) => {
+    if (user) {
+      // Login bem-sucedido (ou conta criada): sai do modo convidado, se estava nele
+      localStorage.removeItem('fintracker_guest_mode');
+      document.getElementById('guest-banner').style.display = 'none';
+      currentUser = user;
+      document.getElementById('account-email-display').textContent = user.email || '—';
+      updateAccountCard();
+      try {
+        await syncOnLogin();
+      } catch(e) {
+        // Sem internet no momento do login: segue com os dados locais já carregados
+        showSyncStatus('error');
+      }
+      hideAuthScreen();
+      watchActiveProfileRemote();
+      renderAll();
+      setupPWA();
+      setTimeout(checkReminders, 700);
+      setAuthLoading(false);
+      document.getElementById('auth-email').value='';
+      document.getElementById('auth-password').value='';
+    } else {
+      currentUser = null;
+      updateAccountCard();
+      if (unsubProfileWatch) { unsubProfileWatch(); unsubProfileWatch = null; }
+      if (isGuestMode()) {
+        // Pessoa optou por usar sem login nesta sessão/aparelho: pula a tela de auth
+        hideAuthScreen();
+        document.getElementById('guest-banner').style.display = 'flex';
+        renderAll();
+        setupPWA();
+        setTimeout(checkReminders, 700);
+      } else {
+        showAuthScreen();
+      }
+      setAuthLoading(false);
+    }
+  });
+}
+
+// ===================== INIT =====================
+loadState();
+data = loadProfileData(state.activeProfileId);
+
+if (window.firebaseAPI) {
+  initAuthListener();
+} else {
+  window.addEventListener('firebase-ready', initAuthListener, { once:true });
+}
+</script>
+</body>
+</html>
